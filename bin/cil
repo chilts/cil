@@ -1,0 +1,121 @@
+#!/usr/bin/perl
+## ----------------------------------------------------------------------------
+
+use strict;
+use warnings;
+use Data::Dumper;
+use CIL::Issue;
+use Term::CallEditor;
+
+my $COMMANDS = {
+    add     => 1,
+    show    => 1,
+    comment => 1,
+    update  => 1
+};
+
+## ----------------------------------------------------------------------------
+
+{
+    my ($command) = shift;
+    unless ( defined $command and exists $COMMANDS->{$command} ) {
+        usage();
+        exit 2;
+    }
+
+    if ( $command eq 'show' ) {
+        my ($issue_name) = @ARGV;
+        show($issue_name);
+
+    }
+    elsif ( $command eq 'add' ) {
+        add();
+    }
+
+}
+
+sub show {
+    my ($issue_name) = @_;
+
+    # firstly, read the issue in
+    my $issue = CIL::Issue->load_issue('2008-04-17T22:05:02.000Z');
+
+    unless ( defined $issue ) {
+        print STDERR "Couldn't load issue '$issue'\n";
+        return;
+    }
+
+    separator();
+    title('Details');
+    field( 'Summary', $issue->Summary() );
+    field( 'Name', $issue->Name() );
+    field( 'CreatedBy', $issue->CreatedBy() );
+    field( 'Inserted', $issue->Inserted() );
+    field( 'Status', $issue->Status() );
+    field( 'Labels', $issue->Labels() );
+    separator();
+    text('Description', $issue->Description());
+    separator();
+    title('Comments');
+    separator();
+}
+
+sub add {
+    my ($issue_name) = @_;
+    my $fh = solicit('FOO: please replace this text');
+    die "$Term::CallEditor::errstr\n" unless $fh;
+    my $text;
+    $text .= $_ while <$fh>;
+    separator();
+    text('You said:', $text);
+    separator();
+}
+
+## ----------------------------------------------------------------------------
+
+sub usage {
+   print <<"END_USAGE";
+Usage: $0 <command> [options]
+
+Commands:
+   add
+   show    <issue>
+   comment <issue>
+   update  <issue>
+
+See <http://github.com/andychilton/cil/> for further information.
+Report bugs to <andychilton -at- gmail -dot- com>.
+END_USAGE
+}
+
+sub say {
+    print $_[0], "\n";
+}
+
+sub separator {
+    say('=' x 79);
+}
+
+sub title {
+    my ($title) = @_;
+    my $msg = "--- $title ";
+    $msg .= '-' x (74 - length($title));
+    say($msg);
+}
+
+sub field {
+    my ($field, $value) = @_;
+    my $msg = "$field";
+    $msg .= " " x (12 - length($field));
+    say("$msg: " . (defined $value ? $value : '') );
+}
+
+sub text {
+    my ($field, $value) = @_;
+    title($field);
+    say "";
+    say($value);
+    say "";
+}
+
+## ----------------------------------------------------------------------------
