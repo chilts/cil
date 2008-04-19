@@ -1,0 +1,72 @@
+===============================================================================
+
+Overview
+--------
+
+'cil' allows easy command-line creation of an issue tracker. It saves each
+issue locally and in plain text. Commands are given such that these issues can
+be added, edited and listed easily.
+
+===============================================================================
+
+Quick Start
+-----------
+
+Once installed, you should be able to run 'cil':
+
+ $ cil --help
+
+Now change directory to your current development project. To save the issues,
+'cil' requires setting up, so issue the 'init' command:
+
+ $ cil init
+
+This creates a '.cil' file and an 'issues/' directory.
+
+Then add an issue. An editor will pop-up and you fill in the details:
+
+ $ cil add
+
+After you've added it, you can see a representation of the issue. Now you can
+list all the issues by using the 'list' command:
+
+ $ cil list
+
+You can see what the issue name is by looking at the 'Issue' title. Imagine it
+is '1208598003' (which by default is the time from epoch). To see your issue
+again, use the 'show' command:
+
+ $ cil show 1208598003
+
+Another reporting command is 'summary':
+
+ $ cil summary
+
+The columns show 'Name', 'Status', 'CreatedBy' and 'Summary'.
+
+Shucks, we've noticed we got something wrong in the issue. Let's edit it:
+
+ $ cil edit 1208598003
+
+Save your changes and exit your editor. The issue is now saved. Try showing it
+again to make sure your changed are correct.
+
+We have just found out more about the issue so let's add a comment to it:
+
+ $ cil comment 1208598003
+
+When you show the issue again, you'll see the comment has been added and is now
+displayed.
+
+That's it for now. As you can see, if you've played with any kind of bug/issue
+tracker before, 'cil' is straightforward.
+
+===============================================================================
+
+Future Work
+-----------
+
+Currently, cil is still young. There are a number of improvements I wish to do
+on it but already it is useable as a small and personal issue tracker.
+
+===============================================================================

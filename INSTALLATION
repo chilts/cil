@@ -1,0 +1,39 @@
+===============================================================================
+
+Dependencies
+------------
+
+Perl Modules:
+ * Term::CallEditor
+ * File::Touch
+ * File::Glob
+ * File::Basename
+ * YAML
+ * Config::IniFiles
+
+For Debian Etch, the following packages will need to be installed:
+ * perl-code
+ * libfile-touch-perl
+ * libfile-glob-perl
+ * libfile-basename-perl
+ * libyaml-perl
+ * libconfig-inifiles-perl
+
+Currently, Term::CallEditor is not in Etch and therefore will have to be added
+via other means. If you want to build a package from CPAN try the following:
+
+ $ dh-make-perl --build --cpan Term::CallEditor
+
+and install the newly created package.
+
+ $ sudo dpkg -i libterm-calleditor-perl
+
+===============================================================================
+
+Debian Packages
+---------------
+
+Soon I will have packages in my repository on kapiti.geek.nz. Please come back
+later :-)
+
+===============================================================================
