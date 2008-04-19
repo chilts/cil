@@ -6,13 +6,29 @@ use warnings;
 use Data::Dumper;
 use CIL::Issue;
 use Term::CallEditor;
+use File::Touch;
+use YAML;
+use File::Glob ':glob';
+use File::Basename;
 
 my $COMMANDS = {
+    init    => 1,
+    list    => 1,
     add     => 1,
     show    => 1,
-    comment => 1,
-    update  => 1
 };
+
+my $new_issue_text = <<"EOF";
+[Issue]
+
+Summary     =
+Status      =New
+CreatedBy   =$ENV{GIT_AUTHOR_NAME} <$ENV{GIT_AUTHOR_EMAIL}>
+Labels      =
+Description = <<END_OF_DESCRIPTION
+
+END_OF_DESCRIPTION
+EOF
 
 ## ----------------------------------------------------------------------------
 
@@ -20,10 +36,20 @@ my $COMMANDS = {
     my ($command) = shift;
     unless ( defined $command and exists $COMMANDS->{$command} ) {
         usage();
-        exit 2;
+        exit 1;
     }
 
-    if ( $command eq 'show' ) {
+    if ( $command eq 'init' ) {
+        my ($path) = @ARGV;
+        $path ||= '.';
+        init($path);
+    }
+    elsif ( $command eq 'list' ) {
+        my ($issue_name) = @ARGV;
+        list();
+
+    }
+    elsif ( $command eq 'show' ) {
         my ($issue_name) = @ARGV;
         show($issue_name);
 
@@ -34,24 +60,132 @@ my $COMMANDS = {
 
 }
 
+## ----------------------------------------------------------------------------
+# commands
+
+sub init {
+    my ($path) = @_;
+
+    # error if $path doesn't exist
+    unless ( -d $path ) {
+        fatal("path '$path' doesn't exist");
+    }
+
+    # error if issues/ already exists
+    my $issues_dir = "$path/issues";
+    if ( -d $issues_dir ) {
+        fatal("issues directory '$issues_dir' already exists, not initialising issues");
+    }
+
+    # error if .cil already exists
+    my $config = "$path/.cil";
+    if ( -f $config ) {
+        fatal("config file '$config' already exists, not initialising issues");
+    }
+
+    # try to create the issues/ dir
+    unless ( mkdir $issues_dir ) {
+        fatal("Couldn't create '$issues_dir' directory: $!");
+    }
+
+    # create a .cil file here also
+    unless ( touch $config ) {
+        rmdir $issues_dir;
+        fatal("couldn't create a '$config' file");
+    }
+
+    # $path/issues/ and $path/.cil create correctly
+    msg("initialised empty issue list inside '$path/'");
+}
+
+sub list {
+    check_paths();
+
+    my @issues;
+
+    # find all the issues
+    my @filenames = <issues/*.yaml>;
+    foreach my $filename ( sort @filenames ) {
+        push @issues, CIL::Issue->new_load_issue( basename($filename, '.yaml') );
+    }
+    @issues = sort { $a->Inserted cmp $b->Inserted } @issues;
+    separator();
+    foreach my $issue ( @issues ) {
+        display_issue_short($issue);
+    }
+    separator();
+}
+
 sub show {
     my ($issue_name) = @_;
 
     # firstly, read the issue in
-    my $issue = CIL::Issue->load_issue('2008-04-17T22:05:02.000Z');
-
+    my $issue = CIL::Issue->new_load_issue($issue_name);
     unless ( defined $issue ) {
         print STDERR "Couldn't load issue '$issue'\n";
         return;
     }
+    display_issue_full( $issue );
+}
 
-    separator();
-    title('Details');
+sub add {
+    my ($issue_name) = @_;
+
+    # read in the new issue text
+    my $fh = solicit( $new_issue_text );
+
+    my $issue;
+    eval {
+        $issue = CIL::Issue->new_parse_issue( $fh );
+    };
+    if ( $@ ) {
+        fatal("couldn't parse issue: $@");
+    }
+    unless ( defined $issue ) {
+        fatal("couldn't parse issue (program error)");
+    }
+
+    $issue->inserted;
+    $issue->set_no_update( 'Name', $issue->Inserted );
+    $issue->save();
+    display_issue_full( $issue );
+}
+
+## ----------------------------------------------------------------------------
+
+sub check_paths {
+    # make sure an issue directory is available
+    unless ( -d 'issues' ) {
+        fatal("couldn't find 'issues' directory");
+    }
+}
+
+## ----------------------------------------------------------------------------
+# input/output
+
+sub display_issue_short {
+    my ($issue) = @_;
+
+    title( "Issue " . $issue->Name );
     field( 'Summary', $issue->Summary() );
     field( 'Name', $issue->Name() );
     field( 'CreatedBy', $issue->CreatedBy() );
     field( 'Inserted', $issue->Inserted() );
     field( 'Status', $issue->Status() );
+    field( 'Labels', $issue->Labels() );
+}
+
+sub display_issue_full {
+    my ($issue) = @_;
+
+    separator();
+    title('Details');
+    field( 'Summary', $issue->Summary() );
+    field( 'Name', $issue->Name() );
+    field( 'Status', $issue->Status() );
+    field( 'CreatedBy', $issue->CreatedBy() );
+    field( 'Inserted', $issue->Inserted() );
+    field( 'Updated', $issue->Inserted() );
     field( 'Labels', $issue->Labels() );
     separator();
     text('Description', $issue->Description());
@@ -60,62 +194,60 @@ sub show {
     separator();
 }
 
-sub add {
-    my ($issue_name) = @_;
-    my $fh = solicit('FOO: please replace this text');
-    die "$Term::CallEditor::errstr\n" unless $fh;
-    my $text;
-    $text .= $_ while <$fh>;
-    separator();
-    text('You said:', $text);
-    separator();
-}
-
-## ----------------------------------------------------------------------------
-
-sub usage {
-   print <<"END_USAGE";
-Usage: $0 <command> [options]
-
-Commands:
-   add
-   show    <issue>
-   comment <issue>
-   update  <issue>
-
-See <http://github.com/andychilton/cil/> for further information.
-Report bugs to <andychilton -at- gmail -dot- com>.
-END_USAGE
-}
-
-sub say {
-    print $_[0], "\n";
+sub msg {
+    print ( defined $_[0] ? $_[0] : '' );
+    print "\n";
 }
 
 sub separator {
-    say('=' x 79);
+    msg('=' x 79);
 }
 
 sub title {
     my ($title) = @_;
     my $msg = "--- $title ";
     $msg .= '-' x (74 - length($title));
-    say($msg);
+    msg($msg);
 }
 
 sub field {
     my ($field, $value) = @_;
     my $msg = "$field";
     $msg .= " " x (12 - length($field));
-    say("$msg: " . (defined $value ? $value : '') );
+    msg("$msg: " . (defined $value ? $value : '') );
 }
 
 sub text {
     my ($field, $value) = @_;
     title($field);
-    say "";
-    say($value);
-    say "";
+    msg "";
+    msg($value);
+    msg "";
+}
+
+sub fatal {
+    my ($msg) = @_;
+    chomp $msg;
+    print STDERR $msg, "\n";
+    exit 2;
+}
+
+## ----------------------------------------------------------------------------
+# program info
+
+sub usage {
+   print <<"END_USAGE";
+Usage: $0 <command> [options]
+
+Commands:
+   init    <path>
+   add
+   list
+   show    <issue>
+
+See <http://kapiti.geek.nz/software/cil.html> for further information.
+Report bugs to <andychilton -at- gmail -dot- com>.
+END_USAGE
 }
 
 ## ----------------------------------------------------------------------------
