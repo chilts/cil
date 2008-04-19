@@ -7,7 +7,6 @@ use Data::Dumper;
 use CIL::Issue;
 use Term::CallEditor;
 use File::Touch;
-use YAML;
 use File::Glob ':glob';
 use File::Basename;
 
@@ -16,6 +15,7 @@ my $COMMANDS = {
     list    => 1,
     add     => 1,
     show    => 1,
+    edit    => 1,
 };
 
 my $new_issue_text = <<"EOF";
@@ -36,7 +36,7 @@ EOF
     my ($command) = shift;
     unless ( defined $command and exists $COMMANDS->{$command} ) {
         usage();
-        exit 1;
+        exit 2;
     }
 
     if ( $command eq 'init' ) {
@@ -56,6 +56,14 @@ EOF
     }
     elsif ( $command eq 'add' ) {
         add();
+    }
+    elsif ( $command eq 'edit' ) {
+        my ($issue_name) = @ARGV;
+        edit($issue_name);
+    }
+
+    else {
+        fatal("program error when trying command '$command'");
     }
 
 }
@@ -122,8 +130,7 @@ sub show {
     # firstly, read the issue in
     my $issue = CIL::Issue->new_load_issue($issue_name);
     unless ( defined $issue ) {
-        print STDERR "Couldn't load issue '$issue'\n";
-        return;
+        fatal("Couldn't load issue '$issue'");
     }
     display_issue_full( $issue );
 }
@@ -149,6 +156,59 @@ sub add {
     $issue->set_no_update( 'Name', $issue->Inserted );
     $issue->save();
     display_issue_full( $issue );
+}
+
+sub edit {
+    my ($issue_name) = @_;
+
+    my $issue = CIL::Issue->new_load_issue($issue_name);
+    unless ( defined $issue ) {
+        fatal("Couldn't load issue '$issue'");
+    }
+
+    my $summary     = $issue->Summary;
+    my $status      = $issue->Status;
+    my $created_by  = $issue->CreatedBy;
+    my $labels      = $issue->Labels;
+    my $description = $issue->Description;
+
+    # create the ini file, then edit it
+    my $edit_issue_text = <<"EOF";
+[Issue]
+
+Summary     = $summary
+Status      = $status
+CreatedBy   = $created_by
+Labels      = $labels
+Description = <<END_OF_DESCRIPTION
+$description
+END_OF_DESCRIPTION
+EOF
+
+    # read in the new issue text
+    my $fh = solicit( $edit_issue_text );
+
+    my $issue_edited;
+    eval {
+        $issue_edited = CIL::Issue->new_parse_issue( $fh );
+    };
+    if ( $@ ) {
+        fatal("couldn't parse issue: $@");
+    }
+    unless ( defined $issue_edited ) {
+        fatal("couldn't parse issue (program error)");
+    }
+
+    # for the fields we're interested in, set them
+    foreach my $field ( qw(Summary Status CreatedBy Labels Description) ) {
+        $issue->$field( $issue_edited->$field() );
+    }
+    if ( $issue->changed ) {
+        $issue->save();
+    }
+    else {
+        msg('Issue not changed');
+    }
 }
 
 ## ----------------------------------------------------------------------------
@@ -225,6 +285,11 @@ sub text {
     msg "";
 }
 
+sub err {
+    print STDERR ( defined $_[0] ? $_[0] : '' );
+    print STDERR "\n";
+}
+
 sub fatal {
     my ($msg) = @_;
     chomp $msg;
@@ -244,6 +309,7 @@ Commands:
    add
    list
    show    <issue>
+   edit    <issue>
 
 See <http://kapiti.geek.nz/software/cil.html> for further information.
 Report bugs to <andychilton -at- gmail -dot- com>.
