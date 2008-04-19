@@ -14,6 +14,7 @@ use File::Basename;
 my $COMMANDS = {
     init    => 1,
     list    => 1,
+    summary => 1,
     add     => 1,
     show    => 1,
     edit    => 1,
@@ -54,8 +55,11 @@ EOF
         init($path);
     }
     elsif ( $command eq 'list' ) {
-        my ($issue_name) = @ARGV;
         list();
+
+    }
+    elsif ( $command eq 'summary' ) {
+        summary();
 
     }
     elsif ( $command eq 'show' ) {
@@ -122,17 +126,24 @@ sub init {
 sub list {
     check_paths();
 
-    my @issues;
+    # find all the issues
+    my $issues = get_all_issues();
+    separator();
+    foreach my $issue ( @$issues ) {
+        display_issue_short($issue);
+    }
+    separator();
+}
+
+sub summary {
+    check_paths();
 
     # find all the issues
-    my @filenames = <issues/*.yaml>;
-    foreach my $filename ( sort @filenames ) {
-        push @issues, CIL::Issue->new_load_issue( basename($filename, '.yaml') );
-    }
-    @issues = sort { $a->Inserted cmp $b->Inserted } @issues;
+    my $issues = get_all_issues();
     separator();
-    foreach my $issue ( @issues ) {
-        display_issue_short($issue);
+    title('Summary');
+    foreach my $issue ( @$issues ) {
+        display_issue_summary($issue);
     }
     separator();
 }
@@ -275,8 +286,32 @@ sub check_paths {
     }
 }
 
+sub get_all_issues {
+    my @issues;
+    my @filenames = <issues/*.yaml>;
+    foreach my $filename ( sort @filenames ) {
+        push @issues, CIL::Issue->new_load_issue( basename($filename, '.yaml') );
+    }
+    @issues = sort { $a->Inserted cmp $b->Inserted } @issues;
+    return \@issues;
+}
+
 ## ----------------------------------------------------------------------------
 # input/output
+
+sub display_issue_summary {
+    my ($issue) = @_;
+
+    my $msg = $issue->Name;
+    $msg .= "\t";
+    $msg .= $issue->Status;
+    $msg .= "\t";
+    $msg .= $issue->CreatedBy;
+    $msg .= "\t";
+    $msg .= $issue->Summary;
+
+    msg($msg);
+}
 
 sub display_issue_short {
     my ($issue) = @_;
