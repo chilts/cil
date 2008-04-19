@@ -7,7 +7,7 @@ use Carp;
 use DateTime;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(Description CreatedBy Inserted Updated));
+__PACKAGE__->mk_accessors(qw(CreatedBy Inserted Updated Description));
 
 # override Class::Accessor's set
 sub set {

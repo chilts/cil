@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Data::Dumper;
 use CIL::Issue;
+use CIL::Comment;
 use Term::CallEditor;
 use File::Touch;
 use File::Glob ':glob';
@@ -16,15 +17,23 @@ my $COMMANDS = {
     add     => 1,
     show    => 1,
     edit    => 1,
+    comment => 1,
 };
 
 my $new_issue_text = <<"EOF";
 [Issue]
-
 Summary     =
 Status      =New
 CreatedBy   =$ENV{GIT_AUTHOR_NAME} <$ENV{GIT_AUTHOR_EMAIL}>
 Labels      =
+Description = <<END_OF_DESCRIPTION
+
+END_OF_DESCRIPTION
+EOF
+
+my $add_comment_text = <<"EOF";
+[Comment]
+CreatedBy   = $ENV{GIT_AUTHOR_NAME} <$ENV{GIT_AUTHOR_EMAIL}>
 Description = <<END_OF_DESCRIPTION
 
 END_OF_DESCRIPTION
@@ -60,6 +69,10 @@ EOF
     elsif ( $command eq 'edit' ) {
         my ($issue_name) = @ARGV;
         edit($issue_name);
+    }
+    elsif ( $command eq 'comment' ) {
+        my ($issue_name) = @ARGV;
+        comment($issue_name);
     }
 
     else {
@@ -196,7 +209,7 @@ EOF
         fatal("couldn't parse issue: $@");
     }
     unless ( defined $issue_edited ) {
-        fatal("couldn't parse issue (program error)");
+        fatal("couldn't create issue (program error)");
     }
 
     # for the fields we're interested in, set them
@@ -209,6 +222,48 @@ EOF
     else {
         msg('Issue not changed');
     }
+}
+
+sub comment {
+    my ($issue_name) = @_;
+
+    my $issue = CIL::Issue->new_load_issue($issue_name);
+    unless ( defined $issue ) {
+        fatal("Couldn't load issue '$issue'");
+    }
+
+    # read in the new issue text
+    my $fh = solicit( $add_comment_text );
+
+    my $cfg;
+    eval {
+        $cfg = Config::IniFiles->new( -file => $fh );
+    };
+    if ( $@ ) {
+        fatal("couldn't parse comment: $@");
+    }
+
+    unless ( defined $cfg ) {
+        fatal("not a valid inifile");
+    }
+
+    my $comment = CIL::Comment->new();
+    foreach my $field ( qw(CreatedBy Description) ) {
+        # modify the data directly, otherwise Updated will kick in
+        my $value = $cfg->val( 'Comment', $field );
+        next unless defined $value;
+
+        $value =~ s/^\s*//;
+        $value =~ s/\s*$//;
+        $comment->set_no_update($field, $value);
+    }
+
+    # tell the comment when it was inserted
+    $comment->inserted;
+
+    # add the comment to the issue, update it's timestamp and save it out
+    $issue->add_comment( $comment );
+    $issue->save();
 }
 
 ## ----------------------------------------------------------------------------
@@ -249,8 +304,15 @@ sub display_issue_full {
     field( 'Labels', $issue->Labels() );
     separator();
     text('Description', $issue->Description());
-    separator();
-    title('Comments');
+    my $comments = $issue->comments();
+    foreach my $comment ( @$comments ) {
+        separator();
+        title('Comment');
+        field( 'CreatedBy', $comment->CreatedBy() );
+        field( 'Inserted', $comment->Inserted() );
+        field( 'Updated', $comment->Inserted() );
+        text('Description', $comment->Description());
+    }
     separator();
 }
 

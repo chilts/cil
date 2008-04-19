@@ -38,23 +38,25 @@ sub new_load_issue {
         croak "filename '$filename' does no exist";
     }
 
+    my $data = LoadFile( $filename );
+
     my $issue = CIL::Issue->new();
-    $issue->{data} = LoadFile( $filename );
-    return $issue;
 
-    my $cfg = Config::IniFiles->new( -file => $filename );
-    unless ( defined $cfg ) {
-        croak("not a valid inifile");
-    }
-
-    # my $issue = CIL::Issue->new();
+    # do the issue
     foreach my $field ( qw(Summary Name Description CreatedBy Status Labels Inserted Updated) ) {
         # modify the data directly, otherwise Updated will kick in
-        $issue->{data}{$field} = $cfg->val( 'Issue', $field );
+        $issue->{data}{$field} = $data->{$field};
     }
-    $issue->{data}{Comments}    = [];
 
-    # set the issue Name
+    # now the comments
+    foreach my $c ( @{$data->{comments}} ) {
+        my $comment = CIL::Comment->new();
+        foreach my $field ( qw(CreatedBy Inserted Updated Description) ) {
+            # modify the data directly, otherwise Updated will kick in
+            $comment->set_no_update($field, $c->{$field});
+        }
+        push @{$issue->{comments}}, $comment;
+    }
     $issue->{data}{Name} = $name;
 
     return $issue;
@@ -84,11 +86,30 @@ sub new_parse_issue {
     return $issue;
 }
 
+sub comments {
+    my ($self) = @_;
+    return $self->{comments};
+}
+
+sub add_comment {
+    my ($self, $comment) = @_;
+
+    croak "can only add comments of type CIL::Comment"
+        unless ref $comment eq 'CIL::Comment';
+
+    push @{$self->{comments}}, $comment;
+}
+
 sub save {
     my ($self) = @_;
     my $name = $self->Name;
     my $filename = "issues/$name.yaml";
-    DumpFile($filename, $self->{data});
+    my $data = {};
+    %$data = ( %{$self->{data}});
+    foreach my $comment ( @{$self->{comments}} ) {
+        push @{$data->{comments}}, $comment->{data};
+    }
+    DumpFile($filename, $data);
 }
 
 sub reset {
@@ -97,13 +118,6 @@ sub reset {
     foreach my $field ( @FIELDS ) {
         delete $self->{$field};
     }
-}
-
-sub add_comment {
-    my ($self, $comment_h) = @_;
-
-    my $comment = CIL::Comment->new($comment_h);
-
 }
 
 ## ----------------------------------------------------------------------------
