@@ -44,6 +44,7 @@ my $new_issue_text = <<"EOF";
 Summary     =
 Status      =New
 CreatedBy   =$gan <$gae>
+AssignedTo  =$gan <$gae>
 Labels      =
 Description = <<END_OF_DESCRIPTION
 
@@ -218,6 +219,7 @@ sub edit {
     my $summary     = $issue->Summary;
     my $status      = $issue->Status;
     my $created_by  = $issue->CreatedBy;
+    my $assigned_to = $issue->AssignedTo;
     my $labels      = $issue->Labels;
     my $description = $issue->Description;
 
@@ -228,6 +230,7 @@ sub edit {
 Summary     = $summary
 Status      = $status
 CreatedBy   = $created_by
+AssignedTo  = $assigned_to
 Labels      = $labels
 Description = <<END_OF_DESCRIPTION
 $description
@@ -249,7 +252,7 @@ EOF
     }
 
     # for the fields we're interested in, set them
-    foreach my $field ( qw(Summary Status CreatedBy Labels Description) ) {
+    foreach my $field ( qw(Summary Status CreatedBy AssignedTo Labels Description) ) {
         $issue->$field( $issue_edited->$field() );
     }
     if ( $issue->changed ) {
@@ -331,7 +334,7 @@ sub display_issue_summary {
     $msg .= "\t";
     $msg .= $issue->Status;
     $msg .= "\t";
-    $msg .= $issue->CreatedBy;
+    $msg .= $issue->AssignedTo;
     $msg .= "\t";
     $msg .= $issue->Summary;
 
@@ -345,6 +348,7 @@ sub display_issue_short {
     field( 'Summary', $issue->Summary() );
     field( 'Name', $issue->Name() );
     field( 'CreatedBy', $issue->CreatedBy() );
+    field( 'AssignedTo', $issue->AssignedTo() );
     field( 'Inserted', $issue->Inserted() );
     field( 'Status', $issue->Status() );
     field( 'Labels', $issue->Labels() );
@@ -359,6 +363,7 @@ sub display_issue_full {
     field( 'Name', $issue->Name() );
     field( 'Status', $issue->Status() );
     field( 'CreatedBy', $issue->CreatedBy() );
+    field( 'AssignedTo', $issue->AssignedTo() );
     field( 'Inserted', $issue->Inserted() );
     field( 'Updated', $issue->Inserted() );
     field( 'Labels', $issue->Labels() );

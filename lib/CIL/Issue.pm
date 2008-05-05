@@ -29,9 +29,9 @@ use Config::IniFiles;
 use YAML qw(LoadFile DumpFile);
 
 use base qw(CIL::Base);
-__PACKAGE__->mk_accessors(qw(Name Summary Status Labels Comments));
+__PACKAGE__->mk_accessors(qw(Name Summary AssignedTo Status Labels Comments));
 
-my @FIELDS = ( qw(Name Summary Description CreatedBy Status Labels Comments) );
+my @FIELDS = ( qw(Name Summary Description CreatedBy AssignedTo Status Labels Comments) );
 
 ## ----------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ sub new_load_issue {
     my $issue = CIL::Issue->new();
 
     # do the issue
-    foreach my $field ( qw(Summary Name Description CreatedBy Status Labels Inserted Updated) ) {
+    foreach my $field ( qw(Summary Name Description CreatedBy AssignedTo Status Labels Inserted Updated) ) {
         # modify the data directly, otherwise Updated will kick in
         $issue->{data}{$field} = $data->{$field};
     }
@@ -93,7 +93,7 @@ sub new_parse_issue {
     }
 
     my $issue = CIL::Issue->new();
-    foreach my $field ( qw(Summary Name Description CreatedBy Status Labels Inserted Updated) ) {
+    foreach my $field ( qw(Summary Name Description CreatedBy AssignedTo Status Labels Inserted Updated) ) {
         # modify the data directly, otherwise Updated will kick in
         my $value = $cfg->val( 'Issue', $field );
         next unless defined $value;
