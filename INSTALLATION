@@ -44,3 +44,20 @@ The quickest method is to do the following:
 See http://kapiti.geek.nz/software/cil.html for some further instructions.
 
 ===============================================================================
+
+Debian Packaging
+----------------
+
+When inside the main cil directory, you can type the following to create a
+Debian paackage:
+
+ $ fakeroot dpkg-buildpackage -tc -us -uc
+
+which can then be installed with:
+
+ $ sudo dpkg -i 
+
+or added to a repository you are using for easier installation with apt-get or
+aptitude.
+
+===============================================================================
