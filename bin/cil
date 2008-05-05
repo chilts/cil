@@ -87,10 +87,12 @@ EOF
     }
     elsif ( $command eq 'add' ) {
         add();
+
     }
     elsif ( $command eq 'edit' ) {
         my ($issue_name) = @ARGV;
         edit($issue_name);
+
     }
     elsif ( $command eq 'comment' ) {
         my ($issue_name) = @ARGV;
