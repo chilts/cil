@@ -30,10 +30,17 @@ and install the newly created package.
 
 ===============================================================================
 
-Debian Packages
----------------
+Running 'cil'
+-------------
 
-Soon I will have packages in my repository on kapiti.geek.nz. Please come back
-later :-)
+The quickest method is to do the following:
+
+ $ cd /path/to/cil/lib
+ $ export PERL5LIB=`pwd`
+ $ cd /path/to/somewhere/in/your/path
+ $ ln -s /path/to/cil/bin/cil
+ $ cil init
+
+See http://kapiti.geek.nz/software/cil.html for some further instructions.
 
 ===============================================================================
