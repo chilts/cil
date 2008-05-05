@@ -146,11 +146,16 @@ sub list {
 
     # find all the issues
     my $issues = get_all_issues();
-    separator();
-    foreach my $issue ( @$issues ) {
-        display_issue_short($issue);
+    if ( @$issues ) {
+        separator();
+        foreach my $issue ( @$issues ) {
+            display_issue_short($issue);
+        }
+        separator();
     }
-    separator();
+    else {
+        msg('no issues found');
+    }
 }
 
 sub summary {
