@@ -19,7 +19,6 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 use CIL::Issue;
 use CIL::Comment;
 use Term::CallEditor;
@@ -37,11 +36,14 @@ my $COMMANDS = {
     comment => 1,
 };
 
+my $gan = $ENV{GIT_AUTHOR_NAME} || 'Your Name';
+my $gae = $ENV{GIT_AUTHOR_EMAIL} || 'you@example.org';
+
 my $new_issue_text = <<"EOF";
 [Issue]
 Summary     =
 Status      =New
-CreatedBy   =$ENV{GIT_AUTHOR_NAME} <$ENV{GIT_AUTHOR_EMAIL}>
+CreatedBy   =$gan <$gae>
 Labels      =
 Description = <<END_OF_DESCRIPTION
 
@@ -50,7 +52,7 @@ EOF
 
 my $add_comment_text = <<"EOF";
 [Comment]
-CreatedBy   = $ENV{GIT_AUTHOR_NAME} <$ENV{GIT_AUTHOR_EMAIL}>
+CreatedBy   = $gan <$gae>
 Description = <<END_OF_DESCRIPTION
 
 END_OF_DESCRIPTION
