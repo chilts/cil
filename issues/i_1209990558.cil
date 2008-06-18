@@ -1,0 +1,30 @@
+Name: 1209990558
+Summary: Options for issues names needs to be added
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 1209990558
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Updated: 1209990799
+Label: against-v0.1
+Label: priority-low
+Label: type-enhancement
+
+When issues are created, they are given the epoch as it's name.
+Instead of just using the epoch, the user should be able to configure
+the .cil file to use the format of their choice.
+
+e.g. issue_name_format=[ epoch | inc | iso-8601 ]
+
+Possible name formats include:
+
+* an incrementing number
+  * but if cil goes distributed (which was originally planned), will
+    this work?
+
+* ISO 8601 - YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
+  * do we need to have TZD on the end (though obviously this wouldn't
+    then be ISO 8601)
+
+* GUID/UUID like 9e28b50a-cba1-4b20-9276-d30ee727b14a
+
+(and maybe others)

@@ -1,0 +1,16 @@
+Name: 1209991618
+Summary: Do checking on input fields after adding or editing issue
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 1209991618
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Updated: 1209991718
+Label: against-v0.1
+Label: priority-medium
+Label: type-enhancement
+
+For example, if there is a config item in .cil called
+'allowed_statuses', all input values in the 'Status' field should be
+checked against it.
+
+This could also be done for Labels too.

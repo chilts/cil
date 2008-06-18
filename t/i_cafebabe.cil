@@ -1,0 +1,13 @@
+Summary: Addition of a 'attach' command
+Status: New
+CreatedBy: A N Other <a.n.other@example.org>
+AssignedTo: A Name <aname@example.com>
+Label: against-v0.1
+Label: priority-medium
+Label: type-enhancement
+Inserted: 2008-06-15 18:22:01
+Updated: 2008-06-15 23:15:27
+
+'cil' currently has no way of adding attachments to issues.
+  
+This should be added so that the actual data cil stores is complete.

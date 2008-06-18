@@ -24,91 +24,99 @@ package CIL::Issue;
 use strict;
 use warnings;
 use Carp;
-use Data::Dumper;
 use Config::IniFiles;
 use YAML qw(LoadFile DumpFile);
 
-use base qw(CIL::Base);
-__PACKAGE__->mk_accessors(qw(Name Summary AssignedTo Status Labels Comments));
+use CIL::Utils;
 
-my @FIELDS = ( qw(Name Summary Description CreatedBy AssignedTo Status Labels Comments) );
+use base qw(CIL::Base);
+__PACKAGE__->mk_accessors(qw(Summary Status AssignedTo Label Comment Attachment));
+
+my @FIELDS = ( qw(Summary Status CreatedBy AssignedTo Label Comment Attachment Inserted Updated Description) );
 
 ## ----------------------------------------------------------------------------
 
 sub new {
-    my ($proto) = @_;
+    my ($proto, $name) = @_;
+
+    croak 'please provide an issue name'
+        unless defined $name;
+
     my $class = ref $proto || $proto;
     my $self = {};
-    $self->{data}    = {};
-    $self->{Changed} = 0;
     bless $self, $class;
-    $self->inserted;
+
+    $self->set_name( $name );
+    $self->{data}    = {
+        Summary    => '',
+        Status     => '',
+        CreatedBy  => '',
+        AssignedTo => '',
+        Label      => [],
+        Comment    => [],
+        Attachment => [],
+    };
+    $self->{Changed} = 0;
+
+    $self->flag_inserted;
+
     return $self;
 }
 
-sub new_load_issue {
-    my ($class, $name) = @_;
+sub new_from_data {
+    my ($class, $name, $data) = @_;
 
-    unless ( defined $name ) {
-        croak "provide an issue name to load";
-    }
+    croak 'please provide an issue name'
+        unless defined $name;
 
-    my $filename = "issues/$name.yaml";
-    unless ( -f $filename ) {
-        croak "filename '$filename' does no exist";
-    }
+    # ToDo: check we have all the other correct fields
 
-    my $data = LoadFile( $filename );
+    # create the issue
+    my $self = $class->new( $name );
 
-    my $issue = CIL::Issue->new();
+    # save each field
+    foreach my $field ( @FIELDS ) {
+        next unless defined $data->{$field};
 
-    # do the issue
-    foreach my $field ( qw(Summary Name Description CreatedBy AssignedTo Status Labels Inserted Updated) ) {
         # modify the data directly, otherwise Updated will kick in
-        $issue->{data}{$field} = $data->{$field};
+        $self->set_no_update($field, $data->{$field});
     }
+    $self->set_no_update('Changed', 0);
 
-    # now the comments
-    foreach my $c ( @{$data->{comments}} ) {
-        my $comment = CIL::Comment->new();
-        foreach my $field ( qw(CreatedBy Inserted Updated Description) ) {
-            # modify the data directly, otherwise Updated will kick in
-            $comment->set_no_update($field, $c->{$field});
-        }
-        push @{$issue->{comments}}, $comment;
-    }
-    $issue->{data}{Name} = $name;
-
-    return $issue;
+    return $self;
 }
 
-sub new_parse_issue {
-    my ($class, $file) = @_;
+sub new_from_fh {
+    my ($class, $name, $fh) = @_;
 
-    # $file may be a string ($filename) or a file handle ($fh)
-    my $cfg = Config::IniFiles->new( -file => $file );
+    croak 'please provide an issue name'
+        unless defined $name;
 
-    unless ( defined $cfg ) {
-        croak("not a valid inifile");
-    }
-
-    my $issue = CIL::Issue->new();
-    foreach my $field ( qw(Summary Name Description CreatedBy AssignedTo Status Labels Inserted Updated) ) {
-        # modify the data directly, otherwise Updated will kick in
-        my $value = $cfg->val( 'Issue', $field );
-        next unless defined $value;
-
-        $value =~ s/^\s*//;
-        $value =~ s/\s*$//;
-        $issue->set_no_update($field, $value);
-    }
-    $issue->set_no_update('Comments', []);
-    return $issue;
+    my $data = CIL::Utils->parse_from_fh( $fh, 'Description' );
+    return $class->new_from_data( $name, $data );
 }
 
-sub comments {
+sub set_name {
+    my ($self, $name) = @_;
+
+    croak 'provide a name'
+        unless defined $name;
+
+    $self->{name} = $name;
+}
+
+sub name {
     my ($self) = @_;
-    return $self->{comments};
+    return $self->{name};
+}
+
+sub add_label {
+    my ($self, $label) = @_;
+
+    croak 'provide a label when adding one'
+        unless defined $label;
+
+    push @{$self->{data}{Label}}, $label;
 }
 
 sub add_comment {
@@ -117,27 +125,39 @@ sub add_comment {
     croak "can only add comments of type CIL::Comment"
         unless ref $comment eq 'CIL::Comment';
 
-    push @{$self->{comments}}, $comment;
+    push @{$self->{data}{Comment}}, $comment->name;
+}
+
+sub add_attachment {
+    my ($self, $attachment) = @_;
+
+    croak "can only add comments of type CIL::Attachment"
+        unless ref $attachment eq 'CIL::Attachment';
+
+    push @{$self->{data}{Attachment}}, $attachment->name;
+}
+
+sub load {
+    my ($class, $name) = @_;
+
+    croak 'provide an issue name to load'
+        unless defined $name;
+
+    my $filename = "issues/$name.cil";
+
+    croak "filename '$filename' does no exist"
+        unless -f $filename;
+
+    my $data = CIL::Utils->parse_cil_file($filename, 'Description');
+    my $issue = CIL::Issue->new_from_data( $name, $data );
+    return $issue;
 }
 
 sub save {
     my ($self) = @_;
-    my $name = $self->Name;
-    my $filename = "issues/$name.yaml";
-    my $data = {};
-    %$data = ( %{$self->{data}});
-    foreach my $comment ( @{$self->{comments}} ) {
-        push @{$data->{comments}}, $comment->{data};
-    }
-    DumpFile($filename, $data);
-}
-
-sub reset {
-    my ($self) = @_;
-
-    foreach my $field ( @FIELDS ) {
-        delete $self->{$field};
-    }
+    my $name = $self->name;
+    my $filename = "issues/i_$name.cil";
+    CIL::Utils->write_cil_file( $filename, $self->{data}, @FIELDS );
 }
 
 ## ----------------------------------------------------------------------------

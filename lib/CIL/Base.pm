@@ -29,53 +29,56 @@ use DateTime;
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(CreatedBy Inserted Updated Description));
 
+# override Class::Accessor's get
+sub get {
+    my ($self, $field) = @_;
+    croak "provide a field name"
+        unless defined $field;
+    $self->{data}{$field};
+}
+
 # override Class::Accessor's set
 sub set {
-    my ($self, $key, $value) = @_;
-    croak "provide a key name" unless defined $key;
+    my ($self, $field, $value) = @_;
+    croak "provide a field name"
+        unless defined $field;
 
-    my $orig = $self->get($key);
+    my $orig = $self->get($field);
 
-    # get out if both are defined and they're the same
+    # finish if both are defined and they're the same
     if ( defined $orig and defined $value ) {
         return if $orig eq $value
     }
 
-    # get out if neither are defined
-    if ( !defined $orig and !defined $value ) {
-        return;
-    }
+    # finish if neither are defined
+    return unless ( defined $orig or defined $value );
 
-    # since we're actually changing the key, say we updated something
-    $self->{data}{$key} = $value;
-    $self->updated;
+    # since we're actually changing the field, say we updated something
+    $self->{data}{$field} = $value;
+    $self->set_updated;
 }
 
+# so that we can update fields without 'Updated' being changed
 sub set_no_update {
-    my ($self, $key, $value) = @_;
-    croak "provide a key name" unless defined $key;
-    $self->{data}{$key} = $value;
+    my ($self, $field, $value) = @_;
+    croak "provide a field name"
+        unless defined $field;
+    $self->{data}{$field} = $value;
 }
 
-# override Class::Accessor's get
-sub get {
-    my ($self, $key) = @_;
-    $self->{data}{$key};
-}
-
-sub inserted {
+sub flag_inserted {
     my ($self) = @_;
-    my $time = time;
+    my $time = DateTime->now;
     $self->{data}{Inserted} = $time;
     $self->{data}{Updated} = $time;
-    $self->{Changed} = '1';
+    $self->{Changed} = 1;
 }
 
-sub updated {
+sub flag_as_updated {
     my ($self) = @_;
-    my $time = time;
+    my $time = DateTime->now;
     $self->{data}{Updated} = $time;
-    $self->{Changed} = '1';
+    $self->{Changed} = 1;
 }
 
 sub changed {
