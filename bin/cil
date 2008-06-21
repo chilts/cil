@@ -193,7 +193,7 @@ sub show {
     # firstly, read the issue in
     my $issue = CIL::Issue->new_from_name($cil, $issue_name);
     unless ( defined $issue ) {
-        fatal("Couldn't load issue '$issue'");
+        fatal("Couldn't load issue '$issue_name'");
     }
     display_issue_full($cil, $issue);
 }
@@ -218,7 +218,7 @@ sub edit {
 
     my $issue = CIL::Issue->new_from_name($cil, $issue_name);
     unless ( defined $issue ) {
-        fatal("Couldn't load issue '$issue'");
+        fatal("Couldn't load issue '$issue_name'");
     }
 
     # create the ini file, then edit it
@@ -241,7 +241,7 @@ sub comment {
 
     my $issue = CIL::Issue->new_from_name($cil, $issue_name);
     unless ( defined $issue ) {
-        fatal("couldn't load issue '$issue'");
+        fatal("couldn't load issue '$issue_name'");
     }
 
     # read in the new issue text
