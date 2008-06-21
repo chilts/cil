@@ -71,17 +71,20 @@ sub parse_from_lines {
     return $data;
 }
 
-sub write_cil_file {
-    my ($class, $filename, $data, @fields) = @_;
+sub format_data_as_output {
+    my ($class, $data, @fields) = @_;
 
+    # we format the last field differently, so pop it off now
     my $last_field = pop @fields;
 
     my @lines;
-
     foreach my $field ( @fields ) {
         next if $field eq $last_field;
 
         if ( ref $data->{$field} eq 'ARRAY' ) {
+            # don't output this field if there is nothing in it
+            next unless @{$data->{$field}};
+
             foreach ( sort @{$data->{$field}} ) {
                 push @lines, "$field: $_\n";
             }
@@ -91,10 +94,21 @@ sub write_cil_file {
         }
     }
 
+    # finally, output the last field on it's own
     push @lines, "\n";
     push @lines, $data->{$last_field}, "\n";
 
-    write_file($filename, \@lines);
+    return \@lines;
+}
+
+sub write_cil_file {
+    my ($class, $filename, $data, @fields) = @_;
+
+    # get the output format
+    my $lines = $class->format_data_as_output($data, @fields);
+
+    # ... and save
+    write_file($filename, $lines);
 }
 
 ## ----------------------------------------------------------------------------

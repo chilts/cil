@@ -20,11 +20,14 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
+
 use Digest::MD5 qw(md5_hex);
 use File::Touch;
 use File::Glob ':glob';
 use File::Basename;
 use Term::CallEditor qw(solicit);
+use CIL;
 use CIL::Issue;
 use CIL::Comment;
 
@@ -146,7 +149,7 @@ sub list {
     check_paths();
 
     # find all the issues
-    my $issues = get_all_issues();
+    my $issues = CIL->instance->get_issues();
     if ( @$issues ) {
         separator();
         foreach my $issue ( @$issues ) {
@@ -163,20 +166,24 @@ sub summary {
     check_paths();
 
     # find all the issues
-    my $issues = get_all_issues();
-    separator();
-    title('Summary');
-    foreach my $issue ( @$issues ) {
-        display_issue_summary($issue);
+    my $issues = CIL->instance->get_issues();
+    if ( @$issues ) {
+        separator();
+        foreach my $issue ( @$issues ) {
+            display_issue_summary($issue);
+        }
+        separator();
     }
-    separator();
+    else {
+        msg('no issues found');
+    }
 }
 
 sub show {
     my ($issue_name) = @_;
 
     # firstly, read the issue in
-    my $issue = CIL::Issue->new_load_issue($issue_name);
+    my $issue = CIL::Issue->load($issue_name);
     unless ( defined $issue ) {
         fatal("Couldn't load issue '$issue'");
     }
@@ -201,38 +208,20 @@ sub add {
 sub edit {
     my ($issue_name) = @_;
 
-    my $issue = CIL::Issue->new_load_issue($issue_name);
+    my $issue = CIL::Issue->load($issue_name);
     unless ( defined $issue ) {
         fatal("Couldn't load issue '$issue'");
     }
 
-    my $summary     = $issue->Summary;
-    my $status      = $issue->Status;
-    my $created_by  = $issue->CreatedBy;
-    my $assigned_to = $issue->AssignedTo;
-    my $label       = $issue->Label;
-    my $description = $issue->Description;
-
     # create the ini file, then edit it
-    my $edit_issue_text = <<"EOF";
-[Issue]
-
-Summary     = $summary
-Status      = $status
-CreatedBy   = $created_by
-AssignedTo  = $assigned_to
-Label       = $label
-Description = <<END_OF_DESCRIPTION
-$description
-END_OF_DESCRIPTION
-EOF
+    my $edit_issue_text = $issue->as_output;
 
     # read in the new issue text
-    my $fh = solicit( $edit_issue_text );
+    my $fh = solicit( join('', @$edit_issue_text) );
 
     my $issue_edited;
     eval {
-        $issue_edited = CIL::Issue->new_parse_issue( $fh );
+        $issue_edited = CIL::Issue->new_from_fh( $issue->name, $fh );
     };
     if ( $@ ) {
         fatal("couldn't parse issue: $@");
@@ -241,16 +230,8 @@ EOF
         fatal("couldn't create issue (program error)");
     }
 
-    # for the fields we're interested in, set them
-    foreach my $field ( qw(Summary Status CreatedBy AssignedTo Labels Description) ) {
-        $issue->$field( $issue_edited->$field() );
-    }
-    if ( $issue->changed ) {
-        $issue->save();
-    }
-    else {
-        msg('Issue not changed');
-    }
+    $issue_edited->save();
+    display_issue_full( $issue_edited );
 }
 
 sub comment {
@@ -320,11 +301,9 @@ sub get_all_issues {
 sub display_issue_summary {
     my ($issue) = @_;
 
-    my $msg = $issue->Name;
+    my $msg = $issue->name;
     $msg .= "\t";
     $msg .= $issue->Status;
-    $msg .= "\t";
-    $msg .= $issue->AssignedTo;
     $msg .= "\t";
     $msg .= $issue->Summary;
 
@@ -334,28 +313,32 @@ sub display_issue_summary {
 sub display_issue_short {
     my ($issue) = @_;
 
-    title( "Issue " . $issue->Name );
+    title( "Issue " . $issue->name );
     field( 'Summary', $issue->Summary() );
-    field( 'Name', $issue->Name() );
     field( 'CreatedBy', $issue->CreatedBy() );
     field( 'AssignedTo', $issue->AssignedTo() );
     field( 'Inserted', $issue->Inserted() );
     field( 'Status', $issue->Status() );
-    field( 'Labels', $issue->Labels() );
+    field( 'Labels', join(' ', @{$issue->Label()}) );
 }
 
 sub display_issue_full {
     my ($issue) = @_;
 
     separator();
-    title('Issue: ' . $issue->name);
+    title('Issue ' . $issue->name);
     field( 'Summary', $issue->Summary() );
     field( 'Status', $issue->Status() );
     field( 'CreatedBy', $issue->CreatedBy() );
     field( 'AssignedTo', $issue->AssignedTo() );
     field( 'Inserted', $issue->Inserted() );
     field( 'Updated', $issue->Inserted() );
-    field( 'Label', $issue->Label() );
+    field( 'Label', $_ )
+        foreach sort @{$issue->Label()};
+    field( 'Comment', $_ )
+        foreach sort @{$issue->Comment()};
+    field( 'Attachment', $_ )
+        foreach sort @{$issue->Attachment()};
     separator();
     text('Description', $issue->Description());
     separator();

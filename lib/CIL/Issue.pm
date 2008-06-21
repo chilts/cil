@@ -27,12 +27,20 @@ use Carp;
 use Config::IniFiles;
 use YAML qw(LoadFile DumpFile);
 
+use CIL;
 use CIL::Utils;
 
 use base qw(CIL::Base);
 __PACKAGE__->mk_accessors(qw(Summary Status AssignedTo Label Comment Attachment));
 
 my @FIELDS = ( qw(Summary Status CreatedBy AssignedTo Label Comment Attachment Inserted Updated Description) );
+my $cfg = {
+    array => {
+        Label      => 1,
+        Comment    => 1,
+        Attachment => 1,
+    },
+};
 
 ## ----------------------------------------------------------------------------
 
@@ -77,6 +85,11 @@ sub new_from_data {
     # save each field
     foreach my $field ( @FIELDS ) {
         next unless defined $data->{$field};
+
+        # make it an array if it should be one
+        if ( exists $cfg->{array}{$field} and ref $data->{$field} ne 'ARRAY' ) {
+            $data->{$field} = [ $data->{$field} ];
+        }
 
         # modify the data directly, otherwise Updated will kick in
         $self->set_no_update($field, $data->{$field});
@@ -143,7 +156,7 @@ sub load {
     croak 'provide an issue name to load'
         unless defined $name;
 
-    my $filename = "issues/$name.cil";
+    my $filename = CIL->instance->issue_dir . "/i_$name.cil";
 
     croak "filename '$filename' does no exist"
         unless -f $filename;
@@ -153,10 +166,15 @@ sub load {
     return $issue;
 }
 
+sub as_output {
+    my ($self) = @_;
+    return CIL::Utils->format_data_as_output( $self->{data}, @FIELDS );
+}
+
 sub save {
     my ($self) = @_;
     my $name = $self->name;
-    my $filename = "issues/i_$name.cil";
+    my $filename = CIL->instance->issue_dir . "/i_$name.cil";
     CIL::Utils->write_cil_file( $filename, $self->{data}, @FIELDS );
 }
 
