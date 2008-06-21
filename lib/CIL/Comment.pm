@@ -29,13 +29,6 @@ use base qw(CIL::Base);
 __PACKAGE__->mk_accessors(qw(Issue));
 
 my @FIELDS = ( qw(Issue CreatedBy Inserted Updated Description) );
-my $cfg = {
-    array => {
-        Label      => 1,
-        Comment    => 1,
-        Attachment => 1,
-    },
-};
 
 ## ----------------------------------------------------------------------------
 
@@ -73,7 +66,7 @@ sub fields {
 }
 
 sub array_fields {
-    return $cfg->{array};
+    return {};
 }
 
 ## ----------------------------------------------------------------------------
