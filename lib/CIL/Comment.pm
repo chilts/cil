@@ -51,6 +51,7 @@ sub new {
 
     $self->set_name( $name );
     $self->{data}    = {
+        Issue       => '',
         CreatedBy   => '',
         Inserted    => '',
         Updated     => '',
