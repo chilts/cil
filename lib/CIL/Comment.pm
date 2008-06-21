@@ -27,6 +27,7 @@ use Carp;
 use Config::IniFiles;
 
 use base qw(CIL::Base);
+__PACKAGE__->mk_accessors(qw(Issue));
 
 my @FIELDS = ( qw(Issue CreatedBy Inserted Updated Description) );
 my $cfg = {
