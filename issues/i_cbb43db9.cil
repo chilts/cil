@@ -1,13 +1,12 @@
-Name: 1209990028
 Summary: Addition of a 'attach' command
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
-Inserted: 1209990028
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
-Updated: 1209991365
-Label: against-v0.1
-Label: priority-medium
-Label: type-enhancement
+Label: Priority-Medium
+Label: Release-v0.1
+Label: Type-Enhancement
+Inserted: 2008-05-05T12:20:28
+Updated: 2008-06-21T11:00:02
 
 'cil' currently has no way of adding attachments to issues.
 

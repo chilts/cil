@@ -1,13 +1,14 @@
-Name: 1209990558
 Summary: Options for issues names needs to be added
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
-Inserted: 1209990558
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
-Updated: 1209990799
-Label: against-v0.1
-Label: priority-low
-Label: type-enhancement
+Label: Milestone-v0.2
+Label: Priority-Low
+Label: Release-v0.1
+Label: Type-Enhancement
+Comment: feb65ae7
+Inserted: 2008-05-05T12:33:19
+Updated: 2008-06-21T10:57:47
 
 When issues are created, they are given the epoch as it's name.
 Instead of just using the epoch, the user should be able to configure

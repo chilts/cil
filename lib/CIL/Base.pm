@@ -29,6 +29,84 @@ use DateTime;
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(CreatedBy Inserted Updated Description));
 
+## ----------------------------------------------------------------------------
+
+sub new_from_name {
+    my ($class, $cil, $name) = @_;
+
+    croak 'provide an issue name to load'
+        unless defined $name;
+
+    my $filename = $class->create_filename($cil, $name);
+    croak "filename '$filename' does no exist"
+        unless -f $filename;
+
+    my $data = CIL::Utils->parse_cil_file($filename, 'Description');
+    my $issue = CIL::Issue->new_from_data( $name, $data );
+    return $issue;
+}
+
+sub new_from_data {
+    my ($class, $name, $data) = @_;
+
+    croak 'please provide an issue name'
+        unless defined $name;
+
+    # ToDo: check we have all the other correct fields
+
+    # create the issue
+    my $self = $class->new( $name );
+
+    my $fields = $class->fields();
+    my $array_fields = $class->array_fields();
+
+    # save each field
+    foreach my $field ( @$fields ) {
+        next unless defined $data->{$field};
+
+        # make it an array if it should be one
+        if ( exists $array_fields->{$field} and ref $data->{$field} ne 'ARRAY' ) {
+            $data->{$field} = [ $data->{$field} ];
+        }
+
+        # modify the data directly, otherwise Updated will kick in
+        $self->set_no_update($field, $data->{$field});
+    }
+    $self->set_no_update('Changed', 0);
+
+    return $self;
+}
+
+sub new_from_fh {
+    my ($class, $name, $fh) = @_;
+
+    croak 'please provide name'
+        unless defined $name;
+
+    my $data = CIL::Utils->parse_from_fh( $fh, 'Description' );
+    return $class->new_from_data( $name, $data );
+}
+
+sub save {
+    my ($self, $cil) = @_;
+
+    my $filename = $self->create_filename($cil, $self->name);
+
+    my $fields = $self->fields();
+    CIL::Utils->write_cil_file( $filename, $self->{data}, @$fields );
+}
+
+sub create_filename {
+    my ($class, $cil, $name) = @_;
+
+    # create the filename from it's parts
+    my $prefix    = $class->prefix();
+    my $issue_dir = $cil->issue_dir;
+    my $filename  = "${issue_dir}/${prefix}_${name}.cil";
+
+    return $filename;
+}
+
 # override Class::Accessor's get
 sub get {
     my ($self, $field) = @_;
@@ -55,18 +133,19 @@ sub set {
 
     # since we're actually changing the field, say we updated something
     $self->{data}{$field} = $value;
-    $self->set_updated;
+    $self->set_updated_now;
 }
 
 # so that we can update fields without 'Updated' being changed
 sub set_no_update {
     my ($self, $field, $value) = @_;
-    croak "provide a field name"
-        unless defined $field;
-    $self->{data}{$field} = $value;
+
+    my $saved_update_time = $self->Updated;
+    $self->set( $field, $value );
+    $self->Updated( $saved_update_time );
 }
 
-sub flag_inserted {
+sub set_inserted_now {
     my ($self) = @_;
     my $time = DateTime->now;
     $self->{data}{Inserted} = $time;
@@ -74,16 +153,35 @@ sub flag_inserted {
     $self->{Changed} = 1;
 }
 
-sub flag_as_updated {
+sub set_updated_now {
     my ($self) = @_;
     my $time = DateTime->now;
     $self->{data}{Updated} = $time;
     $self->{Changed} = 1;
 }
 
+sub flag_as_updated {
+    my ($self) = @_;
+    $self->{Changed} = 1;
+}
+
 sub changed {
     my ($self) = @_;
     return $self->{Changed};
+}
+
+sub set_name {
+    my ($self, $name) = @_;
+
+    croak 'provide a name'
+        unless defined $name;
+
+    $self->{name} = $name;
+}
+
+sub name {
+    my ($self) = @_;
+    return $self->{name};
 }
 
 ## ----------------------------------------------------------------------------

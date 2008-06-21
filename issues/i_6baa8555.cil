@@ -1,13 +1,12 @@
-Name: 1209991618
 Summary: Do checking on input fields after adding or editing issue
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
-Inserted: 1209991618
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
-Updated: 1209991718
-Label: against-v0.1
-Label: priority-medium
-Label: type-enhancement
+Label: Priority-Medium
+Label: Release-v0.1
+Label: Type-Enhancement
+Inserted: 2008-05-05T12:46:58
+Updated: 2008-06-21T10:59:52
 
 For example, if there is a config item in .cil called
 'allowed_statuses', all input values in the 'Status' field should be

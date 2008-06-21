@@ -25,7 +25,7 @@ use strict;
 use warnings;
 use File::Glob qw(:glob);
 
-use base qw(Class::Singleton Class::Accessor);
+use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(issue_dir));
 
 my $defaults = {
@@ -34,23 +34,20 @@ my $defaults = {
 
 ## ----------------------------------------------------------------------------
 
-sub _new_instance {
-    my ($proto) = @_;
+sub new {
+    my ($proto, $cfg) = @_;
+
+    $cfg ||= {};
+
     my $class = ref $proto || $proto;
     my $self = bless {}, $class;
+
+    # save the settings for various bits of info
     foreach my $key ( keys %$defaults ) {
-        $self->$key( $defaults->{$key} ); 
+        # if we have been passed it in, use it, else use the default
+        $self->$key( $cfg->{$key} || $defaults->{$key} ); 
     }
     return $self;
-}
-
-sub set_config {
-    my ($self, $config) = @_;
-
-    foreach my $key ( qw(issue_dir) ) {
-        $self->$key( $config->{$key} )
-            if defined $config->{$key};
-    }
 }
 
 sub list_issues {
@@ -77,9 +74,24 @@ sub get_issues {
 
     my @issues;
     foreach my $issue ( @$issue_list ) {
-        push @issues, CIL::Issue->load( $issue->{name} );
+        push @issues, CIL::Issue->new_from_name( $self, $issue->{name} );
     }
     return \@issues;
+}
+
+sub get_comments_for {
+    my ($self, $issue) = @_;
+
+    my @comments;
+    foreach my $comment_name ( @{$issue->Comment} ) {
+        my $comment = CIL::Comment->new_from_name( $self, $comment_name );
+        push @comments, $comment;
+    }
+
+    # sort them in cronological order
+    @comments = sort { $a->Inserted cmp $b->Inserted } @comments;
+
+    return \@comments;
 }
 
 ## ----------------------------------------------------------------------------

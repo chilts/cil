@@ -23,21 +23,56 @@ package CIL::Comment;
 
 use strict;
 use warnings;
+use Carp;
 use Config::IniFiles;
 
 use base qw(CIL::Base);
 
+my @FIELDS = ( qw(Issue CreatedBy Inserted Updated Description) );
+my $cfg = {
+    array => {
+        Label      => 1,
+        Comment    => 1,
+        Attachment => 1,
+    },
+};
+
 ## ----------------------------------------------------------------------------
 
 sub new {
-    my ($proto) = @_;
+    my ($proto, $name) = @_;
+
+    croak 'please provide a comment name'
+        unless defined $name;
+
     my $class = ref $proto || $proto;
     my $self = {};
-    $self->{data}    = {};
-    $self->{Changed} = 0;
     bless $self, $class;
-    $self->inserted;
+
+    $self->set_name( $name );
+    $self->{data}    = {
+        CreatedBy   => '',
+        Inserted    => '',
+        Updated     => '',
+        Description => '',
+    };
+    $self->{Changed} = 0;
+
+    $self->set_inserted_now;
+
     return $self;
+}
+
+sub prefix {
+    return 'c';
+}
+
+sub fields {
+    return \@FIELDS;
+}
+
+sub array_fields {
+    return $cfg->{array};
 }
 
 ## ----------------------------------------------------------------------------

@@ -56,71 +56,34 @@ sub new {
 
     $self->set_name( $name );
     $self->{data}    = {
-        Summary    => '',
-        Status     => '',
-        CreatedBy  => '',
-        AssignedTo => '',
-        Label      => [],
-        Comment    => [],
-        Attachment => [],
+        Summary     => '',
+        Status      => '',
+        CreatedBy   => '',
+        AssignedTo  => '',
+        Inserted    => '',
+        Updated     => '',
+        Label       => [],
+        Comment     => [],
+        Attachment  => [],
+        Description => '',
     };
     $self->{Changed} = 0;
 
-    $self->flag_inserted;
+    $self->set_inserted_now;
 
     return $self;
 }
 
-sub new_from_data {
-    my ($class, $name, $data) = @_;
-
-    croak 'please provide an issue name'
-        unless defined $name;
-
-    # ToDo: check we have all the other correct fields
-
-    # create the issue
-    my $self = $class->new( $name );
-
-    # save each field
-    foreach my $field ( @FIELDS ) {
-        next unless defined $data->{$field};
-
-        # make it an array if it should be one
-        if ( exists $cfg->{array}{$field} and ref $data->{$field} ne 'ARRAY' ) {
-            $data->{$field} = [ $data->{$field} ];
-        }
-
-        # modify the data directly, otherwise Updated will kick in
-        $self->set_no_update($field, $data->{$field});
-    }
-    $self->set_no_update('Changed', 0);
-
-    return $self;
+sub prefix {
+    return 'i';
 }
 
-sub new_from_fh {
-    my ($class, $name, $fh) = @_;
-
-    croak 'please provide an issue name'
-        unless defined $name;
-
-    my $data = CIL::Utils->parse_from_fh( $fh, 'Description' );
-    return $class->new_from_data( $name, $data );
+sub fields {
+    return \@FIELDS;
 }
 
-sub set_name {
-    my ($self, $name) = @_;
-
-    croak 'provide a name'
-        unless defined $name;
-
-    $self->{name} = $name;
-}
-
-sub name {
-    my ($self) = @_;
-    return $self->{name};
+sub array_fields {
+    return $cfg->{array};
 }
 
 sub add_label {
@@ -130,15 +93,19 @@ sub add_label {
         unless defined $label;
 
     push @{$self->{data}{Label}}, $label;
+    $self->flag_as_updated();
 }
 
 sub add_comment {
     my ($self, $comment) = @_;
 
     croak "can only add comments of type CIL::Comment"
-        unless ref $comment eq 'CIL::Comment';
+        unless $comment->isa( 'CIL::Comment' );
 
+    # add the comment name and set this issue's updated time
     push @{$self->{data}{Comment}}, $comment->name;
+    $self->Updated( $comment->Updated );
+    $self->flag_as_updated();
 }
 
 sub add_attachment {
@@ -150,32 +117,14 @@ sub add_attachment {
     push @{$self->{data}{Attachment}}, $attachment->name;
 }
 
-sub load {
-    my ($class, $name) = @_;
-
-    croak 'provide an issue name to load'
-        unless defined $name;
-
-    my $filename = CIL->instance->issue_dir . "/i_$name.cil";
-
-    croak "filename '$filename' does no exist"
-        unless -f $filename;
-
-    my $data = CIL::Utils->parse_cil_file($filename, 'Description');
-    my $issue = CIL::Issue->new_from_data( $name, $data );
-    return $issue;
-}
-
 sub as_output {
     my ($self) = @_;
     return CIL::Utils->format_data_as_output( $self->{data}, @FIELDS );
 }
 
-sub save {
+sub Comments {
     my ($self) = @_;
-    my $name = $self->name;
-    my $filename = CIL->instance->issue_dir . "/i_$name.cil";
-    CIL::Utils->write_cil_file( $filename, $self->{data}, @FIELDS );
+    return $self->{Comment};
 }
 
 ## ----------------------------------------------------------------------------

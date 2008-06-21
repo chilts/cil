@@ -1,0 +1,9 @@
+Issue: 
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-21T10:57:47
+Updated: 2008-06-21T10:57:47
+
+Currently I'm adding the ability for each issue name, comment etc to start with
+the first 8 hex chars of an MD5 string from the data itself. Therefore, the
+main problem with having the epoch and possible duplication goes away. This
+issue can then be given a low priority.

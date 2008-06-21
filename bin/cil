@@ -49,7 +49,7 @@ Summary     :
 Status      : New
 CreatedBy   : $gan <$gae>
 AssignedTo  : $gan <$gae>
-Label       :
+Label       : 
 
 Description...
 EOF
@@ -69,36 +69,40 @@ EOF
         exit 2;
     }
 
+    my $cil = CIL->new();
+
     if ( $command eq 'init' ) {
         my ($path) = @ARGV;
         $path ||= '.';
-        init($path);
+        init($cil, $path);
+
     }
     elsif ( $command eq 'list' ) {
-        list();
+        list($cil);
 
     }
     elsif ( $command eq 'summary' ) {
-        summary();
+        summary($cil);
 
     }
     elsif ( $command eq 'show' ) {
         my ($issue_name) = @ARGV;
-        show($issue_name);
+        show($cil, $issue_name);
 
     }
     elsif ( $command eq 'add' ) {
-        add();
+        add($cil);
 
     }
     elsif ( $command eq 'edit' ) {
         my ($issue_name) = @ARGV;
-        edit($issue_name);
+        edit($cil, $issue_name);
 
     }
     elsif ( $command eq 'comment' ) {
         my ($issue_name) = @ARGV;
-        comment($issue_name);
+        comment($cil, $issue_name);
+
     }
 
     else {
@@ -111,7 +115,7 @@ EOF
 # commands
 
 sub init {
-    my ($path) = @_;
+    my ($cil, $path) = @_;
 
     # error if $path doesn't exist
     unless ( -d $path ) {
@@ -146,14 +150,16 @@ sub init {
 }
 
 sub list {
-    check_paths();
+    my ($cil) = @_;
+
+    check_paths($cil);
 
     # find all the issues
-    my $issues = CIL->instance->get_issues();
+    my $issues = $cil->get_issues();
     if ( @$issues ) {
         separator();
-        foreach my $issue ( @$issues ) {
-            display_issue_short($issue);
+        foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
+            display_issue_headers($cil, $issue);
         }
         separator();
     }
@@ -163,14 +169,16 @@ sub list {
 }
 
 sub summary {
-    check_paths();
+    my ($cil) = @_;
+
+    check_paths($cil);
 
     # find all the issues
-    my $issues = CIL->instance->get_issues();
+    my $issues = $cil->get_issues();
     if ( @$issues ) {
         separator();
         foreach my $issue ( @$issues ) {
-            display_issue_summary($issue);
+            display_issue_summary($cil, $issue);
         }
         separator();
     }
@@ -180,18 +188,18 @@ sub summary {
 }
 
 sub show {
-    my ($issue_name) = @_;
+    my ($cil, $issue_name) = @_;
 
     # firstly, read the issue in
-    my $issue = CIL::Issue->load($issue_name);
+    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
     unless ( defined $issue ) {
         fatal("Couldn't load issue '$issue'");
     }
-    display_issue_full( $issue );
+    display_issue_full($cil, $issue);
 }
 
 sub add {
-    my ($issue_name) = @_;
+    my ($cil, $issue_name) = @_;
 
     # read in the new issue text
     my $fh = solicit( $new_issue_text );
@@ -201,14 +209,14 @@ sub add {
     # we've got the issue, so let's name it
     my $unique_str = $issue->Inserted . $issue->Summary . $issue->Description;
     $issue->set_name( substr(md5_hex($unique_str), 0, 8) );
-    $issue->save();
-    display_issue_full( $issue );
+    $issue->save($cil);
+    display_issue($cil, $issue);
 }
 
 sub edit {
-    my ($issue_name) = @_;
+    my ($cil, $issue_name) = @_;
 
-    my $issue = CIL::Issue->load($issue_name);
+    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
     unless ( defined $issue ) {
         fatal("Couldn't load issue '$issue'");
     }
@@ -219,101 +227,72 @@ sub edit {
     # read in the new issue text
     my $fh = solicit( join('', @$edit_issue_text) );
 
-    my $issue_edited;
-    eval {
-        $issue_edited = CIL::Issue->new_from_fh( $issue->name, $fh );
-    };
-    if ( $@ ) {
-        fatal("couldn't parse issue: $@");
-    }
+    my $issue_edited = CIL::Issue->new_from_fh( $issue->name, $fh );
     unless ( defined $issue_edited ) {
         fatal("couldn't create issue (program error)");
     }
 
-    $issue_edited->save();
-    display_issue_full( $issue_edited );
+    $issue_edited->save($cil);
+    display_issue($cil, $issue_edited);
 }
 
 sub comment {
-    my ($issue_name) = @_;
+    my ($cil, $issue_name) = @_;
 
-    my $issue = CIL::Issue->new_load_issue($issue_name);
+    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
     unless ( defined $issue ) {
-        fatal("Couldn't load issue '$issue'");
+        fatal("couldn't load issue '$issue'");
     }
 
     # read in the new issue text
     my $fh = solicit( $add_comment_text );
 
-    my $cfg;
-    eval {
-        $cfg = Config::IniFiles->new( -file => $fh );
-    };
-    if ( $@ ) {
-        fatal("couldn't parse comment: $@");
+    my $comment = CIL::Comment->new_from_fh( 'tmp', $fh );
+    unless ( defined $comment ) {
+        fatal("could not create new comment");
     }
 
-    unless ( defined $cfg ) {
-        fatal("not a valid inifile");
-    }
-
-    my $comment = CIL::Comment->new();
-    foreach my $field ( qw(CreatedBy Description) ) {
-        # modify the data directly, otherwise Updated will kick in
-        my $value = $cfg->val( 'Comment', $field );
-        next unless defined $value;
-
-        $value =~ s/^\s*//;
-        $value =~ s/\s*$//;
-        $comment->set_no_update($field, $value);
-    }
-
-    # tell the comment when it was inserted
-    $comment->inserted;
+    # we've got the comment, so let's name it
+    my $unique_str = $comment->Inserted . $issue->Description;
+    $comment->set_name( substr(md5_hex($unique_str), 0, 8) );
+    $comment->save($cil);
 
     # add the comment to the issue, update it's timestamp and save it out
     $issue->add_comment( $comment );
-    $issue->save();
+    $issue->save($cil);
+    display_issue_full($cil, $issue);
 }
 
 ## ----------------------------------------------------------------------------
 
 sub check_paths {
-    # make sure an issue directory is available
-    unless ( -d 'issues' ) {
-        fatal("couldn't find 'issues' directory");
-    }
-}
+    my ($cil) = @_;
 
-sub get_all_issues {
-    my @issues;
-    my @filenames = <issues/*.yaml>;
-    foreach my $filename ( sort @filenames ) {
-        push @issues, CIL::Issue->new_load_issue( basename($filename, '.yaml') );
+    # make sure an issue directory is available
+    unless ( -d $cil->issue_dir ) {
+        fatal("couldn't find '" . $cil->issue_dir . "' directory");
     }
-    @issues = sort { $a->Inserted cmp $b->Inserted } @issues;
-    return \@issues;
 }
 
 ## ----------------------------------------------------------------------------
 # input/output
 
 sub display_issue_summary {
-    my ($issue) = @_;
+    my ($cil, $issue) = @_;
 
-    my $msg = $issue->name;
+    my $msg = $issue->name();
     $msg .= "\t";
-    $msg .= $issue->Status;
+    $msg .= $issue->Status();
     $msg .= "\t";
-    $msg .= $issue->Summary;
+    $msg .= $issue->Summary();
 
     msg($msg);
 }
 
-sub display_issue_short {
-    my ($issue) = @_;
+sub display_issue_headers {
+    my ($cil, $issue) = @_;
 
-    title( "Issue " . $issue->name );
+    title( 'Issue ' . $issue->name() );
     field( 'Summary', $issue->Summary() );
     field( 'CreatedBy', $issue->CreatedBy() );
     field( 'AssignedTo', $issue->AssignedTo() );
@@ -322,26 +301,41 @@ sub display_issue_short {
     field( 'Labels', join(' ', @{$issue->Label()}) );
 }
 
-sub display_issue_full {
-    my ($issue) = @_;
+sub display_issue {
+    my ($cil, $issue) = @_;
 
     separator();
-    title('Issue ' . $issue->name);
+    title( 'Issue ' . $issue->name() );
     field( 'Summary', $issue->Summary() );
     field( 'Status', $issue->Status() );
     field( 'CreatedBy', $issue->CreatedBy() );
     field( 'AssignedTo', $issue->AssignedTo() );
-    field( 'Inserted', $issue->Inserted() );
-    field( 'Updated', $issue->Inserted() );
     field( 'Label', $_ )
         foreach sort @{$issue->Label()};
     field( 'Comment', $_ )
         foreach sort @{$issue->Comment()};
     field( 'Attachment', $_ )
         foreach sort @{$issue->Attachment()};
-    separator();
+    field( 'Inserted', $issue->Inserted() );
+    field( 'Updated', $issue->Inserted() );
     text('Description', $issue->Description());
     separator();
+}
+
+sub display_issue_full {
+    my ($cil, $issue) = @_;
+
+    display_issue( $cil, $issue );
+
+    my $comments = $cil->get_comments_for( $issue );
+    foreach my $comment ( @$comments ) {
+        title( 'Comment ' . $comment->name() );
+        field( 'CreatedBy', $comment->CreatedBy() );
+        field( 'Inserted', $comment->Inserted() );
+        field( 'Updated', $comment->Inserted() );
+        text('Description', $comment->Description());
+        separator();
+    }
 }
 
 sub msg {
@@ -369,7 +363,6 @@ sub field {
 
 sub text {
     my ($field, $value) = @_;
-    title($field);
     msg "";
     msg($value);
     msg "";
@@ -401,6 +394,7 @@ Commands:
    list
    show    <issue>
    edit    <issue>
+   comment <issue>
 
 See <http://kapiti.geek.nz/software/cil.html> for further information.
 Report bugs to <andychilton -at- gmail -dot- com>.
