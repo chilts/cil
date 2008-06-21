@@ -42,7 +42,7 @@ sub new_from_name {
         unless -f $filename;
 
     my $data = CIL::Utils->parse_cil_file($filename, 'Description');
-    my $issue = CIL::Issue->new_from_data( $name, $data );
+    my $issue = $class->new_from_data( $name, $data );
     return $issue;
 }
 
