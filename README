@@ -33,10 +33,10 @@ list all the issues by using the 'list' command:
  $ cil list
 
 You can see what the issue name is by looking at the 'Issue' title. Imagine it
-is '1208598003' (which by default is the time from epoch). To see your issue
+is 'cafebabe' (which by default is the time from epoch). To see your issue
 again, use the 'show' command:
 
- $ cil show 1208598003
+ $ cil show cafebabe
 
 Another reporting command is 'summary':
 
@@ -46,27 +46,19 @@ The columns show 'Name', 'Status', 'CreatedBy' and 'Summary'.
 
 Shucks, we've noticed we got something wrong in the issue. Let's edit it:
 
- $ cil edit 1208598003
+ $ cil edit cafebabe
 
 Save your changes and exit your editor. The issue is now saved. Try showing it
 again to make sure your changed are correct.
 
 We have just found out more about the issue so let's add a comment to it:
 
- $ cil comment 1208598003
+ $ cil comment cafebabe
 
 When you show the issue again, you'll see the comment has been added and is now
 displayed.
 
 That's it for now. As you can see, if you've played with any kind of bug/issue
 tracker before, 'cil' is straightforward.
-
-===============================================================================
-
-Future Work
------------
-
-Currently, cil is still young. There are a number of improvements I wish to do
-on it but already it is useable as a small and personal issue tracker.
 
 ===============================================================================
