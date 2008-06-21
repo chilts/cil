@@ -507,3 +507,108 @@ END_USAGE
 }
 
 ## ----------------------------------------------------------------------------
+=head1 NAME
+
+cil - the command-line issue list
+
+=head1 SYNOPSIS
+
+    $ cil init
+    $ cil summary
+    $ cil list
+
+    $ cil add
+    ... added issue 'cafebabe' ...
+    $ cil show cafebabe
+    $ cil edit cafebabe
+
+    $ cil comment cafebabe
+    ... added comment 'deadbeef' ...
+
+    $ cil attach cafebabe filename.txt
+    ... added attachment 'decaf7ea' ...
+    $ cil extract decaf7ea other_filename.txt
+
+=head1 DESCRIPTION
+
+Cil is a small but useful command-line issue list. It saves issues, comments
+and attachments as local files which you can check in to your repository.
+
+=over
+
+=item init
+
+Creates a local '.cil' file and an 'issues' directory.
+
+=item summary
+
+Displays a one line summary for each issue.
+
+=item list
+
+Shows each issue with more information.
+
+=item add
+
+Adds an issues after you have edited the input.
+
+=item show ISSUE
+
+Shows the issue name with more detail.
+
+=item edit ISSUE
+
+Edits the issue. If it changes, set the updates time to now.
+
+=item comment ISSUE
+
+Adds a comment to an issues after you have edited the input.
+
+=item attach ISSUE FILENAME
+
+Adds that particular filename to an existing issue.
+
+=item extract ATTACHMENT [FILENAME]
+
+Extracts the file from the attachment number. If filename if given uses that,
+otherwise it will use the original one saved along with the attachment.
+
+=back
+
+=head1 BUGS
+
+Probably. Let me know :-)
+
+=head1 TODO
+
+There is a number of things to do. High on the list are:
+
+* the ability to set Statuses from the command line
+
+* set where you want your issues (from a .cil file)
+
+* simple search first, proper search and indexing second
+
+=head1 AUTHOR
+
+Andrew Chilton <andychilton@gmail.com>
+
+=head1 COPYRIGHT
+
+Copyright (C) 2008 by Andrew Chilton
+
+cil is free software: you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/> or write to the Free
+Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+02110-1301, USA.
+
+=cut
+## ----------------------------------------------------------------------------
