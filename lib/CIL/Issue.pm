@@ -29,7 +29,9 @@ use CIL;
 use CIL::Utils;
 
 use base qw(CIL::Base);
-__PACKAGE__->mk_accessors(qw(Summary Status AssignedTo Label Comment Attachment));
+
+# fields specific to Issue
+__PACKAGE__->mk_accessors(qw(Summary Status AssignedTo Label Comment Attachment Description));
 
 my @FIELDS = ( qw(Summary Status CreatedBy AssignedTo Label Comment Attachment Inserted Updated Description) );
 my $cfg = {
@@ -84,6 +86,10 @@ sub array_fields {
     return $cfg->{array};
 }
 
+sub last_field {
+    return 'Description';
+}
+
 sub add_label {
     my ($self, $label) = @_;
 
@@ -109,10 +115,13 @@ sub add_comment {
 sub add_attachment {
     my ($self, $attachment) = @_;
 
-    croak "can only add comments of type CIL::Attachment"
-        unless ref $attachment eq 'CIL::Attachment';
+    croak "can only add attachments of type CIL::Attachment"
+        unless $attachment->isa( 'CIL::Attachment' );
 
+    # add the attachment name and set this issue's updated time
     push @{$self->{data}{Attachment}}, $attachment->name;
+    $self->Updated( $attachment->Updated );
+    $self->flag_as_updated();
 }
 
 sub as_output {
@@ -122,7 +131,12 @@ sub as_output {
 
 sub Comments {
     my ($self) = @_;
-    return $self->{Comment};
+    return $self->{data}{Comment};
+}
+
+sub Attachments {
+    my ($self) = @_;
+    return $self->{data}{Attachment};
 }
 
 ## ----------------------------------------------------------------------------

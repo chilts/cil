@@ -26,7 +26,9 @@ use warnings;
 use Carp;
 
 use base qw(CIL::Base);
-__PACKAGE__->mk_accessors(qw(Issue));
+
+# fields specific to Comment
+__PACKAGE__->mk_accessors(qw(Issue Description));
 
 my @FIELDS = ( qw(Issue CreatedBy Inserted Updated Description) );
 
@@ -67,6 +69,10 @@ sub fields {
 
 sub array_fields {
     return {};
+}
+
+sub last_field {
+    return 'Description';
 }
 
 ## ----------------------------------------------------------------------------

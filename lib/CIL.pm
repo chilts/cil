@@ -83,7 +83,7 @@ sub get_comments_for {
     my ($self, $issue) = @_;
 
     my @comments;
-    foreach my $comment_name ( @{$issue->Comment} ) {
+    foreach my $comment_name ( @{$issue->Comments} ) {
         my $comment = CIL::Comment->new_from_name( $self, $comment_name );
         push @comments, $comment;
     }
@@ -92,6 +92,21 @@ sub get_comments_for {
     @comments = sort { $a->Inserted cmp $b->Inserted } @comments;
 
     return \@comments;
+}
+
+sub get_attachments_for {
+    my ($self, $issue) = @_;
+
+    my @attachments;
+    foreach my $attachment_name ( @{$issue->Attachments} ) {
+        my $attachment = CIL::Attachment->new_from_name( $self, $attachment_name );
+        push @attachments, $attachment;
+    }
+
+    # sort them in cronological order
+    @attachments = sort { $a->Inserted cmp $b->Inserted } @attachments;
+
+    return \@attachments;
 }
 
 ## ----------------------------------------------------------------------------

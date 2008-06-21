@@ -27,7 +27,7 @@ use Carp;
 use DateTime;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(CreatedBy Inserted Updated Description));
+__PACKAGE__->mk_accessors(qw(CreatedBy Inserted Updated));
 
 ## ----------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ sub new_from_name {
     croak "filename '$filename' does no exist"
         unless -f $filename;
 
-    my $data = CIL::Utils->parse_cil_file($filename, 'Description');
+    my $data = CIL::Utils->parse_cil_file($filename, $class->last_field);
     my $issue = $class->new_from_data( $name, $data );
     return $issue;
 }
@@ -83,7 +83,7 @@ sub new_from_fh {
     croak 'please provide name'
         unless defined $name;
 
-    my $data = CIL::Utils->parse_from_fh( $fh, 'Description' );
+    my $data = CIL::Utils->parse_from_fh( $fh, $class->last_field );
     return $class->new_from_data( $name, $data );
 }
 

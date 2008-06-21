@@ -26,10 +26,12 @@ use Digest::MD5 qw(md5_hex);
 use File::Touch;
 use File::Glob ':glob';
 use File::Basename;
+use File::Slurp qw(read_file write_file);
 use Term::CallEditor qw(solicit);
 use CIL;
 use CIL::Issue;
 use CIL::Comment;
+use CIL::Attachment;
 
 my $COMMANDS = {
     init    => 1,
@@ -39,6 +41,8 @@ my $COMMANDS = {
     show    => 1,
     edit    => 1,
     comment => 1,
+    attach  => 1,
+    extract => 1,
 };
 
 my $gan = $ENV{GIT_AUTHOR_NAME} || 'Your Name';
@@ -104,6 +108,16 @@ EOF
         comment($cil, $issue_name);
 
     }
+    elsif ( $command eq 'attach' ) {
+        my ($issue_name, $filename) = @ARGV;
+        attach($cil, $issue_name, $filename);
+
+    }
+    elsif ( $command eq 'extract' ) {
+        my ($issue_name, $attachment_name, $filename) = @ARGV;
+        extract($cil, $issue_name, $attachment_name, $filename);
+
+    }
 
     else {
         fatal("program error when trying command '$command'");
@@ -157,8 +171,8 @@ sub list {
     # find all the issues
     my $issues = $cil->get_issues();
     if ( @$issues ) {
-        separator();
         foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
+            separator();
             display_issue_headers($cil, $issue);
         }
         separator();
@@ -266,6 +280,70 @@ sub comment {
     display_issue_full($cil, $issue);
 }
 
+sub attach {
+    my ($cil, $issue_name, $filename) = @_;
+
+    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
+    unless ( defined $issue ) {
+        fatal("couldn't load issue '$issue_name'");
+    }
+
+    # check to see if the file exists
+    unless ( -r $filename ) {
+        fatal("couldn't read file '$filename'");
+    }
+
+    my $basename = basename( $filename );
+
+    my $add_attachment_text = <<"EOF";
+Filename    : $basename
+CreatedBy   : $gan <$gae>
+
+File goes here ... this will be overwritten.
+EOF
+
+    # read in the new issue text
+    my $fh = solicit( $add_attachment_text );
+
+    my $attachment = CIL::Attachment->new_from_fh( 'tmp', $fh );
+    unless ( defined $attachment ) {
+        fatal("could not create new attachment");
+    }
+
+    # now add the file itself
+    my $contents = read_file( $filename );
+    $attachment->set_file_contents( $contents );
+
+    # set the size
+    my ($size) = (stat($filename))[7];
+    $attachment->Size( $size );
+
+    # we've got the attachment, so let's name it
+    my $unique_str = $attachment->Inserted . $attachment->File;
+    $attachment->set_name( substr(md5_hex($unique_str), 0, 8) );
+
+    # finally, tell it who it's parent is and then save
+    $attachment->Issue( $issue->name );
+    $attachment->save($cil);
+
+    # add the comment to the issue, update it's timestamp and save it out
+    $issue->add_attachment( $attachment );
+    $issue->save($cil);
+    display_issue_full($cil, $issue);
+}
+
+sub extract {
+    my ($cil, $attachment_name, $filename) = @_;
+
+    my $attachment = CIL::Attachment->new_from_name($cil, $attachment_name);
+    unless ( defined $attachment ) {
+        fatal("Couldn't load attachment '$attachment_name'");
+    }
+
+    $filename ||= $attachment->Filename();
+    write_file( $filename, $attachment->as_binary );
+}
+
 ## ----------------------------------------------------------------------------
 
 sub check_paths {
@@ -339,7 +417,6 @@ sub display_issue_full {
     field( 'Inserted', $issue->Inserted() );
     field( 'Updated', $issue->Inserted() );
     text('Description', $issue->Description());
-    separator();
 
     my $comments = $cil->get_comments_for( $issue );
     foreach my $comment ( @$comments ) {
@@ -348,8 +425,20 @@ sub display_issue_full {
         field( 'Inserted', $comment->Inserted() );
         field( 'Updated', $comment->Inserted() );
         text('Description', $comment->Description());
-        separator();
     }
+
+    my $attachments = $cil->get_attachments_for( $issue );
+    print Dumper();
+    foreach my $attachment ( @$attachments ) {
+        title( 'Attachment ' . $attachment->name() );
+        field( 'Filename', $attachment->Filename() );
+        field( 'CreatedBy', $attachment->CreatedBy() );
+        field( 'Inserted', $attachment->Inserted() );
+        field( 'Updated', $attachment->Inserted() );
+        msg();
+    }
+
+    separator();
 }
 
 sub msg {
@@ -399,16 +488,18 @@ sub fatal {
 
 sub usage {
    print <<"END_USAGE";
-Usage: $0 <command> [options]
+Usage: $0 COMMAND [options]
 
 Commands:
-   init    <path>
+   init    PATH
    add
    summary
    list
-   show    <issue>
-   edit    <issue>
-   comment <issue>
+   show    ISSUE
+   edit    ISSUE
+   comment ISSUE
+   attach  ISSUE FILENAME
+   extract ATTACHMENT [TO_FILENAME]
 
 See <http://kapiti.geek.nz/software/cil.html> for further information.
 Report bugs to <andychilton -at- gmail -dot- com>.

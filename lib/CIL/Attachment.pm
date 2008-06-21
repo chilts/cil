@@ -23,9 +23,75 @@ package CIL::Attachment;
 
 use strict;
 use warnings;
+use Carp;
 
-use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(filename));
+use MIME::Base64;
+
+use base qw(CIL::Base);
+
+# fields specific to Attachment
+__PACKAGE__->mk_accessors(qw(Issue Filename Size File));
+
+# all fields
+my @FIELDS = ( qw(Issue Filename Size CreatedBy Inserted Updated File) );
+
+## ----------------------------------------------------------------------------
+
+sub new {
+    my ($proto, $name) = @_;
+
+    croak 'please provide an attachment name'
+        unless defined $name;
+
+    my $class = ref $proto || $proto;
+    my $self = {};
+    bless $self, $class;
+
+    $self->set_name( $name );
+    $self->{data}    = {
+        Issue       => '',
+        Filename    => '',
+        Size        => '',
+        CreatedBy   => '',
+        Inserted    => '',
+        Updated     => '',
+        File        => '',
+    };
+    $self->{Changed} = 0;
+
+    $self->set_inserted_now;
+
+    return $self;
+}
+
+sub set_file_contents {
+    my ($self, $contents) = @_;
+
+    # $contents will be binary
+    $self->{data}{File} = encode_base64( $contents );
+}
+
+sub as_binary {
+    my ($self) = @_;
+
+    return decode_base64( $self->{data}{File} );
+}
+
+sub prefix {
+    return 'a';
+}
+
+sub fields {
+    return \@FIELDS;
+}
+
+sub array_fields {
+    return {};
+}
+
+sub last_field {
+    return 'File';
+}
 
 ## ----------------------------------------------------------------------------
 1;
