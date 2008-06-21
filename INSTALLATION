@@ -8,16 +8,13 @@ Perl Modules:
  * File::Touch
  * File::Glob
  * File::Basename
- * YAML
- * Config::IniFiles
+ * MIME::Base64
 
 For Debian Etch, the following packages will need to be installed:
  * perl-code
  * libfile-touch-perl
  * libfile-glob-perl
  * libfile-basename-perl
- * libyaml-perl
- * libconfig-inifiles-perl
 
 Currently, Term::CallEditor is not in Etch and therefore will have to be added
 via other means. If you want to build a package from CPAN try the following:

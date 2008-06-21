@@ -24,7 +24,6 @@ package CIL::Comment;
 use strict;
 use warnings;
 use Carp;
-use Config::IniFiles;
 
 use base qw(CIL::Base);
 __PACKAGE__->mk_accessors(qw(Issue));

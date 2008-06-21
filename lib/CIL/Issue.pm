@@ -24,8 +24,6 @@ package CIL::Issue;
 use strict;
 use warnings;
 use Carp;
-use Config::IniFiles;
-use YAML qw(LoadFile DumpFile);
 
 use CIL;
 use CIL::Utils;
