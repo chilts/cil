@@ -11,7 +11,18 @@
 clean:
 	dh_testdir
 	dh_testroot
+	rm -f build-stamp install-stamp
+	[ ! -f Makefile ] || $(MAKE) clean
+	rm -f $(CURDIR)/cil.1
 	dh_clean
+
+build:	build-stamp
+build-stamp:
+	dh_testdir
+	[ ! -f Makefile ] || $(MAKE)
+	echo Doing MAN...
+	pod2man $(CURDIR)/bin/cil > $(CURDIR)/cil.1
+	touch build-stamp
 
 binary:
 	dh_testdir
@@ -37,6 +48,6 @@ binary-arch:
 
 binary:	binary-indep binary-arch
 
-.PHONY:	clean build install binary-indep binary-arch binary
+.PHONY:	clean install binary-indep binary-arch binary
 
 ## ----------------------------------------------------------------------------
