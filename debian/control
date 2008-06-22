@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Andrew Chilton <andychilton@gmail.com>
 Uploaders: Andrew Chilton <andychilton@gmail.com>
 Standards-Version: 3.6.1
-Build-Depends: debhelper (>= 6)
+Build-Depends: debhelper (>= 5)
 Build-Depends-Indep: perl
 
 Package: cil
