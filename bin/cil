@@ -45,6 +45,7 @@ my $COMMANDS = {
     summary => 1,
     add     => 1,
     show    => 1,
+    status  => 1,
     edit    => 1,
     comment => 1,
     attach  => 1,
@@ -127,6 +128,11 @@ EOF
     elsif ( $command eq 'show' ) {
         my ($issue_name) = @ARGV;
         show($cil, $issue_name);
+
+    }
+    elsif ( $command eq 'status' ) {
+        my ($issue_name, $status) = @ARGV;
+        status($cil, $issue_name, $status);
 
     }
     elsif ( $command eq 'add' ) {
@@ -247,6 +253,26 @@ sub show {
         fatal("Couldn't load issue '$issue_name'");
     }
     display_issue_full($cil, $issue);
+}
+
+sub status {
+    my ($cil, $issue_name, $status) = @_;
+
+    unless ( defined $status ) {
+        fatal("provide a status to set this issue to");
+    }
+
+    # firstly, read the issue in
+    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
+    unless ( defined $issue ) {
+        fatal("Couldn't load issue '$issue_name'");
+    }
+
+    # set the status for this issue
+    $issue->Status( $status );
+    $issue->save($cil);
+
+    display_issue($cil, $issue);
 }
 
 sub add {
@@ -561,6 +587,7 @@ Commands:
    summary
    list
    show    ISSUE
+   status  ISSUE NEW_STATUS
    edit    ISSUE
    comment ISSUE
    attach  ISSUE FILENAME
@@ -587,6 +614,7 @@ cil - the command-line issue list
     ... added issue 'cafebabe' ...
     $ cil show cafebabe
     $ cil edit cafebabe
+    $ cil status cafebabe InProgress
 
     $ cil comment cafebabe
     ... added comment 'deadbeef' ...
@@ -624,6 +652,11 @@ Adds an issues after you have edited the input.
 =item show ISSUE
 
 Shows the issue name with more detail.
+
+=item status ISSUE NEW_STATUS
+
+Shortcut so that you can set a new status on an issue without having to edit
+it.
 
 =item edit ISSUE
 
