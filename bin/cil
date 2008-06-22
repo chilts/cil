@@ -22,6 +22,7 @@ use warnings;
 
 use Data::Dumper;
 
+use Getopt::Mixed "nextOption";
 use Digest::MD5 qw(md5_hex);
 use File::Touch;
 use File::Glob ':glob';
@@ -32,6 +33,11 @@ use CIL;
 use CIL::Issue;
 use CIL::Comment;
 use CIL::Attachment;
+
+## ----------------------------------------------------------------------------
+# constants
+
+use constant VERSION => '0.2';
 
 my $COMMANDS = {
     init    => 1,
@@ -44,6 +50,21 @@ my $COMMANDS = {
     attach  => 1,
     extract => 1,
 };
+
+my @IN_OPTS = (
+    'p=s',          # p = path
+    'path>p',       # for 'add'
+    'f=s',          # f = filename
+    'filename=f',   # for 'extract'
+
+    'help',
+    'version',
+);
+
+my %BOOLEAN_ARGS = (
+    help    => 1,
+    version => 1,
+);
 
 my $gan = $ENV{GIT_AUTHOR_NAME} || 'Your Name';
 my $gae = $ENV{GIT_AUTHOR_EMAIL} || 'you@example.org';
@@ -65,20 +86,34 @@ Description...
 EOF
 
 ## ----------------------------------------------------------------------------
+# main program
 
 {
-    my ($command) = shift;
-    unless ( defined $command and exists $COMMANDS->{$command} ) {
-        usage();
-        exit 2;
+    my $args = get_options(\@IN_OPTS, \%BOOLEAN_ARGS);
+
+    # do the version and help
+    if ( exists $args->{version} ) {
+        print "cil version ".VERSION."\n";
+        exit;
     }
+
+    if ( exists $args->{help} ) {
+        usage();
+        exit;
+    }
+
+    # make sure that the command given is valid
+    Getopt::Mixed::abortMsg('specify a command')
+       if @ARGV == 0;
+
+    my $command = shift @ARGV;
+    Getopt::Mixed::abortMsg("'$command' is not a valid cil command.")
+       unless defined $command and exists $COMMANDS->{$command};
 
     my $cil = CIL->new();
 
     if ( $command eq 'init' ) {
-        my ($path) = @ARGV;
-        $path ||= '.';
-        init($cil, $path);
+        init($cil, $args);
 
     }
     elsif ( $command eq 'list' ) {
@@ -114,8 +149,8 @@ EOF
 
     }
     elsif ( $command eq 'extract' ) {
-        my ($issue_name, $attachment_name, $filename) = @ARGV;
-        extract($cil, $issue_name, $attachment_name, $filename);
+        my ($attachment_name) = @ARGV;
+        extract($cil, $attachment_name, $args);
 
     }
 
@@ -129,7 +164,9 @@ EOF
 # commands
 
 sub init {
-    my ($cil, $path) = @_;
+    my ($cil, $args) = @_;
+
+    my $path = $args->{p} || '.'; # default path is right here
 
     # error if $path doesn't exist
     unless ( -d $path ) {
@@ -333,14 +370,14 @@ EOF
 }
 
 sub extract {
-    my ($cil, $attachment_name, $filename) = @_;
+    my ($cil, $attachment_name, $args) = @_;
 
     my $attachment = CIL::Attachment->new_from_name($cil, $attachment_name);
     unless ( defined $attachment ) {
         fatal("Couldn't load attachment '$attachment_name'");
     }
 
-    $filename ||= $attachment->Filename();
+    my $filename = $args->{f} || $attachment->Filename();
     write_file( $filename, $attachment->as_binary );
 }
 
@@ -428,7 +465,6 @@ sub display_issue_full {
     }
 
     my $attachments = $cil->get_attachments_for( $issue );
-    print Dumper();
     foreach my $attachment ( @$attachments ) {
         title( 'Attachment ' . $attachment->name() );
         field( 'Filename', $attachment->Filename() );
@@ -439,6 +475,35 @@ sub display_issue_full {
     }
 
     separator();
+}
+
+## ----------------------------------------------------------------------------
+# helper functions for this command line tool
+
+sub get_options {
+    my ($in_opts, $booleans) = @_;
+
+    my $args = {};
+    Getopt::Mixed::init( @$in_opts );
+    while( my($opt, $val) = nextOption() ) {
+        # if boolean, keep a count of how many there is only
+        if ( exists $booleans->{$opt} ) {
+            $args->{$opt}++;
+            next;
+        }
+        # normal 'string' value
+        if ( defined $args->{$opt} ) {
+            unless ( ref $args->{$opt} eq 'ARRAY' ) {
+                $args->{$opt} = [ $args->{$opt} ];
+            }
+            push @{$args->{$opt}}, $val;
+        }
+        else {
+            $args->{$opt} = $val;
+        }
+    }
+    Getopt::Mixed::cleanup();
+    return $args;
 }
 
 sub msg {
@@ -491,7 +556,7 @@ sub usage {
 Usage: $0 COMMAND [options]
 
 Commands:
-   init    PATH
+   init    [--path=PATH]
    add
    summary
    list
@@ -499,7 +564,7 @@ Commands:
    edit    ISSUE
    comment ISSUE
    attach  ISSUE FILENAME
-   extract ATTACHMENT [TO_FILENAME]
+   extract ATTACHMENT [--filename=FILENAME]
 
 See <http://kapiti.geek.nz/software/cil.html> for further information.
 Report bugs to <andychilton -at- gmail -dot- com>.
@@ -507,6 +572,7 @@ END_USAGE
 }
 
 ## ----------------------------------------------------------------------------
+
 =head1 NAME
 
 cil - the command-line issue list
@@ -527,7 +593,9 @@ cil - the command-line issue list
 
     $ cil attach cafebabe filename.txt
     ... added attachment 'decaf7ea' ...
-    $ cil extract decaf7ea other_filename.txt
+
+    $ cil extract decaf7ea
+    $ cil extract decaf7ea --filename=other_filename.txt
 
 =head1 DESCRIPTION
 
@@ -536,9 +604,10 @@ and attachments as local files which you can check in to your repository.
 
 =over
 
-=item init
+=item init [--path=PATH]
 
-Creates a local '.cil' file and an 'issues' directory.
+Creates a local '.cil' file and an 'issues' directory. If PATH is specified,
+the config file and directory will be created in the destination directory.
 
 =item summary
 
@@ -568,7 +637,7 @@ Adds a comment to an issues after you have edited the input.
 
 Adds that particular filename to an existing issue.
 
-=item extract ATTACHMENT [FILENAME]
+=item extract ATTACHMENT [--filename=FILENAME]
 
 Extracts the file from the attachment number. If filename if given uses that,
 otherwise it will use the original one saved along with the attachment.
@@ -597,7 +666,7 @@ Andrew Chilton <andychilton@gmail.com>
 
 Copyright (C) 2008 by Andrew Chilton
 
-cil is free software: you can redistribute it and/or modify it under the terms
+Cil is free software: you can redistribute it and/or modify it under the terms
 of the GNU General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 

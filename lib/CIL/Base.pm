@@ -34,7 +34,7 @@ __PACKAGE__->mk_accessors(qw(CreatedBy Inserted Updated));
 sub new_from_name {
     my ($class, $cil, $name) = @_;
 
-    croak 'provide an issue name to load'
+    croak 'provide a name'
         unless defined $name;
 
     my $filename = $class->create_filename($cil, $name);
