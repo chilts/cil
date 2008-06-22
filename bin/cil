@@ -95,9 +95,6 @@ EOF
        if @ARGV == 0;
 
     my $command = shift @ARGV;
-    if ( not defined $command ) {
-       Getopt::Mixed::abortMsg("no command specified");
-    }
     no strict 'refs';
     if ( not defined &{"cmd_$command"} ) {
        Getopt::Mixed::abortMsg("'$command' is not a valid cil command.");
