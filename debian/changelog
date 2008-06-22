@@ -1,3 +1,9 @@
+cil (0.2.0) unstable; urgency=low
+
+  * Ready for 0.2 release
+
+ -- Andrew Chilton <andychilton@gmail.com>  Sun, 22 Jun 2008 16:17:18 +1200
+
 cil (0.1.0) unstable; urgency=low
 
   * Ready for 0.1 release
