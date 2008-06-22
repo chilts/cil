@@ -45,7 +45,7 @@ Debian paackage:
 
 which can then be installed with:
 
- $ sudo dpkg -i 
+ $ sudo dpkg -i ../cil_0.2.0_all.deb 
 
 or added to a repository you are using for easier installation with apt-get or
 aptitude.
