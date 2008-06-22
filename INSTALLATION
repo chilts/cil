@@ -4,17 +4,30 @@ Dependencies
 ------------
 
 Perl Modules:
+
  * Term::CallEditor
  * File::Touch
  * File::Glob
  * File::Basename
  * MIME::Base64
 
+Some of these are distributed with perl itself but is left as an excercise to
+the reader to figure out what you need in your distribution (for Debian Etch,
+see below).
+
+===============================================================================
+
+Debian Packaging
+----------------
+
 For Debian Etch, the following packages will need to be installed:
- * perl-code
- * libfile-touch-perl
- * libfile-glob-perl
- * libfile-basename-perl
+
+* perl
+* libgetopt-mixed-perl
+* libdigest-perl
+* libfile-touch-perl
+* libfile-slurp-perl
+* libclass-accessor-perl
 
 Currently, Term::CallEditor is not in Etch and therefore will have to be added
 via other means. If you want to build a package from CPAN try the following:
@@ -23,27 +36,7 @@ via other means. If you want to build a package from CPAN try the following:
 
 and install the newly created package.
 
- $ sudo dpkg -i libterm-calleditor-perl
-
-===============================================================================
-
-Running 'cil'
--------------
-
-The quickest method is to do the following:
-
- $ cd /path/to/cil/lib
- $ export PERL5LIB=`pwd`
- $ cd /path/to/somewhere/in/your/path
- $ ln -s /path/to/cil/bin/cil
- $ cil init
-
-See http://kapiti.geek.nz/software/cil.html for some further instructions.
-
-===============================================================================
-
-Debian Packaging
-----------------
+ $ sudo dpkg -i libterm-calleditor-perl_0.11-1_all.deb
 
 When inside the main cil directory, you can type the following to create a
 Debian paackage:
@@ -56,5 +49,28 @@ which can then be installed with:
 
 or added to a repository you are using for easier installation with apt-get or
 aptitude.
+
+Then, you can just run 'cil' from the command line.
+
+===============================================================================
+
+Running 'cil' without installing
+--------------------------------
+
+The quickest way to start is to 'cd' into the directory you untarred or cloned
+the repo into.
+
+ $ cd /path/to/cil/lib
+ $ export PERL5LIB=`pwd`
+
+Then you can either run by:
+
+* /path/to/cil/bin/cil init
+* export PATH=/path/to/cil/bin:$PATH
+* cd ~/bin && ln -s /path/to/cil/bin/cil
+
+===============================================================================
+
+See http://kapiti.geek.nz/software/cil.html for further information.
 
 ===============================================================================
