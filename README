@@ -64,7 +64,8 @@ Adding an attachment is easy:
  ... added attachment 'decaf7ea' ...
  $ cil show cafebabe
 
-If someone else added the attachment and you wish to view it, you can extract it from the issue:
+If someone else added the attachment and you wish to view it, you can extract
+it from the issue:
 
  $ cil extract decaf7ea --filename=mycore
 
