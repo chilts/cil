@@ -58,6 +58,16 @@ We have just found out more about the issue so let's add a comment to it:
 When you show the issue again, you'll see the comment has been added and is now
 displayed.
 
+Adding an attachment is easy:
+
+ $ cil attach cafebabe core
+ ... added attachment 'decaf7ea' ...
+ $ cil show cafebabe
+
+If someone else added the attachment and you wish to view it, you can extract it from the issue:
+
+ $ cil extract decaf7ea --filename=mycore
+
 That's it for now. As you can see, if you've played with any kind of bug/issue
 tracker before, 'cil' is straightforward.
 
