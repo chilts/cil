@@ -125,7 +125,7 @@ sub set {
 
     # finish if both are defined and they're the same
     if ( defined $orig and defined $value ) {
-        return if $orig eq $value
+        return if eval { $orig eq $value };
     }
 
     # finish if neither are defined
