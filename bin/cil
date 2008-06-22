@@ -39,19 +39,6 @@ use CIL::Attachment;
 
 use constant VERSION => '0.2';
 
-my $COMMANDS = {
-    init    => 1,
-    list    => 1,
-    summary => 1,
-    add     => 1,
-    show    => 1,
-    status  => 1,
-    edit    => 1,
-    comment => 1,
-    attach  => 1,
-    extract => 1,
-};
-
 my @IN_OPTS = (
     'p=s',          # p = path
     'path>p',       # for 'add'
@@ -108,18 +95,17 @@ EOF
        if @ARGV == 0;
 
     my $command = shift @ARGV;
-    Getopt::Mixed::abortMsg("'$command' is not a valid cil command.")
-       unless defined $command and exists $COMMANDS->{$command};
+    if ( not defined $command ) {
+       Getopt::Mixed::abortMsg("no command specified");
+    }
+    no strict 'refs';
+    if ( not defined &{"cmd_$command"} ) {
+       Getopt::Mixed::abortMsg("'$command' is not a valid cil command.");
+    }
 
     my $cil = CIL->new();
 
-    no strict 'refs';
-    if ( not defined &{"cmd_$command"} ) {
-        fatal("program error when trying command '$command'");
-    }
-    else {
-	&{"cmd_$command"}($cil, $args, @ARGV);
-    }
+    &{"cmd_$command"}($cil, $args, @ARGV);
 }
 
 ## ----------------------------------------------------------------------------
