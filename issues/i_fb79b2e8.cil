@@ -1,0 +1,15 @@
+Summary: Ability to set Issue Status' from the command line
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Mileston-v0.2
+Label: Release-v0.1
+Label: Type-Enhancement
+Inserted: 2008-06-22T04:00:20
+Updated: 2008-06-22T04:00:20
+
+The ability to do something like the following would be good.
+
+ $ cil status cafebabe Finished
+
+would be rather cool.
