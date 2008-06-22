@@ -113,63 +113,19 @@ EOF
 
     my $cil = CIL->new();
 
-    if ( $command eq 'init' ) {
-        init($cil, $args);
-
-    }
-    elsif ( $command eq 'list' ) {
-        list($cil);
-
-    }
-    elsif ( $command eq 'summary' ) {
-        summary($cil);
-
-    }
-    elsif ( $command eq 'show' ) {
-        my ($issue_name) = @ARGV;
-        show($cil, $issue_name);
-
-    }
-    elsif ( $command eq 'status' ) {
-        my ($issue_name, $status) = @ARGV;
-        status($cil, $issue_name, $status);
-
-    }
-    elsif ( $command eq 'add' ) {
-        add($cil);
-
-    }
-    elsif ( $command eq 'edit' ) {
-        my ($issue_name) = @ARGV;
-        edit($cil, $issue_name);
-
-    }
-    elsif ( $command eq 'comment' ) {
-        my ($issue_name) = @ARGV;
-        comment($cil, $issue_name);
-
-    }
-    elsif ( $command eq 'attach' ) {
-        my ($issue_name, $filename) = @ARGV;
-        attach($cil, $issue_name, $filename);
-
-    }
-    elsif ( $command eq 'extract' ) {
-        my ($attachment_name) = @ARGV;
-        extract($cil, $attachment_name, $args);
-
-    }
-
-    else {
+    no strict 'refs';
+    if ( not defined &{"cmd_$command"} ) {
         fatal("program error when trying command '$command'");
     }
-
+    else {
+	&{"cmd_$command"}($cil, $args, @ARGV);
+    }
 }
 
 ## ----------------------------------------------------------------------------
 # commands
 
-sub init {
+sub cmd_init {
     my ($cil, $args) = @_;
 
     my $path = $args->{p} || '.'; # default path is right here
@@ -206,7 +162,7 @@ sub init {
     msg("initialised empty issue list inside '$path/'");
 }
 
-sub list {
+sub cmd_list {
     my ($cil) = @_;
 
     check_paths($cil);
@@ -225,7 +181,7 @@ sub list {
     }
 }
 
-sub summary {
+sub cmd_summary {
     my ($cil) = @_;
 
     check_paths($cil);
@@ -244,8 +200,8 @@ sub summary {
     }
 }
 
-sub show {
-    my ($cil, $issue_name) = @_;
+sub cmd_show {
+    my ($cil, undef, $issue_name) = @_;
 
     # firstly, read the issue in
     my $issue = CIL::Issue->new_from_name($cil, $issue_name);
@@ -255,8 +211,8 @@ sub show {
     display_issue_full($cil, $issue);
 }
 
-sub status {
-    my ($cil, $issue_name, $status) = @_;
+sub cmd_status {
+    my ($cil, undef, $issue_name, $status) = @_;
 
     unless ( defined $status ) {
         fatal("provide a status to set this issue to");
@@ -275,8 +231,8 @@ sub status {
     display_issue($cil, $issue);
 }
 
-sub add {
-    my ($cil, $issue_name) = @_;
+sub cmd_add {
+    my ($cil, undef, $issue_name) = @_;
 
     # read in the new issue text
     my $fh = solicit( $new_issue_text );
@@ -290,8 +246,8 @@ sub add {
     display_issue($cil, $issue);
 }
 
-sub edit {
-    my ($cil, $issue_name) = @_;
+sub cmd_edit {
+    my ($cil, undef, $issue_name) = @_;
 
     my $issue = CIL::Issue->new_from_name($cil, $issue_name);
     unless ( defined $issue ) {
@@ -313,8 +269,8 @@ sub edit {
     display_issue($cil, $issue_edited);
 }
 
-sub comment {
-    my ($cil, $issue_name) = @_;
+sub cmd_comment {
+    my ($cil, undef, $issue_name) = @_;
 
     my $issue = CIL::Issue->new_from_name($cil, $issue_name);
     unless ( defined $issue ) {
@@ -343,8 +299,8 @@ sub comment {
     display_issue_full($cil, $issue);
 }
 
-sub attach {
-    my ($cil, $issue_name, $filename) = @_;
+sub cmd_attach {
+    my ($cil, undef, $issue_name, $filename) = @_;
 
     my $issue = CIL::Issue->new_from_name($cil, $issue_name);
     unless ( defined $issue ) {
@@ -395,8 +351,8 @@ EOF
     display_issue_full($cil, $issue);
 }
 
-sub extract {
-    my ($cil, $attachment_name, $args) = @_;
+sub cmd_extract {
+    my ($cil, undef, $attachment_name, $args) = @_;
 
     my $attachment = CIL::Attachment->new_from_name($cil, $attachment_name);
     unless ( defined $attachment ) {
