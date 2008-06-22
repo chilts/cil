@@ -28,6 +28,7 @@ For Debian Etch, the following packages will need to be installed:
 * libfile-touch-perl
 * libfile-slurp-perl
 * libclass-accessor-perl
+* libdatetime-perl
 
 Currently, Term::CallEditor is not in Etch and therefore will have to be added
 via other means. If you want to build a package from CPAN try the following:
