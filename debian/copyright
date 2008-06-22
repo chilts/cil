@@ -1,15 +1,11 @@
-This package is a Debian native package.
+This package was debianized by Andrew Chilton <andychilton@gmail.com> on
+Sun, 22 Jun 2008 17:48:00 +1200
 
-Author and Copyright:
+Upstream Author: Andrew Chilton <andychilton@gmail.com>
 
-    (c) 2008 Andrew Chilton <andychilton@gmail.com>
-
-    All rights reserved.
+Copyright: (C) 2008 Andrew Chilton
 
 License:
-
-This program is free software; you can redistribute it and/or modify it under
-the following terms:
 
     cil is free software: you can redistribute it and/or modify it under the
     terms of the GNU General Public License as published by the Free Software
@@ -23,3 +19,7 @@ the following terms:
 
     You should have received a copy of the GNU General Public License along
     with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+You are free to distribute this software under the terms of the GNU General
+Public License. On Debian systems, the complete text of the GNU General Public
+License can be found in /usr/share/common-licenses/GPL file.

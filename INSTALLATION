@@ -42,7 +42,7 @@ and install the newly created package.
 When inside the main cil directory, you can type the following to create a
 Debian paackage:
 
- $ fakeroot dpkg-buildpackage -tc -us -uc
+ $ dpkg-buildpackage -tc -us -uc -rfakeroot
 
 which can then be installed with:
 
