@@ -376,7 +376,8 @@ sub check_paths {
 sub filter_issues {
     my ($issues, $args) = @_;
 
-    return unless %$args;
+    # don't filter if we haven't been given anything
+    return $issues unless %$args;
 
     # take a copy of the whole lot first (so we don't destroy the input list)
     my @new_issues = @$issues;
