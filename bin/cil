@@ -42,7 +42,7 @@ my @IN_OPTS = (
     'p=s',          # p = path
     'path>p',       # for 'add'
     'f=s',          # f = filename
-    'filename=f',   # for 'extract'
+    'filename>f',   # for 'extract'
 
     'help',
     'version',
@@ -347,7 +347,7 @@ EOF
 }
 
 sub cmd_extract {
-    my ($cil, undef, $attachment_name, $args) = @_;
+    my ($cil, $args, $attachment_name) = @_;
 
     my $attachment = CIL::Attachment->new_from_name($cil, $attachment_name);
     unless ( defined $attachment ) {
