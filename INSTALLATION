@@ -30,15 +30,6 @@ For Debian Etch, the following packages will need to be installed:
 * libclass-accessor-perl
 * libdatetime-perl
 
-Currently, Term::CallEditor is not in Etch and therefore will have to be added
-via other means. If you want to build a package from CPAN try the following:
-
- $ dh-make-perl --build --cpan Term::CallEditor
-
-and install the newly created package.
-
- $ sudo dpkg -i libterm-calleditor-perl_0.11-1_all.deb
-
 When inside the main cil directory, you can type the following to create a
 Debian paackage:
 

@@ -11,7 +11,7 @@ Package: cil
 Section: perl
 Priority: optional
 Architecture: all
-Depends: ${perl:Depends}, libgetopt-mixed-perl, libterm-calleditor-perl, libfile-touch-perl, libfile-slurp-perl, libclass-accessor-perl, libdatetime-perl
+Depends: ${perl:Depends}, libgetopt-mixed-perl, libfile-touch-perl, libfile-slurp-perl, libclass-accessor-perl, libdatetime-perl
 Description: command line issue tracker
  'cil' allows easy command-line creation of an issue tracker. It saves each
  issue locally and in plain text. Commands are given such that these issues can
