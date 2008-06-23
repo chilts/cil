@@ -30,7 +30,13 @@ For Debian Etch, the following packages will need to be installed:
 * libclass-accessor-perl
 * libdatetime-perl
 
-When inside the main cil directory, you can type the following to create a
+Out of the box, cil provides two debian directories depending on which version
+of Debian you wish to use. Currently, there isn't much difference but choose
+which distro you want and link that to 'debian/'. e.g. for Etch, run:
+
+ $ ln -s debian-etch debian
+
+Then inside the main cil directory, you can type the following to create a
 Debian paackage:
 
  $ dpkg-buildpackage -tc -us -uc -rfakeroot
