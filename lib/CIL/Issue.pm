@@ -129,6 +129,11 @@ sub as_output {
     return CIL::Utils->format_data_as_output( $self->{data}, @FIELDS );
 }
 
+sub Labels {
+    my ($self) = @_;
+    return $self->{data}{Label};
+}
+
 sub Comments {
     my ($self) = @_;
     return $self->{data}{Comment};

@@ -20,8 +20,6 @@
 use strict;
 use warnings;
 
-use Data::Dumper;
-
 use Getopt::Mixed "nextOption";
 use Digest::MD5 qw(md5_hex);
 use File::Touch;
@@ -43,6 +41,10 @@ my @IN_OPTS = (
     'path>p',       # for 'add'
     'f=s',          # f = filename
     'filename>f',   # for 'extract'
+    's=s',          # s = status
+    'status>s',     # for 'summary', 'list'
+    'l=s',          # l = label
+    'label>l',      # for 'summary, 'list'
 
     'help',
     'version',
@@ -154,12 +156,13 @@ README
 }
 
 sub cmd_list {
-    my ($cil) = @_;
+    my ($cil, $args) = @_;
 
     check_paths($cil);
 
     # find all the issues
     my $issues = $cil->get_issues();
+    $issues = filter_issues( $issues, $args );
     if ( @$issues ) {
         foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
             separator();
@@ -173,12 +176,13 @@ sub cmd_list {
 }
 
 sub cmd_summary {
-    my ($cil) = @_;
+    my ($cil, $args) = @_;
 
     check_paths($cil);
 
     # find all the issues
     my $issues = $cil->get_issues();
+    $issues = filter_issues( $issues, $args );
     if ( @$issues ) {
         separator();
         foreach my $issue ( @$issues ) {
@@ -369,6 +373,32 @@ sub check_paths {
     }
 }
 
+sub filter_issues {
+    my ($issues, $args) = @_;
+
+    return unless %$args;
+
+    # take a copy of the whole lot first (so we don't destroy the input list)
+    my @new_issues = @$issues;
+
+    # firstly, get out the Statuses we want
+    if ( defined $args->{s} ) {
+        @new_issues = grep { $_->Status eq $args->{s} } @new_issues;
+    }
+
+    # then see if we want a particular label (could be a bit nicer)
+    if ( defined $args->{l} ) {
+        my @tmp;
+        foreach my $issue ( @new_issues ) {
+            push @tmp, $issue
+                if grep { $_ eq $args->{l} } @{$issue->Labels};
+        }
+        @new_issues = @tmp;
+    }
+
+    return \@new_issues;
+}
+
 ## ----------------------------------------------------------------------------
 # input/output
 
@@ -535,8 +565,8 @@ Usage: $0 COMMAND [options]
 Commands:
    init    [--path=PATH]
    add
-   summary
-   list
+   summary [--status=STATUS] [--label=LABEL]
+   list    [--status=STATUS] [--label=LABEL]
    show    ISSUE
    status  ISSUE NEW_STATUS
    edit    ISSUE
@@ -560,6 +590,8 @@ cil - the command-line issue list
     $ cil init
     $ cil summary
     $ cil list
+    $ cil list --status=New
+    $ cil list --label=Release-v0.1
 
     $ cil add
     ... added issue 'cafebabe' ...
@@ -588,13 +620,15 @@ and attachments as local files which you can check in to your repository.
 Creates a local '.cil' file and an 'issues' directory. If PATH is specified,
 the config file and directory will be created in the destination directory.
 
-=item summary
+=item summary [--status=STATUS] [--label=LABEL]
 
-Displays a one line summary for each issue.
+Displays a one line summary for each issue. You may filter on both the Status
+and Label fields.
 
-=item list
+=item list [--status=STATUS] [--label=LABEL]
 
-Shows each issue with more information.
+Shows each issue with more information. You may filter on both the Status and
+Label fields.
 
 =item add
 

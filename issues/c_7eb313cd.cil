@@ -1,0 +1,11 @@
+Issue: 85eceee9
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-23T12:07:44
+Updated: 2008-06-23T12:07:44
+
+Added both --status and --label.
+
+In the case of Status, it tests for equality.
+
+In the case of Label, it tests that the issue has at least one label of the one
+specified.
