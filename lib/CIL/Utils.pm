@@ -23,7 +23,18 @@ package CIL::Utils;
 
 use strict;
 use warnings;
+use Carp;
 use File::Slurp;
+use File::Temp qw(tempfile);
+use POSIX qw(getpgrp tcgetpgrp);
+use Fcntl qw(:DEFAULT :flock);
+
+## ----------------------------------------------------------------------------
+# setup some globals
+
+my $editor = $ENV{EDITOR} || 'vi';
+
+## ----------------------------------------------------------------------------
 
 sub parse_cil_file {
     my ($class, $filename, $last_field) = @_;
@@ -109,6 +120,63 @@ sub write_cil_file {
 
     # ... and save
     write_file($filename, $lines);
+}
+
+# this method based on Term::CallEditor(v0.11)'s solicit method
+# original: Copyright 2004 by Jeremy Mates
+# copied under the terms of the GPL
+sub solicit {
+    my ($class, $message) = @_;
+
+    # when calling this, assume we're already interactive
+
+    File::Temp->safe_level(File::Temp::HIGH);
+    my ( $fh, $filename ) = tempfile( UNLINK => 1 );
+
+    # since File::Temp returns both, check both
+    unless ( $fh and $filename ) {
+        croak "couldn't create temporary file";
+    }
+
+    select( ( select($fh), $|++ )[0] );
+    print $fh $message;
+
+    # need to unlock for external editor
+    flock $fh, LOCK_UN;
+
+    # run the editor
+    my $status = system($editor, $filename);
+
+    # check its return value
+    if ( $status != 0 ) {
+        croak $status != -1
+            ? "external editor ($editor) failed: $?"
+            : "could not launch ($editor) program: $!";
+    }
+
+    unless ( seek $fh, 0, 0 ) {
+        croak "could not seek on temp file: errno=$!";
+    }
+
+    return $fh;
+}
+
+# this method based on Recipe 15.2
+sub ensure_interactive {
+    my $tty;
+    open($tty, "/dev/tty")
+        or croak "program not running interactively (can't open /dev/tty): $!";
+
+    my $tpgrp = tcgetpgrp( fileno($tty) );
+    my $pgrp = getpgrp();
+    close $tty;
+
+    unless ( $tpgrp == $pgrp ) {
+        croak "can't get exclusive control of tty: tpgrp=$tpgrp, pgrp=$pgrp";
+    }
+
+    # if we are here, then we have ensured what we wanted
+    return;
 }
 
 ## ----------------------------------------------------------------------------

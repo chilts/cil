@@ -28,7 +28,6 @@ use File::Touch;
 use File::Glob ':glob';
 use File::Basename;
 use File::Slurp qw(read_file write_file);
-use Term::CallEditor qw(solicit);
 use CIL;
 use CIL::Issue;
 use CIL::Comment;
@@ -227,7 +226,8 @@ sub cmd_add {
     my ($cil, undef, $issue_name) = @_;
 
     # read in the new issue text
-    my $fh = solicit( $new_issue_text );
+    CIL::Utils->ensure_interactive();
+    my $fh = CIL::Utils->solicit( $new_issue_text );
 
     my $issue = CIL::Issue->new_from_fh( 'tmp', $fh );
 
@@ -250,7 +250,8 @@ sub cmd_edit {
     my $edit_issue_text = $issue->as_output;
 
     # read in the new issue text
-    my $fh = solicit( join('', @$edit_issue_text) );
+    CIL::Utils->ensure_interactive();
+    my $fh = CIL::Utils->solicit( join('', @$edit_issue_text) );
 
     my $issue_edited = CIL::Issue->new_from_fh( $issue->name, $fh );
     unless ( defined $issue_edited ) {
@@ -270,7 +271,8 @@ sub cmd_comment {
     }
 
     # read in the new issue text
-    my $fh = solicit( $add_comment_text );
+    CIL::Utils->ensure_interactive();
+    my $fh = CIL::Utils->solicit( $add_comment_text );
 
     my $comment = CIL::Comment->new_from_fh( 'tmp', $fh );
     unless ( defined $comment ) {
@@ -314,7 +316,8 @@ File goes here ... this will be overwritten.
 EOF
 
     # read in the new issue text
-    my $fh = solicit( $add_attachment_text );
+    CIL::Utils->ensure_interactive();
+    my $fh = CIL::Utils->solicit( $add_attachment_text );
 
     my $attachment = CIL::Attachment->new_from_fh( 'tmp', $fh );
     unless ( defined $attachment ) {
