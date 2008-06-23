@@ -125,7 +125,7 @@ sub set {
 
     # finish if both are defined and they're the same
     if ( defined $orig and defined $value ) {
-        return if eval { $orig eq $value };
+        return if $orig eq $value;
     }
 
     # finish if neither are defined
@@ -147,7 +147,7 @@ sub set_no_update {
 
 sub set_inserted_now {
     my ($self) = @_;
-    my $time = DateTime->now;
+    my $time = '' . DateTime->now;
     $self->{data}{Inserted} = $time;
     $self->{data}{Updated} = $time;
     $self->{Changed} = 1;
@@ -155,7 +155,7 @@ sub set_inserted_now {
 
 sub set_updated_now {
     my ($self) = @_;
-    my $time = DateTime->now;
+    my $time = '' . DateTime->now;
     $self->{data}{Updated} = $time;
     $self->{Changed} = 1;
 }
