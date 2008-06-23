@@ -36,7 +36,7 @@ use CIL::Attachment;
 ## ----------------------------------------------------------------------------
 # constants
 
-use constant VERSION => '0.2';
+use constant VERSION => '0.2.1';
 
 my @IN_OPTS = (
     'p=s',          # p = path
