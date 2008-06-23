@@ -1,0 +1,35 @@
+Summary: Ability to filter the issues lists (summary and list)
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.3
+Label: Release-v0.2
+Label: Type-Enhancement
+Inserted: 2008-06-23T12:05:33
+Updated: 2008-06-23T12:05:33
+
+The ability to filter on various things would be nice. For example using these
+list commands, though summary should work the same way:
+
+ $ cil list --status=New
+ $ cil list --status=Assigned
+ $ cil list --status=Finished
+
+ $ cil list --label=Release-v0.1
+ $ cil list --label=Type-Enhancement
+
+And combining them should be easy:
+
+ $ cil list --status=Assigned --label=Type-Defect
+
+Other options include:
+
+ $ cil list --assigned-to=andychilton@gmail.com
+ $ cil list --has-attachments --has-comments
+ $ cil list --is-open/closed
+
+There may be other options so this issue will be closed when we think we've had
+enough.
+
+Note: whilst filtering on lists is good, actual searching is still better for a
+lot of things you'd like to do. This will be added as a separate issue.
