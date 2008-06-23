@@ -1,0 +1,8 @@
+Issue: 5c88cb30
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-23T12:36:04
+Updated: 2008-06-23T12:36:04
+
+Closing this issue as WontFix since the current solution is good (ie. the 8
+char hex number). Will reopen if demand says so and I'll try and get a patch
+off whoever wants it :-)
