@@ -1,0 +1,31 @@
+Summary: Add a filter '--grep=regex'
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.3.0
+Label: Release-v0.2.1
+Label: Type-Enhancement
+Inserted: 2008-06-24T12:16:57
+Updated: 2008-06-24T12:16:57
+
+Having a 'grep' filter would be quite powerful. It could be used in the 'list'
+and 'summary' commands. It would be good if it accepts Perl regexes and might
+work a little something like this:
+
+Find all issues with 'screenshot' in them:
+
+ $ cil list --grep=screenshot
+
+Find any issue that mentions one of the following:
+
+ $ cil list --grep=css|html|javascript
+
+This one would be directed at the 'CreatedBy' and 'AssignedTo' fields:
+
+ $ cil list --grep=andychilton@
+
+This one would probably be targeted at the 'Label' field:
+
+ $ cil list --grep=^Release-v0.2
+
+So accepting Perl regexes would be excellent.
