@@ -1,0 +1,24 @@
+Summary: Add a 'cil check-in-git' command
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Mileston-v0.3.0
+Label: Release-v0.2.1
+Label: Type-Enhancement
+Inserted: 2008-06-24T03:24:14
+Updated: 2008-06-24T03:24:14
+
+The ability to check whether issues/comments/attachments are tracked by Git is
+important. Or indeed any VCS system.
+
+My thoughts are that this command would do something like the following:
+
+* internally, it runs "git ls-files issues/" and makes a list of files in that
+  directory
+* makes a list of issues that are currently contained in the directory
+* complains if it finds something Git doesn't know about
+
+Also, when it runs through each issue, it should do the same for all comments
+and attachments. It could either output something which tells you you have
+untracked files or it could give you example git commands which add them to
+those being tracked.
