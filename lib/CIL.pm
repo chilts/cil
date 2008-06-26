@@ -26,11 +26,19 @@ use warnings;
 use File::Glob qw(:glob);
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(issue_dir));
+__PACKAGE__->mk_accessors(qw(
+    IssueDir
+    StatusStrict StatusAllowed StatusOpen StatusClosed
+    LabelStrict LabelAllowed
+));
 
 my $defaults = {
-    issue_dir => 'issues',
+    IssueDir     => 'issues', # the dir to save the issues in
+    StatusStrict => 0,        # whether to complain if a status is invalid
+    LabelStrict  => 0,        # whether to complain if a label is invalid
 };
+
+my @config_hashes = qw(StatusAllowed StatusOpen StatusClosed LabelAllowed);
 
 ## ----------------------------------------------------------------------------
 
@@ -53,7 +61,7 @@ sub new {
 sub list_issues {
     my ($self) = @_;
 
-    my $globpath = $self->issue_dir . "/i_*.cil";
+    my $globpath = $self->IssueDir . "/i_*.cil";
     my @filenames = bsd_glob($globpath);
 
     my @issues;
@@ -107,6 +115,38 @@ sub get_attachments_for {
     @attachments = sort { $a->Inserted cmp $b->Inserted } @attachments;
 
     return \@attachments;
+}
+
+sub read_config_file {
+    my ( $self, $filename ) = @_;
+
+    my $cfg = CIL::Utils->parse_cil_file( $filename );
+
+    # set some defaults if we don't have any of these
+    foreach my $key ( keys %$defaults ) {
+        $cfg->{$key} ||= $defaults->{$key};
+    }
+
+    # for some things, make a hash out of them
+    foreach my $hash_name ( @config_hashes ) {
+        my $h = {};
+        foreach my $thing ( @{$cfg->{"${hash_name}List"}} ) {
+            $h->{$thing} = 1;
+        }
+        $cfg->{$hash_name} = $h;
+        undef $cfg->{"${hash_name}List"};
+    }
+
+    # set each config item
+    $self->IssueDir( $cfg->{IssueDir} );
+
+    $self->StatusStrict( $cfg->{StatusStrict} );
+    $self->StatusAllowed( $cfg->{StatusAllowed} );
+    $self->StatusOpen( $cfg->{StatusOpen} );
+    $self->StatusClosed( $cfg->{StatusClosed} );
+
+    $self->LabelStrict( $cfg->{LabelStrict} );
+    $self->LabelAllowed( $cfg->{LabelAllowed} );
 }
 
 ## ----------------------------------------------------------------------------

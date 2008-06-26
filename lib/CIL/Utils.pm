@@ -76,8 +76,9 @@ sub parse_from_lines {
         }
     }
     
-    # now read everything that's left into the $last_field field
-    $data->{$last_field} = join("\n", @lines);
+    # now read everything that's left into the $last_field field (if there is one)
+    $data->{$last_field} = join("\n", @lines)
+        if defined $last_field;
 
     return $data;
 }
@@ -127,6 +128,8 @@ sub write_cil_file {
 # copied under the terms of the GPL
 sub solicit {
     my ($class, $message) = @_;
+
+    $message = join('', @$message) if ref $message eq 'ARRAY';
 
     # when calling this, assume we're already interactive
 

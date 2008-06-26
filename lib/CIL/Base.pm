@@ -25,6 +25,7 @@ use strict;
 use warnings;
 use Carp;
 use DateTime;
+use CIL::Utils;
 
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(CreatedBy Inserted Updated));
@@ -87,6 +88,30 @@ sub new_from_fh {
     return $class->new_from_data( $name, $data );
 }
 
+sub set_data {
+    my ($self, $data) = @_;
+
+    # loop through all the allowed fields
+    my $fields = $self->fields();
+    my $array_fields = $self->array_fields();
+
+    # save each field
+    foreach my $field ( @$fields ) {
+        next unless defined $data->{$field};
+
+        # make it an array if it should be one
+        if ( exists $array_fields->{$field} and ref $data->{$field} ne 'ARRAY' ) {
+            $data->{$field} = [ $data->{$field} ];
+        }
+
+        # modify the data directly, otherwise Updated will kick in
+        $self->set_no_update($field, $data->{$field});
+    }
+    $self->set_no_update('Changed', 1);
+
+    $self->{data} = $data;
+}
+
 sub save {
     my ($self, $cil) = @_;
 
@@ -96,12 +121,18 @@ sub save {
     CIL::Utils->write_cil_file( $filename, $self->{data}, @$fields );
 }
 
+sub as_output {
+    my ($self) = @_;
+    my $fields = $self->fields();
+    return CIL::Utils->format_data_as_output( $self->{data}, @$fields );
+}
+
 sub create_filename {
     my ($class, $cil, $name) = @_;
 
     # create the filename from it's parts
     my $prefix    = $class->prefix();
-    my $issue_dir = $cil->issue_dir;
+    my $issue_dir = $cil->IssueDir;
     my $filename  = "${issue_dir}/${prefix}_${name}.cil";
 
     return $filename;
@@ -182,6 +213,14 @@ sub set_name {
 sub name {
     my ($self) = @_;
     return $self->{name};
+}
+
+sub error {
+    my $self = shift;
+    if( @_ ) {
+        $self->{error} = $_[0];
+    }
+    return $self->{error};
 }
 
 ## ----------------------------------------------------------------------------

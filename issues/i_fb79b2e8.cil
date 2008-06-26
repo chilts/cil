@@ -2,12 +2,12 @@ Summary: Ability to set Issue Status' from the command line
 Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
-Label: Mileston-v0.2
-Label: Release-v0.1
+Label: Milestone-v0.2
+Label: Release-v0.1.0
 Label: Type-Enhancement
 Comment: 792a4acf
 Inserted: 2008-06-22T04:00:20
-Updated: 2008-06-22T04:02:46
+Updated: 2008-06-26T11:56:03
 
 The ability to do something like the following would be good.
 

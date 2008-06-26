@@ -34,6 +34,8 @@ use CIL::Attachment;
 ## ----------------------------------------------------------------------------
 # constants
 
+my $y = 'y';
+
 use constant VERSION => '0.2.1';
 
 my @IN_OPTS = (
@@ -57,22 +59,6 @@ my %BOOLEAN_ARGS = (
 
 my $gan = $ENV{GIT_AUTHOR_NAME} || 'Your Name';
 my $gae = $ENV{GIT_AUTHOR_EMAIL} || 'you@example.org';
-
-my $new_issue_text = <<"EOF";
-Summary     : 
-Status      : New
-CreatedBy   : $gan <$gae>
-AssignedTo  : $gan <$gae>
-Label       : 
-
-Description...
-EOF
-
-my $add_comment_text = <<"EOF";
-CreatedBy   : $gan <$gae>
-
-Description...
-EOF
 
 ## ----------------------------------------------------------------------------
 # main program
@@ -102,6 +88,7 @@ EOF
     }
 
     my $cil = CIL->new();
+    $cil->read_config_file( '.cil' );
 
     &{"cmd_$command"}($cil, $args, @ARGV);
 }
@@ -229,11 +216,37 @@ sub cmd_status {
 sub cmd_add {
     my ($cil, undef, $issue_name) = @_;
 
-    # read in the new issue text
     CIL::Utils->ensure_interactive();
-    my $fh = CIL::Utils->solicit( $new_issue_text );
 
-    my $issue = CIL::Issue->new_from_fh( 'tmp', $fh );
+    my $issue = CIL::Issue->new('tmpname');
+    $issue->Status('New');
+    $issue->CreatedBy("$gan <$gae>");
+    $issue->AssignedTo("$gan <$gae>");
+    $issue->Description("Description ...");
+
+    my $edit = $y;
+
+    # keep going until we get a valid issue or we want to quit
+    while ( $edit eq $y ) {
+        # read in the new issue text
+        my $fh = CIL::Utils->solicit( $issue->as_output );
+        $issue = CIL::Issue->new_from_fh( 'tmp', $fh );
+
+        # check if the issue is valid
+        if ( $issue->is_valid($cil) ) {
+            $edit = 'n';
+        }
+        else {
+            print $issue->error(), "\n";
+            print 'Would you like to re-edit (y/n): ';
+            $edit = <STDIN>;
+            chomp $edit;
+            print "\n";
+        }
+    }
+
+    # if the issue is still invalid, they quit without correcting it
+    return unless $issue->is_valid( $cil );
 
     # we've got the issue, so let's name it
     my $unique_str = $issue->Inserted . $issue->Summary . $issue->Description;
@@ -250,20 +263,35 @@ sub cmd_edit {
         fatal("Couldn't load issue '$issue_name'");
     }
 
-    # create the ini file, then edit it
-    my $edit_issue_text = $issue->as_output;
-
-    # read in the new issue text
     CIL::Utils->ensure_interactive();
-    my $fh = CIL::Utils->solicit( join('', @$edit_issue_text) );
 
-    my $issue_edited = CIL::Issue->new_from_fh( $issue->name, $fh );
-    unless ( defined $issue_edited ) {
-        fatal("couldn't create issue (program error)");
+    my $edit = $y;
+
+    # keep going until we get a valid issue or we want to quit
+    while ( $edit eq $y ) {
+        # read in the new issue text
+        my $fh = CIL::Utils->solicit( $issue->as_output );
+        $issue = CIL::Issue->new_from_fh( $issue->name, $fh );
+
+        # check if the issue is valid
+        if ( $issue->is_valid($cil) ) {
+            $edit = 'n';
+        }
+        else {
+            print $issue->error(), "\n";
+            print 'Would you like to re-edit (y/n): ';
+            $edit = <STDIN>;
+            chomp $edit;
+            print "\n";
+        }
     }
 
-    $issue_edited->save($cil);
-    display_issue($cil, $issue_edited);
+    # if the issue is still invalid, they quit without correcting it
+    return unless $issue->is_valid( $cil );
+
+    # save it
+    $issue->save($cil);
+    display_issue($cil, $issue);
 }
 
 sub cmd_comment {
@@ -274,21 +302,43 @@ sub cmd_comment {
         fatal("couldn't load issue '$issue_name'");
     }
 
-    # read in the new issue text
     CIL::Utils->ensure_interactive();
-    my $fh = CIL::Utils->solicit( $add_comment_text );
 
-    my $comment = CIL::Comment->new_from_fh( 'tmp', $fh );
-    unless ( defined $comment ) {
-        fatal("could not create new comment");
+    # create the new comment
+    my $comment = CIL::Comment->new('tmpname');
+    $comment->Issue( $issue->name );
+    $comment->CreatedBy("$gan <$gae>");
+    $comment->Description("Description ...");
+
+    my $edit = $y;
+
+    # keep going until we get a valid issue or we want to quit
+    while ( $edit eq $y ) {
+        # read in the new comment text
+        my $fh = CIL::Utils->solicit( $comment->as_output );
+        $comment = CIL::Comment->new_from_fh( 'tmp', $fh );
+
+        # check if the comment is valid
+        if ( $comment->is_valid($cil) ) {
+            $edit = 'n';
+        }
+        else {
+            print $comment->error(), "\n";
+            print 'Would you like to re-edit (y/n): ';
+            $edit = <STDIN>;
+            chomp $edit;
+            print "\n";
+        }
     }
+
+    # if the comment is still invalid, they quit without correcting it
+    return unless $comment->is_valid( $cil );
 
     # we've got the comment, so let's name it
     my $unique_str = $comment->Inserted . $issue->Description;
     $comment->set_name( substr(md5_hex($unique_str), 0, 8) );
 
-    # finally, tell it who it's parent is and then save
-    $comment->Issue( $issue->name );
+    # finally, save it
     $comment->save($cil);
 
     # add the comment to the issue, update it's timestamp and save it out
@@ -368,8 +418,8 @@ sub check_paths {
     my ($cil) = @_;
 
     # make sure an issue directory is available
-    unless ( -d $cil->issue_dir ) {
-        fatal("couldn't find '" . $cil->issue_dir . "' directory");
+    unless ( -d $cil->IssueDir ) {
+        fatal("couldn't find '" . $cil->IssueDir . "' directory");
     }
 }
 

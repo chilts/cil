@@ -3,11 +3,11 @@ Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Priority-Medium
-Label: Release-v0.1
+Label: Release-v0.1.0
 Label: Type-Enhancement
 Comment: 2b92ef13
 Inserted: 2008-05-05T12:20:28
-Updated: 2008-06-22T03:54:13
+Updated: 2008-06-26T11:55:42
 
 'cil' currently has no way of adding attachments to issues.
 

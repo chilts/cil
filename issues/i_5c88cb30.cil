@@ -1,15 +1,15 @@
 Summary: Options for issues names needs to be added
-Status: WontFix
+Status: OnHold
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Milestone-v0.2
 Label: Priority-Low
-Label: Release-v0.1
+Label: Release-v0.1.0
 Label: Type-Enhancement
 Comment: d8dd779f
 Comment: feb65ae7
 Inserted: 2008-05-05T12:33:19
-Updated: 2008-06-23T12:36:04
+Updated: 2008-06-26T12:10:32
 
 When issues are created, they are given the epoch as it's name.
 Instead of just using the epoch, the user should be able to configure

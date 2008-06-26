@@ -90,6 +90,37 @@ sub last_field {
     return 'Description';
 }
 
+sub is_valid {
+    my ($self, $cil) = @_;
+
+    # issues should have a Summary
+    unless ( defined defined $self->Summary and length $self->Summary ) {
+        $self->error( 'You must provide a summary.' );
+        return;
+    }
+
+    # see if we only allow certain Statuses
+    if ( $cil->StatusStrict ) {
+        unless ( exists $cil->StatusAllowed()->{$self->Status} ) {
+            $self->error( "You have 'StatusStrict' turned on but this status (" . $self->Status . ") is not in the 'StatusAllowedList'" );
+            return;
+        }
+    }
+
+    # see if we only allow certain Labels
+    if ( $cil->LabelStrict ) {
+        my @labels = @{$self->Labels};
+        foreach my $label ( @labels ) {
+            unless ( exists $cil->LabelAllowed()->{$label} ) {
+                $self->error( "You have 'LabelStrict' turned on but this label ($label) is not in the 'LabelAllowedList'" );
+                return;
+            }
+        }
+    }
+
+    return 1;
+}
+
 sub add_label {
     my ($self, $label) = @_;
 
@@ -122,11 +153,6 @@ sub add_attachment {
     push @{$self->{data}{Attachment}}, $attachment->name;
     $self->Updated( $attachment->Updated );
     $self->flag_as_updated();
-}
-
-sub as_output {
-    my ($self) = @_;
-    return CIL::Utils->format_data_as_output( $self->{data}, @FIELDS );
 }
 
 sub Labels {

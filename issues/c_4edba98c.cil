@@ -1,0 +1,16 @@
+Issue: 6baa8555
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-26T12:11:09
+Updated: 2008-06-26T12:12:41
+
+Added the following options:
+
+* StatusStrict
+* StatusAllowedList
+* StatusOpenList
+* StatusClosedList
+
+* LabelStrict
+* LabelAllowedList
+
+The lists are only checked if the strict variables are on.

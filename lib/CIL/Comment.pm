@@ -75,6 +75,14 @@ sub last_field {
     return 'Description';
 }
 
+sub is_valid {
+    # ToDo:
+    # * check that the issue is valid
+    # * Inserted and Updated are valid
+    # * Description has something in it
+    return 1;
+}
+
 ## ----------------------------------------------------------------------------
 1;
 ## ----------------------------------------------------------------------------
