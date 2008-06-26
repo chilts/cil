@@ -178,7 +178,7 @@ sub set_no_update {
 
 sub set_inserted_now {
     my ($self) = @_;
-    my $time = '' . DateTime->now;
+    my $time = DateTime->now->iso8601;
     $self->{data}{Inserted} = $time;
     $self->{data}{Updated} = $time;
     $self->{Changed} = 1;
@@ -186,7 +186,7 @@ sub set_inserted_now {
 
 sub set_updated_now {
     my ($self) = @_;
-    my $time = '' . DateTime->now;
+    my $time = DateTime->now->iso8601;
     $self->{data}{Updated} = $time;
     $self->{Changed} = 1;
 }
