@@ -1,0 +1,9 @@
+Issue: c6a8d865
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-27T23:39:55
+Updated: 2008-06-27T23:40:49
+
+Added the command 'fsck'. Currently it works okay but it might need looking at
+in the future for functionality and possible refactoring.
+
+Closing issue.

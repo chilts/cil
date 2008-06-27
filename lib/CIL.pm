@@ -58,21 +58,39 @@ sub new {
     return $self;
 }
 
-sub list_issues {
-    my ($self) = @_;
+sub list_entities {
+    my ($self, $prefix) = @_;
 
-    my $globpath = $self->IssueDir . "/i_*.cil";
+    my $globpath = $self->IssueDir . "/${prefix}_*.cil";
     my @filenames = bsd_glob($globpath);
 
-    my @issues;
+    my @entities;
     foreach my $filename ( sort @filenames ) {
-        my ($name) = $filename =~ m{/i_(.*)\.cil$}xms;
-        push @issues, {
+        my ($name) = $filename =~ m{/${prefix}_(.*)\.cil$}xms;
+        push @entities, {
             name => $name,
             filename => $filename,
         };
     }
-    return \@issues;
+    return \@entities;
+}
+
+sub list_issues {
+    my ($self) = @_;
+
+    return $self->list_entities('i');
+}
+
+sub list_comments {
+    my ($self) = @_;
+
+    return $self->list_entities('c');
+}
+
+sub list_attachments {
+    my ($self) = @_;
+
+    return $self->list_entities('a');
 }
 
 sub get_issues {
@@ -85,6 +103,30 @@ sub get_issues {
         push @issues, CIL::Issue->new_from_name( $self, $issue->{name} );
     }
     return \@issues;
+}
+
+sub get_comments {
+    my ($self) = @_;
+
+    my $comment_list = $self->list_comments();
+
+    my @comments;
+    foreach my $comment ( @$comment_list ) {
+        push @comments, CIL::Comment->new_from_name( $self, $comment->{name} );
+    }
+    return \@comments;
+}
+
+sub get_attachments {
+    my ($self) = @_;
+
+    my $attachment_list = $self->list_attachments();
+
+    my @attachments;
+    foreach my $attachment ( @$attachment_list ) {
+        push @attachments, CIL::Attachment->new_from_name( $self, $attachment->{name} );
+    }
+    return \@attachments;
 }
 
 sub get_comments_for {

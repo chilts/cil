@@ -215,12 +215,12 @@ sub name {
     return $self->{name};
 }
 
-sub error {
+sub errors {
     my $self = shift;
     if( @_ ) {
-        $self->{error} = $_[0];
+        $self->{errors} = $_[0];
     }
-    return $self->{error};
+    return $self->{errors};
 }
 
 ## ----------------------------------------------------------------------------

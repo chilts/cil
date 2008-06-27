@@ -93,17 +93,17 @@ sub last_field {
 sub is_valid {
     my ($self, $cil) = @_;
 
+    my @errors;
+
     # issues should have a Summary
     unless ( defined defined $self->Summary and length $self->Summary ) {
-        $self->error( 'You must provide a summary.' );
-        return;
+        push @errors, 'Issue does not have a summary';
     }
 
     # see if we only allow certain Statuses
     if ( $cil->StatusStrict ) {
         unless ( exists $cil->StatusAllowed()->{$self->Status} ) {
-            $self->error( "You have 'StatusStrict' turned on but this status (" . $self->Status . ") is not in the 'StatusAllowedList'" );
-            return;
+            push @errors, "StatusStrict is turned on but this issue has an invalid status '" . $self->Status . "'";
         }
     }
 
@@ -112,13 +112,13 @@ sub is_valid {
         my @labels = @{$self->Labels};
         foreach my $label ( @labels ) {
             unless ( exists $cil->LabelAllowed()->{$label} ) {
-                $self->error( "You have 'LabelStrict' turned on but this label ($label) is not in the 'LabelAllowedList'" );
-                return;
+                push @errors, "LabelStrict is turned on but this issue has an invalid label '$label'";
             }
         }
     }
 
-    return 1;
+    $self->errors( \@errors );
+    return @errors ? 0 : 1;
 }
 
 sub add_label {
