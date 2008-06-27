@@ -2,8 +2,10 @@ Summary: Add a 'fsck' command
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.3
+Label: Type-Enhancement
 Inserted: 2008-06-27T13:39:48
-Updated: 2008-06-27T13:43:11
+Updated: 2008-06-27T23:27:54
 
 When we add issues and their comments and attachments, there is the possibility
 that you don't actually check in the correct files at the same time. This
