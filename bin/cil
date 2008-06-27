@@ -48,10 +48,14 @@ my @IN_OPTS = (
     'status>s',     # for 'summary', 'list'
     'l=s',          # l = label
     'label>l',      # for 'summary, 'list'
+    'c=s',          # c = created-by
+    'created-by>c', # for 'summary', 'list'
+    'a=s',          # a = assigned_to
+    'assigned-to>a',# for 'summary', 'list'
 
     # booleans
-    'is-open',
-    'is-closed',
+    'is-open',      # for 'summary', 'list'
+    'is-closed',    # for 'summary', 'list'
     'help',
     'version',
 );
@@ -461,6 +465,16 @@ sub filter_issues {
     if ( defined $args->{'is-closed'} ) {
         # just get the closed issues
         @new_issues = grep { $_->is_closed($cil) } @new_issues;
+    }
+
+    # filter out 'created by'
+    if ( defined $args->{c} ) {
+        @new_issues = grep { $args->{c} eq $_->created_by_email } @new_issues;
+    }
+
+    # filter out 'assigned to'
+    if ( defined $args->{a} ) {
+        @new_issues = grep { $args->{a} eq $_->assigned_to_email } @new_issues;
     }
 
     return \@new_issues;

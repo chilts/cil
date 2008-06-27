@@ -1,0 +1,13 @@
+Issue: 85eceee9
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-27T13:18:47
+Updated: 2008-06-27T13:20:01
+
+Added the --created-by and --assigned-to filters.
+
+These work just on the email address and not the whole field. E.g.
+
+ $ cil list --created-by=andy@example.com
+ $ cil list --assigned-to=andy@example.org
+
+The short options for these are -c and -a.

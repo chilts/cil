@@ -26,6 +26,7 @@ use warnings;
 use Carp;
 use File::Slurp;
 use File::Temp qw(tempfile);
+use Email::Find;
 use POSIX qw(getpgrp tcgetpgrp);
 use Fcntl qw(:DEFAULT :flock);
 
@@ -180,6 +181,21 @@ sub ensure_interactive {
 
     # if we are here, then we have ensured what we wanted
     return;
+}
+
+sub extract_email_address {
+    my ($class, $text) = @_;
+
+    my $email_address;
+    my $num_found = find_emails(
+        $text,
+        sub {
+            my ($mail_address, $text_email) = @_;
+            $email_address = $text_email;
+        }
+    );
+
+    return $email_address;
 }
 
 ## ----------------------------------------------------------------------------

@@ -186,6 +186,18 @@ sub is_closed {
     return exists $closed->{$self->Status};
 }
 
+sub assigned_to_email {
+    my ($self) = @_;
+
+    return CIL::Utils->extract_email_address( $self->AssignedTo );
+}
+
+sub created_by_email {
+    my ($self) = @_;
+
+    return CIL::Utils->extract_email_address( $self->CreatedBy );
+}
+
 ## ----------------------------------------------------------------------------
 1;
 ## ----------------------------------------------------------------------------
