@@ -1,0 +1,14 @@
+Summary: Add a 'fsck' command
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-27T13:39:48
+Updated: 2008-06-27T13:43:11
+
+When we add issues and their comments and attachments, there is the possibility
+that you don't actually check in the correct files at the same time. This
+command will help to figure out whether you have all the files around.
+
+This command will also check each command for validity. For example, if you
+change the 'StatusAllowedList' in your '.cil' file, then this will help
+determine if there are any issues set to now invalid statuses.
