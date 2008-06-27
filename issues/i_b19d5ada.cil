@@ -2,11 +2,11 @@ Summary: Add a 'cil check-in-git' command
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
-Label: Milestone-v0.3
+Label: Milestone-Future
 Label: Release-v0.2.1
 Label: Type-Enhancement
 Inserted: 2008-06-24T03:24:14
-Updated: 2008-06-26T11:55:28
+Updated: 2008-06-27T13:29:00
 
 The ability to check whether issues/comments/attachments are tracked by Git is
 important. Or indeed any VCS system.
