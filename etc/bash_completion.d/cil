@@ -37,7 +37,7 @@ _cil()
     local cur prev opts
 
     # constants
-    opts="--help --version --path --status --label --filename"
+    opts="--help --version --path --status --label --filename --is-open --is-closed"
     commands="init add summary list show status edit comment attach extract"
 
 	COMPREPLY=()

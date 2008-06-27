@@ -170,6 +170,22 @@ sub Attachments {
     return $self->{data}{Attachment};
 }
 
+sub is_open {
+    my ($self, $cil) = @_;
+
+    # check against the list of Open Statuses
+    my $open = $cil->StatusOpen();
+    return exists $open->{$self->Status};
+}
+
+sub is_closed {
+    my ($self, $cil) = @_;
+
+    # check against the list of Closed Statuses
+    my $closed = $cil->StatusClosed();
+    return exists $closed->{$self->Status};
+}
+
 ## ----------------------------------------------------------------------------
 1;
 ## ----------------------------------------------------------------------------
