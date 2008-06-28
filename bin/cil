@@ -776,6 +776,7 @@ Commands:
    comment ISSUE
    attach  ISSUE FILENAME
    extract ATTACHMENT [--filename=FILENAME]
+   fsck
 
 See <http://kapiti.geek.nz/software/cil.html> for further information.
 Report bugs to <andychilton -at- gmail -dot- com>.
@@ -810,6 +811,8 @@ cil - the command-line issue list
 
     $ cil extract decaf7ea
     $ cil extract decaf7ea --filename=other_filename.txt
+
+    $ cil fsck
 
 =head1 DESCRIPTION
 

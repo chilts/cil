@@ -81,6 +81,12 @@ it from the issue:
 
  $ cil extract decaf7ea --filename=mycore
 
+Finally, because the cil issue files reside on the filesystem in flat files,
+there needs to be a way to check the integrity of the issues, therefore you can
+run this to do checks regarding the whole issue list:
+
+ $ cil fsck
+
 That's it for now. As you can see, if you've played with any kind of bug/issue
 tracker before, 'cil' is straightforward.
 
