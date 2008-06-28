@@ -768,8 +768,8 @@ Usage: $0 COMMAND [options]
 Commands:
    init    [--path=PATH]
    add
-   summary [--status=STATUS] [--label=LABEL]
-   list    [--status=STATUS] [--label=LABEL]
+   summary [--status=STATUS] [--label=LABEL] [--is-open] [--is-closed]
+   list    [--status=STATUS] [--label=LABEL] [--is-open] [--is-closed]
    show    ISSUE
    status  ISSUE NEW_STATUS
    edit    ISSUE
@@ -796,6 +796,7 @@ cil - the command-line issue list
     $ cil list
     $ cil list --status=New
     $ cil list --label=Release-v0.1
+    $ cil list --is-open
 
     $ cil add
     ... added issue 'cafebabe' ...
