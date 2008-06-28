@@ -2,11 +2,11 @@ Summary: Add a filter '--grep=regex'
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
-Label: Milestone-v0.3
+Label: Milestone-Future
 Label: Release-v0.2.1
 Label: Type-Enhancement
 Inserted: 2008-06-24T12:16:57
-Updated: 2008-06-26T11:54:57
+Updated: 2008-06-27T23:59:48
 
 Having a 'grep' filter would be quite powerful. It could be used in the 'list'
 and 'summary' commands. It would be good if it accepts Perl regexes and might
