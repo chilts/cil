@@ -1,0 +1,14 @@
+Summary: Ability to have a ~/cilrc file
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-28T23:44:50
+Updated: 2008-06-28T23:46:05
+
+The ability to have a ~/.cilrc file can help with the following:
+
+* UserName: An Other
+* UserEmail me@example.com
+
+There are probably other uses too but for now, just getting it used is what's
+important.
