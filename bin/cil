@@ -534,6 +534,7 @@ sub cmd_fsck {
 
 sub print_fsck_errors {
     my ($entity, $errors) = @_;
+    return unless keys %$errors;
 
     separator();
     foreach my $issue_name ( keys %$errors ) {
