@@ -1,13 +1,14 @@
 Summary: Do checking on input fields after adding or editing issue
-Status: InProgress
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Priority-Medium
 Label: Release-v0.1.0
 Label: Type-Enhancement
+Comment: 3f088351
 Comment: 4edba98c
 Inserted: 2008-05-05T12:46:58
-Updated: 2008-06-26T12:12:41
+Updated: 2008-06-28T11:36:42
 
 For example, if there is a config item in .cil called
 'allowed_statuses', all input values in the 'Status' field should be
