@@ -1,12 +1,13 @@
 Summary: Labels should be allowed to have a 'required' set
-Status: New
+Status: Duplicate
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Priority-Medium
 Label: Release-v0.1.0
 Label: Type-Enhancement
+Comment: 61aea66d
 Inserted: 2008-05-05T12:53:38
-Updated: 2008-06-26T11:53:27
+Updated: 2008-06-28T11:31:35
 
 In the .cil config file, there should a field which determines a
 'required' set of labels.
