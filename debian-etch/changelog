@@ -1,5 +1,11 @@
 cil (0.3.0) unstable; urgency=low
 
+  * Added filters for the listing commands
+  * Added ability to read .cil config file
+  * Can now set which Statuses are valid
+  * Can set which Labels are valid
+  * Added 'fsck' command
+  * Added bash completion for options, commands and entities
   * Ready for 0.3.0 release
 
  -- Andrew Chilton <andychilton@gmail.com>  Sat, 28 Jun 2008 12:06:19 +1200
