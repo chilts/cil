@@ -21,6 +21,7 @@ LabelAllowedList: Type-Enhancement
 LabelAllowedList: Type-Defect
 LabelAllowedList: Type-Task
 LabelAllowedList: Type-Patch
+LabelAllowedList: Type-Refactoring
 LabelAllowedList: Type-Other
 LabelAllowedList: Milestone-v0.1
 LabelAllowedList: Milestone-v0.2
