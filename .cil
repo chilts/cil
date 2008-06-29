@@ -23,6 +23,7 @@ LabelAllowedList: Type-Other
 LabelAllowedList: Milestone-v0.1
 LabelAllowedList: Milestone-v0.2
 LabelAllowedList: Milestone-v0.3
+LabelAllowedList: Milestone-v0.4
 LabelAllowedList: Milestone-Future
 LabelAllowedList: Priority-Critical
 LabelAllowedList: Priority-High
