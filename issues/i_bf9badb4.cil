@@ -1,0 +1,20 @@
+Summary: Allow shortened hash names
+Status: New
+CreatedBy: Francois Marier <francois@debian.org>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-29T13:20:11
+Updated: 2008-06-29T12:19:17
+
+How about doing the same thing that git is doing for commit hashes: if you
+only type the first few characters of the hash, then as long as it's not
+ambiguous, git will accept that.
+
+So instead of typing
+
+  cil show 28fb3258
+
+I could just do
+
+  cil show 28f
+
+Francois
