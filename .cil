@@ -1,12 +1,14 @@
 StatusStrict: 1
 StatusAllowedList: New
 StatusAllowedList: InProgress
+StatusAllowedList: Ongoing
 StatusAllowedList: Fixed
 StatusAllowedList: OnHold
 StatusAllowedList: Duplicate
 StatusAllowedList: Finished
 StatusOpenList: New
 StatusOpenList: InProgress
+StatusOpenList: Ongoing
 StatusOpenList: Fixed
 StatusClosedList: OnHold
 StatusClosedList: Duplicate
