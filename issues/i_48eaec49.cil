@@ -1,0 +1,21 @@
+Summary: Add command 'am'
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-28T23:57:56
+Updated: 2008-06-29T00:01:37
+
+This command would take a mailbox and apply it as a new bug. It would take the
+first subject as the summary and the body as the issue decription. Then, each
+subsequent email would be added as a comment.
+
+The Status would be set to 'New' pending another way of doing it.
+
+I guess attachments throughout the email thread could also be imported.
+Depending on how hard this is, we might syphon it off to another issue for
+another release.
+
+There may be other smart things we can do further down the line. For example,
+maybe we could try and read the Status from the subject line somehow but I
+think we just implement it straightforward for now and see what suggestions
+other people have.
