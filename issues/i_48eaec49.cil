@@ -1,11 +1,13 @@
 Summary: Add command 'am'
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Milestone-v0.4
 Label: Type-Enhancement
+Comment: 45cd5e23
+Comment: 6f5bc459
 Inserted: 2008-06-28T23:57:56
-Updated: 2008-06-29T00:07:15
+Updated: 2008-06-29T12:11:14
 
 This command would take a mailbox and apply it as a new bug. It would take the
 first subject as the summary and the body as the issue decription. Then, each

@@ -26,6 +26,9 @@ use File::Touch;
 use File::Glob ':glob';
 use File::Basename;
 use File::Slurp qw(read_file write_file);
+use Email::Simple;
+use Email::Date qw(find_date);
+
 use CIL;
 use CIL::Issue;
 use CIL::Comment;
@@ -234,35 +237,7 @@ sub cmd_add {
     $issue->AssignedTo("$gan <$gae>");
     $issue->Description("Description ...");
 
-    my $edit = $y;
-
-    # keep going until we get a valid issue or we want to quit
-    while ( $edit eq $y ) {
-        # read in the new issue text
-        my $fh = CIL::Utils->solicit( $issue->as_output );
-        $issue = CIL::Issue->new_from_fh( 'tmp', $fh );
-
-        # check if the issue is valid
-        if ( $issue->is_valid($cil) ) {
-            $edit = 'n';
-        }
-        else {
-            msg($_) foreach @{ $issue->errors };
-            print 'Would you like to re-edit (y/n): ';
-            $edit = <STDIN>;
-            chomp $edit;
-            print "\n";
-        }
-    }
-
-    # if the issue is still invalid, they quit without correcting it
-    return unless $issue->is_valid( $cil );
-
-    # we've got the issue, so let's name it
-    my $unique_str = $issue->Inserted . $issue->Summary . $issue->Description;
-    $issue->set_name( substr(md5_hex($unique_str), 0, 8) );
-    $issue->save($cil);
-    display_issue($cil, $issue);
+    add_issue_loop($cil, undef, $issue);
 }
 
 sub cmd_edit {
@@ -289,10 +264,7 @@ sub cmd_edit {
         }
         else {
             msg($_) foreach @{ $issue->errors };
-            print 'Would you like to re-edit (y/n): ';
-            $edit = <STDIN>;
-            chomp $edit;
-            print "\n";
+            $edit = ans('Would you like to re-edit (y/n): ');
         }
     }
 
@@ -320,41 +292,7 @@ sub cmd_comment {
     $comment->CreatedBy("$gan <$gae>");
     $comment->Description("Description ...");
 
-    my $edit = $y;
-
-    # keep going until we get a valid issue or we want to quit
-    while ( $edit eq $y ) {
-        # read in the new comment text
-        my $fh = CIL::Utils->solicit( $comment->as_output );
-        $comment = CIL::Comment->new_from_fh( 'tmp', $fh );
-
-        # check if the comment is valid
-        if ( $comment->is_valid($cil) ) {
-            $edit = 'n';
-        }
-        else {
-            msg($_) foreach @{ $issue->errors };
-            print 'Would you like to re-edit (y/n): ';
-            $edit = <STDIN>;
-            chomp $edit;
-            print "\n";
-        }
-    }
-
-    # if the comment is still invalid, they quit without correcting it
-    return unless $comment->is_valid( $cil );
-
-    # we've got the comment, so let's name it
-    my $unique_str = $comment->Inserted . $issue->Description;
-    $comment->set_name( substr(md5_hex($unique_str), 0, 8) );
-
-    # finally, save it
-    $comment->save($cil);
-
-    # add the comment to the issue, update it's timestamp and save it out
-    $issue->add_comment( $comment );
-    $issue->save($cil);
-    display_issue_full($cil, $issue);
+    add_comment_loop($cil, undef, $issue, $comment);
 }
 
 sub cmd_attach {
@@ -397,7 +335,7 @@ EOF
     $attachment->Size( $size );
 
     # we've got the attachment, so let's name it
-    my $unique_str = $attachment->Inserted . $attachment->File;
+    my $unique_str = time . $attachment->Inserted . $attachment->File;
     $attachment->set_name( substr(md5_hex($unique_str), 0, 8) );
 
     # finally, tell it who it's parent is and then save
@@ -532,8 +470,186 @@ sub cmd_fsck {
     separator();
 }
 
+sub cmd_am {
+    my ($cil, $args, $email_filename) = @_;
+
+    unless ( -f $email_filename ) {
+        fatal("couldn't load email '$email_filename'");
+    }
+
+    my $msg_text = read_file($email_filename);
+
+    my $email = Email::Simple->new($msg_text);
+    unless ( defined $email ) {
+        fatal("email file '$email_filename' didn't look like an email");
+    }
+
+    # extract some fields
+    my $subject = $email->header('Subject');
+    my $from    = $email->header('From');
+    my $date    = find_date($email)->datetime;
+    my $body    = $email->body;
+
+    # see if we can find any issue names in either the subject or the body
+    my @issue_names;
+    foreach my $text ( $subject, $body ) {
+        my @new = ( $text =~ /\b\#?([0-9a-f]{8})\b/gxms );
+        push @issue_names, @new;
+    }
+
+    msg("Found possible issue names in email: ", ( join(' ', @issue_names) || '[none]' ));
+
+    my %issue;
+    foreach ( @issue_names ) {
+        my $i = eval { CIL::Issue->new_from_name($cil, $_) };
+        next unless defined $i;
+
+        $issue{$i->name} = $i;
+    }
+
+    if ( keys %issue ) {
+        msg( "Found actual issues: " . (join(' ', keys %issue)) );
+
+        # create the new comment
+        my $comment = CIL::Comment->new('tmpname');
+        $comment->Issue( '...' );
+        $comment->CreatedBy( $from );
+        $comment->Inserted( $date );
+        # $comment->Updated( $date );
+        $comment->Description( $body );
+
+        # display
+        display_comment($cil, $comment);
+
+        # found at least one issue, so this might be a comment
+        my $issue;
+        if ( keys %issue == 1 ) {
+            $issue = (values %issue)[0];
+        }
+        else {
+            my $ans = ans('To which issue would you like to add this comment: ');
+
+            # ToDo: decide whether we let them choose an arbitrary issue, for
+            # now quit unless they choose one from the list
+            return unless exists $issue{$ans};
+
+            # got a valid issue_name, so set the parent name
+            $issue = $issue{$ans};
+        }
+
+        # set the parent issue
+        $comment->Issue( $issue->name );
+
+        add_comment_loop($cil, undef, $issue, $comment);
+    }
+    else {
+        msg("Couldn't find reference to any issues in the email.");
+
+        # no issue found so make up the issue first
+        my $issue = CIL::Issue->new('tmpname');
+        $issue->Summary( $subject );
+        $issue->Status( 'New' );
+        $issue->CreatedBy( $from );
+        $issue->AssignedTo( "$gan <$gae>" );
+        $issue->Inserted( $date );
+        $issue->Updated( $date );
+        $issue->Description( $body );
+
+        # display
+        display_issue_full($cil, $issue);
+
+        # then ask if the user would like to add it
+        msg("Couldn't find any likely issues, so this might be a new one.");
+        my $ans = ans('Would you like to add this message as an issue shown above (y/n): ');
+        return unless $ans eq 'y';
+
+        add_issue_loop($cil, undef, $issue);
+    }
+}
+
 ## ----------------------------------------------------------------------------
 # helpers
+
+sub ans {
+    my ($msg) = @_;
+    print $msg;
+    my $ans = <STDIN>;
+    chomp $ans;
+    print "\n";
+    return $ans;
+}
+
+sub add_issue_loop {
+    my ($cil, undef, $issue) = @_;
+
+    my $edit = $y;
+
+    # keep going until we get a valid issue or we want to quit
+    while ( $edit eq $y ) {
+        # read in the new issue text
+        my $fh = CIL::Utils->solicit( $issue->as_output );
+        $issue = CIL::Issue->new_from_fh( 'tmp', $fh );
+
+        # check if the issue is valid
+        if ( $issue->is_valid($cil) ) {
+            $edit = 'n';
+        }
+        else {
+            msg($_) foreach @{ $issue->errors };
+            $edit = ans('Would you like to re-edit (y/n): ');
+        }
+    }
+
+    # if the issue is still invalid, they quit without correcting it
+    return unless $issue->is_valid( $cil );
+
+    # we've got the issue, so let's name it
+    my $unique_str = time . $issue->Inserted . $issue->Summary . $issue->Description;
+    $issue->set_name( substr(md5_hex($unique_str), 0, 8) );
+    $issue->save($cil);
+    display_issue($cil, $issue);
+
+    return $issue;
+}
+
+sub add_comment_loop {
+    my ($cil, undef, $issue, $comment) = @_;
+
+    my $edit = $y;
+
+    # keep going until we get a valid issue or we want to quit
+    while ( $edit eq $y ) {
+        # read in the new comment text
+        my $fh = CIL::Utils->solicit( $comment->as_output );
+        $comment = CIL::Comment->new_from_fh( 'tmp', $fh );
+
+        # check if the comment is valid
+        if ( $comment->is_valid($cil) ) {
+            $edit = 'n';
+        }
+        else {
+            msg($_) foreach @{ $issue->errors };
+            $edit = ans('Would you like to re-edit (y/n): ');
+        }
+    }
+
+    # if the comment is still invalid, they quit without correcting it
+    return unless $comment->is_valid( $cil );
+
+    # we've got the comment, so let's name it
+    my $unique_str = time . $comment->Inserted . $issue->Description;
+    $comment->set_name( substr(md5_hex($unique_str), 0, 8) );
+
+    # finally, save it
+    $comment->save($cil);
+
+    # add the comment to the issue, update it's timestamp and save it out
+    $issue->add_comment( $comment );
+    $issue->save($cil);
+    display_issue_full($cil, $issue);
+
+    return $comment;
+}
 
 sub check_paths {
     my ($cil) = @_;
@@ -669,24 +785,36 @@ sub display_issue_full {
 
     my $comments = $cil->get_comments_for( $issue );
     foreach my $comment ( @$comments ) {
-        title( 'Comment ' . $comment->name() );
-        field( 'CreatedBy', $comment->CreatedBy() );
-        field( 'Inserted', $comment->Inserted() );
-        field( 'Updated', $comment->Inserted() );
-        text('Description', $comment->Description());
+        display_comment( $cil, $comment );
     }
 
     my $attachments = $cil->get_attachments_for( $issue );
     foreach my $attachment ( @$attachments ) {
-        title( 'Attachment ' . $attachment->name() );
-        field( 'Filename', $attachment->Filename() );
-        field( 'CreatedBy', $attachment->CreatedBy() );
-        field( 'Inserted', $attachment->Inserted() );
-        field( 'Updated', $attachment->Inserted() );
+        display_attachment( $cil, $attachment );
         msg();
     }
 
     separator();
+}
+
+sub display_comment {
+    my ($cil, $comment) = @_;
+
+    title( 'Comment ' . $comment->name() );
+    field( 'CreatedBy', $comment->CreatedBy() );
+    field( 'Inserted', $comment->Inserted() );
+    field( 'Updated', $comment->Inserted() );
+    text('Description', $comment->Description());
+}
+
+sub display_attachment {
+    my ($cil, $attachment) = @_;
+
+    title( 'Attachment ' . $attachment->name() );
+    field( 'Filename', $attachment->Filename() );
+    field( 'CreatedBy', $attachment->CreatedBy() );
+    field( 'Inserted', $attachment->Inserted() );
+    field( 'Updated', $attachment->Inserted() );
 }
 
 ## ----------------------------------------------------------------------------
@@ -815,6 +943,8 @@ cil - the command-line issue list
     $ cil extract decaf7ea
     $ cil extract decaf7ea --filename=other_filename.txt
 
+    $ cil am email.txt
+
     $ cil fsck
 
 =head1 DESCRIPTION
@@ -873,6 +1003,14 @@ otherwise it will use the original one saved along with the attachment.
 
 Tries to help you organise your issues if any aren't valid or have broken
 relationships.
+
+=item am
+
+Applies an email message to the issue list. It tries to figure out the type of
+email it is, whether it is a new issue or a comment on an already existing
+issue. For example, if it can find valid issue names in the subject or body of
+the message, it adds it as a comment to that issue. If it can't find any valid
+issue names, it presumes it's a new issue and adds that.
 
 =back
 

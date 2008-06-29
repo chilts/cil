@@ -1,0 +1,18 @@
+Issue: 48eaec49
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-29T12:08:32
+Updated: 2008-06-29T12:11:14
+
+Added ability to process an email message. It will either be added as a new
+issue or as a comment to an existing issue. The process for determining what
+happens is as follows:
+
+* a list of possible issue names is compiled from the subject and body of the
+  email
+* of those, it checks if any are valid in the current list
+
+If any are valid, it will add the email as a comment to that one (if there is
+only one) or will ask you which to add it to if there are more than one).
+
+In the case where there is no valid issues, it will add the email as a new
+issue.

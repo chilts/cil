@@ -1,0 +1,23 @@
+Issue: 48eaec49
+CreatedBy: Francois Marier <francois@debian.org>
+Inserted: 2008-06-29T00:20:11
+Updated: 2008-06-29T12:05:50
+
+On 2008-06-29 at 12:13:49, Andrew Chilton wrote:
+> Any other thoughts about how it would work? Maybe that enough for now
+> and we see what happens.
+
+Thinking about the use case where I'd want to add a comment on an issue
+(like what I am doing now about the cil-am command), I think it would be
+neat if cil-am could detect that.
+
+So for example, if you find a cil hash in the body of an email (or the
+subject line), then it could be added as a comment. The timestamp of the
+email determining the order.
+
+That would be a way to add a comment to an issue without depending on a web
+interface.
+
+[snip]
+
+Francois
