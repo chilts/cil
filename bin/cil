@@ -532,20 +532,8 @@ sub cmd_fsck {
     separator();
 }
 
-sub print_fsck_errors {
-    my ($entity, $errors) = @_;
-    return unless keys %$errors;
-
-    separator();
-    foreach my $issue_name ( keys %$errors ) {
-        title( "$entity $issue_name ");
-        foreach my $error ( @{$errors->{$issue_name}} ) {
-            msg("* $error");
-        }
-    }
-}
-
 ## ----------------------------------------------------------------------------
+# helpers
 
 sub check_paths {
     my ($cil) = @_;
@@ -601,6 +589,19 @@ sub filter_issues {
     }
 
     return \@new_issues;
+}
+
+sub print_fsck_errors {
+    my ($entity, $errors) = @_;
+    return unless keys %$errors;
+
+    separator();
+    foreach my $issue_name ( keys %$errors ) {
+        title( "$entity $issue_name ");
+        foreach my $error ( @{$errors->{$issue_name}} ) {
+            msg("* $error");
+        }
+    }
 }
 
 ## ----------------------------------------------------------------------------
