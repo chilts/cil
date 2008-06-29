@@ -2,8 +2,10 @@ Summary: Ability to have a ~/.cilrc file
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.4
+Label: Type-Enhancement
 Inserted: 2008-06-28T23:44:50
-Updated: 2008-06-29T09:52:57
+Updated: 2008-06-29T10:13:57
 
 The ability to have a ~/.cilrc file can help with the following:
 
