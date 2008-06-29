@@ -869,6 +869,11 @@ Adds that particular filename to an existing issue.
 Extracts the file from the attachment number. If filename if given uses that,
 otherwise it will use the original one saved along with the attachment.
 
+=item fsck
+
+Tries to help you organise your issues if any aren't valid or have broken
+relationships.
+
 =back
 
 =head1 .cil
