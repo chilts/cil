@@ -1,0 +1,10 @@
+Summary: Ongoing maintenance and refactorings
+Status: Ongoing
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-06-29T10:16:39
+Updated: 2008-06-29T10:17:33
+
+This issue is so that refactorings can be checked in against a particular
+issue. This makes it easier to track and see a high level change of what was
+done.
