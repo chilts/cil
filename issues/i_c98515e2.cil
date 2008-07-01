@@ -1,0 +1,29 @@
+Summary: Allow dependencies between issues
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-01T03:23:39
+Updated: 2008-07-01T03:30:14
+
+Francois suggested that allowing dependencies between issues would be
+good. ie. this one here is dependent on that one over there (ie. the
+other needs to be fixed first).
+
+I'd prefer to keep it generic, ie. you set the status to 'DependsOn'
+and then you refer to the other issue in the description or a comment.
+
+If that were the case, then no code changes would be required.
+
+But...
+
+It sounds like people would want this as a separate field though, so
+maybe we add it as follows. The top section of each issue would have a
+new field (if applicable), called "DependsOn" and would refer to the
+other issue number:
+
+ DependsOn: cafebabe
+
+If we do this, do we need to add a 'Precedes' field to the other
+issue?
+
+I'll ask the others for input.
