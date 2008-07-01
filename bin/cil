@@ -70,9 +70,6 @@ my %BOOLEAN_ARGS = (
     'is-closed' => 1,
 );
 
-my $gan = $ENV{GIT_AUTHOR_NAME} || 'Your Name';
-my $gae = $ENV{GIT_AUTHOR_EMAIL} || 'you@example.org';
-
 ## ----------------------------------------------------------------------------
 # main program
 
@@ -101,7 +98,8 @@ my $gae = $ENV{GIT_AUTHOR_EMAIL} || 'you@example.org';
     }
 
     my $cil = CIL->new();
-    $cil->read_config_file( '.cil' );
+    $cil->read_config_user();
+    $cil->read_config_file();
 
     &{"cmd_$command"}($cil, $args, @ARGV);
 }
@@ -225,10 +223,12 @@ sub cmd_add {
 
     CIL::Utils->ensure_interactive();
 
+    my $user = user($cil);
+
     my $issue = CIL::Issue->new('tmpname');
     $issue->Status('New');
-    $issue->CreatedBy("$gan <$gae>");
-    $issue->AssignedTo("$gan <$gae>");
+    $issue->CreatedBy( $user );
+    $issue->AssignedTo( $user );
     $issue->Description("Description ...");
 
     add_issue_loop($cil, undef, $issue);
@@ -277,7 +277,7 @@ sub cmd_comment {
     # create the new comment
     my $comment = CIL::Comment->new('tmpname');
     $comment->Issue( $issue->name );
-    $comment->CreatedBy("$gan <$gae>");
+    $comment->CreatedBy( user($cil) );
     $comment->Description("Description ...");
 
     add_comment_loop($cil, undef, $issue, $comment);
@@ -294,10 +294,11 @@ sub cmd_attach {
     }
 
     my $basename = basename( $filename );
+    my $user = user($cil);
 
     my $add_attachment_text = <<"EOF";
 Filename    : $basename
-CreatedBy   : $gan <$gae>
+CreatedBy   : $user
 
 File goes here ... this will be overwritten.
 EOF
@@ -532,7 +533,7 @@ sub cmd_am {
         $issue->Summary( $subject );
         $issue->Status( 'New' );
         $issue->CreatedBy( $from );
-        $issue->AssignedTo( "$gan <$gae>" );
+        $issue->AssignedTo( user($cil) );
         $issue->Inserted( $date );
         $issue->Updated( $date );
         $issue->Description( $body );
@@ -862,6 +863,11 @@ sub display_attachment {
     field( 'Updated', $attachment->Inserted() );
 }
 
+sub user {
+    my ($cil) = @_;
+    return $cil->UserName . ' <' . $cil->UserEmail . '>';
+}
+
 ## ----------------------------------------------------------------------------
 # helper functions for this command line tool
 
@@ -1122,6 +1128,33 @@ to 1 if you require this feature.
 Default: empty, Type: List
 
 This determines which labels are allowed if you have turned on LabelStrict.
+
+=back
+
+=head1 ~/.cilrc
+
+The C<~/.cilrc> file is read to configure the user's preferences for all cil
+lists they're using. It is of the same format as the C<.cil> file and contains
+the following options:
+
+    UserName: Andrew Chilton
+    UserEmail: andychilton@gmail.com
+
+=over
+
+=item UserName
+
+Default: 'Name', Type: String
+
+This is used as a default in the C<CreatedBy> and C<AssignedTo> fields in any
+issues/comments/attachments you add.
+
+=item UserEmail
+
+Default: 'Email', Type: String
+
+This is used as a default in the C<CreatedBy> and C<AssignedTo> fields in any
+issues/comments/attachments you add.
 
 =back
 

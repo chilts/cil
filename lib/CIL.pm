@@ -30,6 +30,7 @@ __PACKAGE__->mk_accessors(qw(
     IssueDir
     StatusStrict StatusAllowed StatusOpen StatusClosed
     LabelStrict LabelAllowed
+    UserName UserEmail
 ));
 
 my $defaults = {
@@ -39,6 +40,11 @@ my $defaults = {
 };
 
 my @config_hashes = qw(StatusAllowed StatusOpen StatusClosed LabelAllowed);
+
+my $defaults_user = {
+    UserName  => 'Name',
+    UserEmail => 'me@example.com',
+};
 
 ## ----------------------------------------------------------------------------
 
@@ -179,8 +185,26 @@ sub get_attachments_for {
     return \@attachments;
 }
 
+sub read_config_user {
+    my ($self) = @_;
+
+    my $filename = "$ENV{HOME}/.cilrc";
+
+    my $cfg;
+    if ( -f $filename ) {
+        $cfg = CIL::Utils->parse_cil_file( $filename );
+    }
+
+    # set each config to be either the user defined one or the default
+    foreach ( qw(UserName UserEmail) ) {
+        $self->$_( $cfg->{$_} || $defaults_user->{$_} );
+    }
+}
+
 sub read_config_file {
-    my ( $self, $filename ) = @_;
+    my ( $self ) = @_;
+
+    my $filename = '.cil';
 
     # since we might not have a '.cil' file yet (in the case where we're calling 'init',
     # then we should just return whatever the defaults are

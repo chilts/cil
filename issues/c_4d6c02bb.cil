@@ -1,0 +1,12 @@
+Issue: ce8053b0
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-01T11:33:55
+Updated: 2008-07-01T11:34:38
+
+Added the ability to read the ~/.cilrc config file. The only things it can
+contain for now are:
+
+* UserName
+* UserEmail
+
+but we can easily add more as time goes on.
