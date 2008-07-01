@@ -159,7 +159,7 @@ sub get_comments_for {
     my ($self, $issue) = @_;
 
     my @comments;
-    foreach my $comment_name ( @{$issue->Comments} ) {
+    foreach my $comment_name ( @{$issue->CommentList} ) {
         my $comment = CIL::Comment->new_from_name( $self, $comment_name );
         push @comments, $comment;
     }
@@ -174,7 +174,7 @@ sub get_attachments_for {
     my ($self, $issue) = @_;
 
     my @attachments;
-    foreach my $attachment_name ( @{$issue->Attachments} ) {
+    foreach my $attachment_name ( @{$issue->AttachmentList} ) {
         my $attachment = CIL::Attachment->new_from_name( $self, $attachment_name );
         push @attachments, $attachment;
     }

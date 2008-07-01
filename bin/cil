@@ -92,6 +92,7 @@ my %BOOLEAN_ARGS = (
        if @ARGV == 0;
 
     my $command = shift @ARGV;
+    $command =~ s{-}{_}gxms;
     no strict 'refs';
     if ( not defined &{"cmd_$command"} ) {
        Getopt::Mixed::abortMsg("'$command' is not a valid cil command.");
@@ -386,7 +387,7 @@ sub cmd_fsck {
             }
 
             # check that all it's comments are there and that they have this parent
-            my $comments = $i->Comments;
+            my $comments = $i->CommentList;
             foreach my $c ( @$comments ) {
                 # see if this comment exists at all
                 if ( exists $comment->{$c} ) {
@@ -400,7 +401,7 @@ sub cmd_fsck {
             }
 
             # check that all it's attachments are there and that they have this parent
-            my $attachments = $i->Attachments;
+            my $attachments = $i->AttachmentList;
             foreach my $a ( @$attachments ) {
                 # see if this attachment exists at all
                 if ( exists $attachment->{$a} ) {
@@ -548,6 +549,26 @@ sub cmd_am {
 
         add_issue_loop($cil, undef, $issue);
     }
+}
+
+sub cmd_depends_on {
+    my ($cil, undef, $issue_name, $depends_name) = @_;
+
+    my $issue = load_issue_fuzzy($cil, $issue_name);
+    my $depends = load_issue_fuzzy($cil, $depends_name);
+
+    $issue->add_depends_on( $depends->name );
+    $depends->add_precedes( $issue->name );
+
+    $issue->save($cil);
+    $depends->save($cil);
+}
+
+sub cmd_precedes {
+    my ($cil, undef, $issue_name, $depends_name) = @_;
+
+    # switch them round and call 'DependsOn'
+    cmd_depends_on($cil, undef, $depends_name, $issue_name);
 }
 
 ## ----------------------------------------------------------------------------
@@ -725,7 +746,7 @@ sub filter_issues {
         my @tmp;
         foreach my $issue ( @new_issues ) {
             push @tmp, $issue
-                if grep { $_ eq $args->{l} } @{$issue->Labels};
+                if grep { $_ eq $args->{l} } @{$issue->LabelList};
         }
         @new_issues = @tmp;
     }
@@ -790,7 +811,9 @@ sub display_issue_headers {
     field( 'AssignedTo', $issue->AssignedTo() );
     field( 'Inserted', $issue->Inserted() );
     field( 'Status', $issue->Status() );
-    field( 'Labels', join(' ', @{$issue->Label()}) );
+    field( 'Labels', join(' ', @{$issue->LabelList()}) );
+    field( 'DependsOn', join(' ', @{$issue->DependsOnList()}) );
+    field( 'Precedes', join(' ', @{$issue->PrecedesList()}) );
 }
 
 sub display_issue {
@@ -803,11 +826,15 @@ sub display_issue {
     field( 'CreatedBy', $issue->CreatedBy() );
     field( 'AssignedTo', $issue->AssignedTo() );
     field( 'Label', $_ )
-        foreach sort @{$issue->Label()};
+        foreach sort @{$issue->LabelList()};
     field( 'Comment', $_ )
-        foreach sort @{$issue->Comment()};
+        foreach sort @{$issue->CommentList()};
     field( 'Attachment', $_ )
-        foreach sort @{$issue->Attachment()};
+        foreach sort @{$issue->AttachmentList()};
+    field( 'DependsOn', $_ )
+        foreach sort @{$issue->DependsOnList()};
+    field( 'Precedes', $_ )
+        foreach sort @{$issue->PrecedesList()};
     field( 'Inserted', $issue->Inserted() );
     field( 'Updated', $issue->Inserted() );
     text('Description', $issue->Description());
@@ -825,6 +852,10 @@ sub display_issue_full {
     field( 'AssignedTo', $issue->AssignedTo() );
     field( 'Label', $_ )
         foreach sort @{$issue->Label()};
+    field( 'DependsOn', $_ )
+        foreach sort @{$issue->DependsOnList()};
+    field( 'Precedes', $_ )
+        foreach sort @{$issue->PrecedesList()};
     field( 'Inserted', $issue->Inserted() );
     field( 'Updated', $issue->Inserted() );
     text('Description', $issue->Description());
@@ -1027,6 +1058,21 @@ Adds an issues after you have edited the input.
 =item show ISSUE
 
 Shows the issue name with more detail.
+
+=item status ISSUE NEW_STATUS
+
+Shortcut so that you can set a new status on an issue without having to edit
+it.
+
+=item depends-on ISSUE1 ISSUE2
+
+Shortcut so that cil will add a 'DependsOn' from issue 1 to issue
+2. Conversley, issue 2 will also then contain a 'Precedes' pointer to issue 1.
+
+=item precedes ISSUE1 ISSUE2
+
+This is the exact opposite of C<depends-on> and is here for convenience and
+completeness. ie. issue 1 has to be completed before issue 2.
 
 =item status ISSUE NEW_STATUS
 

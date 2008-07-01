@@ -1,0 +1,14 @@
+Issue: c98515e2
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-01T12:16:51
+Updated: 2008-07-01T12:29:32
+
+Added the 'DependsOn' and 'Precedes' fields. These are automatically added when
+using the command line such as:
+
+   cil depends-on cafebabe feedface
+   cil precedes feedface cafebabe
+
+Both of these commands do the same thing.
+
+ToDo: add checks for this functionality into 'fsck'.

@@ -31,14 +31,16 @@ use CIL::Utils;
 use base qw(CIL::Base);
 
 # fields specific to Issue
-__PACKAGE__->mk_accessors(qw(Summary Status AssignedTo Label Comment Attachment Description));
+__PACKAGE__->mk_accessors(qw(Summary Status AssignedTo DependsOn Precedes Label Comment Attachment Description));
 
-my @FIELDS = ( qw(Summary Status CreatedBy AssignedTo Label Comment Attachment Inserted Updated Description) );
+my @FIELDS = ( qw(Summary Status CreatedBy AssignedTo DependsOn Precedes Label Comment Attachment Inserted Updated Description) );
 my $cfg = {
     array => {
         Label      => 1,
         Comment    => 1,
         Attachment => 1,
+        DependsOn  => 1,
+        Precedes   => 1,
     },
 };
 
@@ -65,6 +67,8 @@ sub new {
         Label       => [],
         Comment     => [],
         Attachment  => [],
+        DependsOn   => [],
+        Precedes    => [],
         Description => '',
     };
     $self->{Changed} = 0;
@@ -109,7 +113,7 @@ sub is_valid {
 
     # see if we only allow certain Labels
     if ( $cil->LabelStrict ) {
-        my @labels = @{$self->Labels};
+        my @labels = @{$self->LabelList};
         foreach my $label ( @labels ) {
             unless ( exists $cil->LabelAllowed()->{$label} ) {
                 push @errors, "LabelStrict is turned on but this issue has an invalid label '$label'";
@@ -155,19 +159,49 @@ sub add_attachment {
     $self->flag_as_updated();
 }
 
-sub Labels {
+sub add_depends_on {
+    my ($self, $depends) = @_;
+
+    croak 'provide an issue name when adding a depends'
+        unless defined $depends;
+
+    push @{$self->{data}{DependsOn}}, $depends;
+    $self->flag_as_updated();
+}
+
+sub add_precedes {
+    my ($self, $precedes) = @_;
+
+    croak 'provide an issue name when adding a precedes'
+        unless defined $precedes;
+
+    push @{$self->{data}{Precedes}}, $precedes;
+    $self->flag_as_updated();
+}
+
+sub LabelList {
     my ($self) = @_;
     return $self->{data}{Label};
 }
 
-sub Comments {
+sub CommentList {
     my ($self) = @_;
     return $self->{data}{Comment};
 }
 
-sub Attachments {
+sub AttachmentList {
     my ($self) = @_;
     return $self->{data}{Attachment};
+}
+
+sub DependsOnList {
+    my ($self) = @_;
+    return $self->{data}{DependsOn};
+}
+
+sub PrecedesList {
+    my ($self) = @_;
+    return $self->{data}{Precedes};
 }
 
 sub is_open {

@@ -38,7 +38,7 @@ _cil()
 
     # constants
     opts="--help --version --path --status --label --filename --is-open --is-closed --assigned-to --created-by"
-    commands="init add summary list show status edit comment attach extract"
+    commands="init add summary list show status depends-on precedes edit comment attach extract"
 
 	COMPREPLY=()
 	cur=${COMP_WORDS[COMP_CWORD]}
