@@ -1,0 +1,16 @@
+Issue: bf9badb4
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-01T10:59:42
+Updated: 2008-07-01T11:00:46
+
+Now allows you to put in issue names as shortened versions of their full names.
+Also attachment names too. Provisions have already been added in case we want
+to do comment names too.
+
+e.g.
+
+   cil show cafe
+   cil edit cafe
+   cil extract dead
+
+and the like.

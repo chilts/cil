@@ -59,9 +59,11 @@ sub new {
 }
 
 sub list_entities {
-    my ($self, $prefix) = @_;
+    my ($self, $prefix, $base) = @_;
 
-    my $globpath = $self->IssueDir . "/${prefix}_*.cil";
+    $base = '' unless defined $base;
+
+    my $globpath = $self->IssueDir . "/${prefix}_${base}*.cil";
     my @filenames = bsd_glob($globpath);
 
     my @entities;
@@ -91,6 +93,24 @@ sub list_attachments {
     my ($self) = @_;
 
     return $self->list_entities('a');
+}
+
+sub list_issues_fuzzy {
+    my ($self, $partial_name) = @_;
+
+    return $self->list_entities('i', $partial_name);
+}
+
+sub list_comments_fuzzy {
+    my ($self, $partial_name) = @_;
+
+    return $self->list_entities('c', $partial_name);
+}
+
+sub list_attachments_fuzzy {
+    my ($self, $partial_name) = @_;
+
+    return $self->list_entities('a', $partial_name);
 }
 
 sub get_issues {

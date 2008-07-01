@@ -199,10 +199,7 @@ sub cmd_show {
     my ($cil, undef, $issue_name) = @_;
 
     # firstly, read the issue in
-    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
-    unless ( defined $issue ) {
-        fatal("Couldn't load issue '$issue_name'");
-    }
+    my $issue = load_issue_fuzzy( $cil, $issue_name );
     display_issue_full($cil, $issue);
 }
 
@@ -214,10 +211,7 @@ sub cmd_status {
     }
 
     # firstly, read the issue in
-    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
-    unless ( defined $issue ) {
-        fatal("Couldn't load issue '$issue_name'");
-    }
+    my $issue = load_issue_fuzzy( $cil, $issue_name );
 
     # set the status for this issue
     $issue->Status( $status );
@@ -243,10 +237,7 @@ sub cmd_add {
 sub cmd_edit {
     my ($cil, undef, $issue_name) = @_;
 
-    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
-    unless ( defined $issue ) {
-        fatal("Couldn't load issue '$issue_name'");
-    }
+    my $issue = load_issue_fuzzy( $cil, $issue_name );
 
     CIL::Utils->ensure_interactive();
 
@@ -279,10 +270,7 @@ sub cmd_edit {
 sub cmd_comment {
     my ($cil, undef, $issue_name) = @_;
 
-    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
-    unless ( defined $issue ) {
-        fatal("couldn't load issue '$issue_name'");
-    }
+    my $issue = load_issue_fuzzy( $cil, $issue_name );
 
     CIL::Utils->ensure_interactive();
 
@@ -298,10 +286,7 @@ sub cmd_comment {
 sub cmd_attach {
     my ($cil, undef, $issue_name, $filename) = @_;
 
-    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
-    unless ( defined $issue ) {
-        fatal("couldn't load issue '$issue_name'");
-    }
+    my $issue = load_issue_fuzzy( $cil, $issue_name );
 
     # check to see if the file exists
     unless ( -r $filename ) {
@@ -351,10 +336,7 @@ EOF
 sub cmd_extract {
     my ($cil, $args, $attachment_name) = @_;
 
-    my $attachment = CIL::Attachment->new_from_name($cil, $attachment_name);
-    unless ( defined $attachment ) {
-        fatal("Couldn't load attachment '$attachment_name'");
-    }
+    my $attachment = load_attachment_fuzzy($cil, $attachment_name);
 
     my $filename = $args->{f} || $attachment->Filename();
     write_file( $filename, $attachment->as_binary );
@@ -569,6 +551,69 @@ sub cmd_am {
 
 ## ----------------------------------------------------------------------------
 # helpers
+
+sub load_issue_fuzzy {
+    my ($cil, $partial_name) = @_;
+
+    my $issues = $cil->list_issues_fuzzy( $partial_name );
+    unless ( defined $issues ) {
+        fatal("Couldn't find any issues using '$partial_name'");
+    }
+
+    if ( @$issues > 1 ) {
+        fatal('found multiple issues which match that name: ' . join(' ', map { $_->{name} } @$issues));
+    }
+
+    my $issue_name = $issues->[0]->{name};
+    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
+    unless ( defined $issue ) {
+        fatal("Couldn't load issue '$issue_name'");
+    }
+
+    return $issue;
+}
+
+sub load_comment_fuzzy {
+    my ($cil, $partial_name) = @_;
+
+    my $comments = $cil->list_comments_fuzzy( $partial_name );
+    unless ( defined $comments ) {
+        fatal("Couldn't find any comments using '$partial_name'");
+    }
+
+    if ( @$comments > 1 ) {
+        fatal('found multiple comments which match that name: ' . join(' ', map { $_->{name} } @$comments));
+    }
+
+    my $comment_name = $comments->[0]->{name};
+    my $comment = CIL::comment->new_from_name($cil, $comment_name);
+    unless ( defined $comment ) {
+        fatal("Couldn't load comment '$comment_name'");
+    }
+
+    return $comment;
+}
+
+sub load_attachment_fuzzy {
+    my ($cil, $partial_name) = @_;
+
+    my $attachments = $cil->list_attachments_fuzzy( $partial_name );
+    unless ( defined $attachments ) {
+        fatal("Couldn't find any attachments using '$partial_name'");
+    }
+
+    if ( @$attachments > 1 ) {
+        fatal('found multiple attachments which match that name: ' . join(' ', map { $_->{name} } @$attachments));
+    }
+
+    my $attachment_name = $attachments->[0]->{name};
+    my $attachment = CIL::Attachment->new_from_name($cil, $attachment_name);
+    unless ( defined $attachment ) {
+        fatal("Couldn't load attachment '$partial_name'");
+    }
+
+    return $attachment;
+}
 
 sub ans {
     my ($msg) = @_;

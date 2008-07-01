@@ -1,11 +1,12 @@
 Summary: Allow shortened hash names
-Status: New
+Status: Finished
 CreatedBy: Francois Marier <francois@debian.org>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Milestone-v0.4
 Label: Type-Enhancement
+Comment: 95e81a14
 Inserted: 2008-06-29T13:20:11
-Updated: 2008-06-29T12:33:18
+Updated: 2008-07-01T11:15:35
 
 How about doing the same thing that git is doing for commit hashes: if you
 only type the first few characters of the hash, then as long as it's not
