@@ -162,7 +162,15 @@ sub get_attachments_for {
 sub read_config_file {
     my ( $self, $filename ) = @_;
 
-    my $cfg = CIL::Utils->parse_cil_file( $filename );
+    # since we might not have a '.cil' file yet (in the case where we're calling 'init',
+    # then we should just return whatever the defaults are
+    my $cfg;
+    if ( -f $filename ) {
+        $cfg = CIL::Utils->parse_cil_file( $filename );
+    }
+    else {
+        $cfg = $defaults;
+    }
 
     # set some defaults if we don't have any of these
     foreach my $key ( keys %$defaults ) {
