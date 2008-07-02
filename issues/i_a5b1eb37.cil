@@ -1,9 +1,10 @@
 Summary: Can't use string ("Finished") as an ARRAY ref while "strict refs" in use at /usr/share/perl5/CIL.pm line 227.
-Status: New
+Status: Finished
 CreatedBy: Nigel McNie <nigel@mcnie.name>
 AssignedTo: Nigel McNie <nigel@mcnie.name>
+Comment: f09a77f4
 Inserted: 2008-07-02T12:27:39
-Updated: 2008-07-02T12:28:51
+Updated: 2008-07-02T12:52:26
 
 I get this error when running 'cil list --is-open' on my repo.
 

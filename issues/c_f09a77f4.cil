@@ -1,0 +1,9 @@
+Issue: a5b1eb37
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-02T12:51:27
+Updated: 2008-07-02T12:52:08
+
+This was happening because there was only one line for the StatusClosedList.
+This would happen with some of the other List items too.
+
+Should be fixed now.

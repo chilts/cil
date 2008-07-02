@@ -224,7 +224,8 @@ sub read_config_file {
     # for some things, make a hash out of them
     foreach my $hash_name ( @config_hashes ) {
         my $h = {};
-        foreach my $thing ( @{$cfg->{"${hash_name}List"}} ) {
+        my @list = ref $cfg->{"${hash_name}List"} eq 'ARRAY' ? @{$cfg->{"${hash_name}List"}} : $cfg->{"${hash_name}List"};
+        foreach my $thing ( @list ) {
             $h->{$thing} = 1;
         }
         $cfg->{$hash_name} = $h;
