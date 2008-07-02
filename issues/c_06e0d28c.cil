@@ -1,0 +1,11 @@
+Issue: 574046f9
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-02T10:51:45
+Updated: 2008-07-02T10:53:10
+
+Added the ability to use --is-mine. Also, when adding the documnentation, I
+moved the filters to their own section.
+
+Basically, --is-mine takes the email defined in ~/.cilrc and applies it by just
+overwriting --assigned-by, internally. This is okay since these two options are
+mutually exclusive.

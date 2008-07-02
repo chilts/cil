@@ -59,6 +59,7 @@ my @IN_OPTS = (
     # booleans
     'is-open',      # for 'summary', 'list'
     'is-closed',    # for 'summary', 'list'
+    'is-mine',      # for 'summary', 'list'
     'help',
     'version',
 );
@@ -68,6 +69,7 @@ my %BOOLEAN_ARGS = (
     'version'   => 1,
     'is-open'   => 1,
     'is-closed' => 1,
+    'is-mine'   => 1,
 );
 
 ## ----------------------------------------------------------------------------
@@ -762,6 +764,11 @@ sub filter_issues {
     # don't filter if we haven't been given anything
     return $issues unless %$args;
 
+    # check that they aren't filtering on both --assigned-to and --is-mine
+    if ( defined $args->{a} and defined $args->{'is-mine'} ) {
+        fatal("the --assigned-to and --is-mine filters are mutually exclusive");
+    }
+
     # take a copy of the whole lot first (so we don't destroy the input list)
     my @new_issues = @$issues;
 
@@ -796,6 +803,8 @@ sub filter_issues {
     }
 
     # filter out 'assigned to'
+    $args->{a} = $cil->UserEmail
+        if defined $args->{'is-mine'};
     if ( defined $args->{a} ) {
         @new_issues = grep { $args->{a} eq $_->assigned_to_email } @new_issues;
     }
@@ -1009,8 +1018,8 @@ Usage: $0 COMMAND [options]
 Commands:
    init    [--path=PATH]
    add
-   summary [--status=STATUS] [--label=LABEL] [--is-open] [--is-closed]
-   list    [--status=STATUS] [--label=LABEL] [--is-open] [--is-closed]
+   summary [FILTERS...]
+   list    [FILTERS...]
    show    ISSUE
    status  ISSUE NEW_STATUS
    edit    ISSUE
@@ -1018,6 +1027,14 @@ Commands:
    attach  ISSUE FILENAME
    extract ATTACHMENT [--filename=FILENAME]
    fsck
+
+Filters:
+   --status=?
+   --is-open
+   --is-closed
+   --label=?
+   --assigned-to=?
+   --is-mine
 
 See <http://kapiti.geek.nz/software/cil.html> for further information.
 Report bugs to <andychilton -at- gmail -dot- com>.
@@ -1070,12 +1087,12 @@ and attachments as local files which you can check in to your repository.
 Creates a local '.cil' file and an 'issues' directory. If PATH is specified,
 the config file and directory will be created in the destination directory.
 
-=item summary [--status=STATUS] [--label=LABEL] [--is-open] [--is-closed]
+=item summary [filters]
 
 Displays a one line summary for each issue. You may filter on both the Status
 and Label fields.
 
-=item list [--status=STATUS] [--label=LABEL] [--is-open] [--is-closed]
+=item list [filters]
 
 Shows each issue with more information. You may filter on both the Status and
 Label fields.
@@ -1137,6 +1154,44 @@ email it is, whether it is a new issue or a comment on an already existing
 issue. For example, if it can find valid issue names in the subject or body of
 the message, it adds it as a comment to that issue. If it can't find any valid
 issue names, it presumes it's a new issue and adds that.
+
+=back
+
+=head1 FILTERS
+
+Filters can be used on both the C<summary> and C<list> commands. Most can be
+combined. See each individual filter for details.
+
+=over
+
+=item --status=STATUS
+
+You can choose any of the Statuses which might appear in your issues. This
+status does not have to be defined in your C<.cil> file, even if you have
+C<StatusStrict> turned on.
+
+=item --label=LABEL
+
+You can choose any of the Labels which might appear in your issues. This
+label does not have to be defined in your C<.cil> file, even if you have
+C<LabelStrict> turned on.
+
+=item --is-open, --is-closed
+
+These check both C<StatusOpenList> and C<StatusClosedList> from your C<.cil>
+file. If both are specified, you're likely to get no issues unless you
+explicitely defined a status as being in both lists (for whatever reason you
+have).
+
+=item --assigned-to=EMAIL_ADDRESS, --is-mine
+
+These items are mutually exclusive. The C<--assigned-to> just checks the email
+address in the AssignedTo field. It does not match anything else in that field,
+including any preceding name or any angle brackets.
+
+The C<--is-mine> filter is a shortcut to asking if AssignedTo is you. Cil knows
+your email address if you define it in your user's C<~/.cilrc> file as
+C<UserEmail>.
 
 =back
 

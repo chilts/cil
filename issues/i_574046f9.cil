@@ -1,9 +1,10 @@
 Summary: Have a filter called '--is-mine'
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Comment: 06e0d28c
 Inserted: 2008-07-02T10:16:59
-Updated: 2008-07-02T10:18:54
+Updated: 2008-07-02T10:53:10
 
 By having a filter '--is-mine', means it's much easier to type than
 '--assigned-to=andychilton-at-gmail-dot-com'.

@@ -38,6 +38,7 @@ When listing the issues, they can also be filtered:
  $ cil list --label=Type-Enhancement
  $ cil list --is-open
  $ cil list --label=Milestone-v0.3 --is-open
+ $ cil list --is-mine
 
 You can see what the issue name is by looking at the 'Issue' title. Imagine it
 is 'cafebabe' (which by default is the time from epoch). To see your issue
