@@ -1155,6 +1155,8 @@ issue. For example, if it can find valid issue names in the subject or body of
 the message, it adds it as a comment to that issue. If it can't find any valid
 issue names, it presumes it's a new issue and adds that.
 
+Note: this command will deal with Mailbox format files later on.
+
 =back
 
 =head1 FILTERS
