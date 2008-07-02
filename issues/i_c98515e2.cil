@@ -2,9 +2,11 @@ Summary: Allow dependencies between issues
 Status: InProgress
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.4
+Label: Type-Enhancement
 Comment: d87e016d
 Inserted: 2008-07-01T03:23:39
-Updated: 2008-07-01T12:31:17
+Updated: 2008-07-02T09:39:33
 
 Francois suggested that allowing dependencies between issues would be
 good. ie. this one here is dependent on that one over there (ie. the
