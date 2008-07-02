@@ -1,0 +1,7 @@
+Issue: c98515e2
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-02T10:02:11
+Updated: 2008-07-02T10:02:38
+
+Added checks in 'fsck' so that it looks at the 'Precedes' and the 'DependsOn'
+fields.

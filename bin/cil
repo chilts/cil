@@ -374,8 +374,9 @@ sub cmd_fsck {
         $attachment->{$a->name} = $a;
     }
 
+    # ------
+    # issues
     my $errors = {};
-
     if ( @$issues ) {
         foreach my $i ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
             my $name = $i->name;
@@ -413,14 +414,43 @@ sub cmd_fsck {
                     push @{$errors->{$name}}, "attachment '$a' listed in issue '" . $i->name . "' does not exist";
                 }
             }
+
+            # check that all it's 'DependsOn' are there and that they have this under 'Precedes'
+            my $depends_on = $i->DependsOnList;
+            foreach my $d ( @$depends_on ) {
+                # see if this issue exists at all
+                if ( exists $issue->{$d} ) {
+                    # check the 'Precedes' is this issue
+                    my %precedes = map { $_ => 1 } @{$issue->{$d}->PrecedesList};
+                    push @{$errors->{$name}}, "issue '$d' should precede '" . $i->name . "' but doesn't"
+                        unless exists $precedes{$i->name};
+                }
+                else {
+                    push @{$errors->{$name}}, "issue '$d' listed as a dependency of issue '" . $i->name . "' does not exist";
+                }
+            }
+
+            # check that all it's 'Precedes' are there and that they have this under 'DependsOn'
+            my $precedes = $i->PrecedesList;
+            foreach my $p ( @$precedes ) {
+                # see if this issue exists at all
+                if ( exists $issue->{$p} ) {
+                    # check the 'DependsOn' is this issue
+                    my %depends_on = map { $_ => 1 } @{$issue->{$p}->DependsOnList};
+                    push @{$errors->{$name}}, "issue '$p' should depend on '" . $i->name . "' but doesn't"
+                        unless exists $depends_on{$i->name};
+                }
+                else {
+                    push @{$errors->{$name}}, "issue '$p' listed as preceding issue '" . $i->name . "' does not exist";
+                }
+            }
         }
     }
-
     print_fsck_errors('Issue', $errors);
 
+    # --------
     # comments
     $errors = {};
-
     # loop through all the comments
     if ( @$comments ) {
         # check that their parent issues exist
@@ -431,12 +461,11 @@ sub cmd_fsck {
             }
         }
     }
-
     print_fsck_errors('Comment', $errors);
 
+    # -----------
     # attachments
     $errors = {};
-
     # loop through all the attachments
     if ( @$attachments ) {
         # check that their parent issues exist
@@ -447,10 +476,10 @@ sub cmd_fsck {
             }
         }
     }
-
     print_fsck_errors('Attachment', $errors);
 
-    # nothing more to do
+    # ------------
+    # nothing left
     separator();
 }
 
