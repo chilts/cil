@@ -1,0 +1,13 @@
+Summary: Have a filter called '--is-mine'
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-02T10:16:59
+Updated: 2008-07-02T10:18:54
+
+By having a filter '--is-mine', means it's much easier to type than
+'--assigned-to=andychilton-at-gmail-dot-com'.
+
+   cil list --is-open --is-mine
+
+That would be pretty nice.
