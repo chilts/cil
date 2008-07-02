@@ -2,9 +2,11 @@ Summary: Have a filter called '--is-mine'
 Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.4
+Label: Type-Enhancement
 Comment: 06e0d28c
 Inserted: 2008-07-02T10:16:59
-Updated: 2008-07-02T10:53:10
+Updated: 2008-07-02T11:11:44
 
 By having a filter '--is-mine', means it's much easier to type than
 '--assigned-to=andychilton-at-gmail-dot-com'.
