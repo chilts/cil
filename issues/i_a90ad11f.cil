@@ -1,9 +1,10 @@
 Summary: Write a default .cil file so --commands work
 Status: New
 CreatedBy: Nigel McNie <nigel@mcnie.name>
-AssignedTo: Nigel McNie <nigel@mcnie.name>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Comment: d6ee2369
 Inserted: 2008-07-02T12:22:45
-Updated: 2008-07-02T12:24:24
+Updated: 2008-07-02T12:42:18
 
 When I tried to use cil for the first time, I did:
 
@@ -13,8 +14,10 @@ cil init
 cil add
 cil list --is-open
 
-And got no results. Because cil didn't know at that point what statuses counted as 'open'.
+And got no results. Because cil didn't know at that point what statuses counted
+as 'open'.
 
-It would be nice if a default .cil was written out, with just enough statuses etc. in it to make those common --command flags work.
+It would be nice if a default .cil was written out, with just enough statuses
+etc. in it to make those common --command flags work.
 
 You could also add cil init --bare to not write this out.

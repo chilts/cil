@@ -1,0 +1,22 @@
+Issue: a90ad11f
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-02T12:40:07
+Updated: 2008-07-02T12:42:18
+
+Nigel suggested on IRC of using the example .cil file in the manpage if wanting a default file:
+
+   StatusStrict: 1
+   StatusAllowedList: New
+   StatusAllowedList: InProgress
+   StatusAllowedList: Finished
+   StatusOpenList: New
+   StatusOpenList: InProgress
+   StatusClosedList: Finished
+   LabelStrict: 1
+   LabelAllowedList: Type-Enhancement
+   LabelAllowedList: Type-Defect
+   LabelAllowedList: Priority-High
+   LabelAllowedList: Priority-Medium
+   LabelAllowedList: Priority-Low
+
+Maybe a 'DefaultAssignedTo' in the .cil file might help.
