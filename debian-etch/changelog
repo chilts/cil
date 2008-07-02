@@ -1,3 +1,14 @@
+cil (0.4.0) unstable; urgency=low
+
+  * Can now read a ~/.cilrc file for user defined options
+  * Added command 'am' which applies a mailbox
+  * Can now use shortened hash names to the commands
+  * Allows dependencies between issues
+  * New filter called --is-mine
+  * Ready for 0.4.0 release
+
+ -- Andrew Chilton <andychilton@gmail.com>  Wed, 02 Jul 2008 23:12:20 +1200
+
 cil (0.3.0) unstable; urgency=low
 
   * Added filters for the listing commands
