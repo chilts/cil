@@ -4,7 +4,7 @@ cil (0.4.2) unstable; urgency=low
   * Fix bug where only one item in a config list breaks listings
   * Ready for 0.4.2 release
 
- -- Andrew Chilton <andychilton@gmail.com>  Thu, 03 Jul 2008 00:09:21 +1200
+ -- Andrew Chilton <andychilton@gmail.com>  Thu, 03 Jul 2008 22:22:22 +1200
 
 cil (0.4.1) unstable; urgency=low
 
