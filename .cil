@@ -17,6 +17,10 @@ LabelStrict: 1
 LabelAllowedList: Release-v0.1.0
 LabelAllowedList: Release-v0.2.0
 LabelAllowedList: Release-v0.2.1
+LabelAllowedList: Release-v0.3.0
+LabelAllowedList: Release-v0.4.0
+LabelAllowedList: Release-v0.4.1
+LabelAllowedList: Release-v0.4.2
 LabelAllowedList: Type-Enhancement
 LabelAllowedList: Type-Defect
 LabelAllowedList: Type-Task
@@ -27,6 +31,7 @@ LabelAllowedList: Milestone-v0.1
 LabelAllowedList: Milestone-v0.2
 LabelAllowedList: Milestone-v0.3
 LabelAllowedList: Milestone-v0.4
+LabelAllowedList: Milestone-v0.5
 LabelAllowedList: Milestone-Future
 LabelAllowedList: Priority-Critical
 LabelAllowedList: Priority-High
