@@ -41,7 +41,7 @@ sub parse_cil_file {
     my ($class, $filename, $last_field) = @_;
 
     my @lines = read_file($filename);
-    return unless @lines;
+    return {} unless @lines;
 
     return $class->parse_from_lines( $last_field, @lines );
 }
