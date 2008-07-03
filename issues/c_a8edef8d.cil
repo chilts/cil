@@ -1,0 +1,7 @@
+Issue: a90ad11f
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-03T10:48:45
+Updated: 2008-07-03T10:49:42
+
+Added a default .cil file when creating a repo. Also allows the '--bare' option
+so that advanced users can do what they like.

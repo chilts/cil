@@ -217,19 +217,26 @@ sub read_config_file {
     }
 
     # set some defaults if we don't have any of these
-    foreach my $key ( keys %$defaults ) {
-        $cfg->{$key} ||= $defaults->{$key};
-    }
+    %$cfg = (%$defaults, %$cfg);
 
     # for some things, make a hash out of them
     foreach my $hash_name ( @config_hashes ) {
-        my $h = {};
-        my @list = ref $cfg->{"${hash_name}List"} eq 'ARRAY' ? @{$cfg->{"${hash_name}List"}} : $cfg->{"${hash_name}List"};
-        foreach my $thing ( @list ) {
-            $h->{$thing} = 1;
+        # if we have nothing in the cfg hash already, set it to empty and move on
+        unless ( exists $cfg->{"${hash_name}List"} ) {
+            $cfg->{$hash_name} = {};
+            next;
         }
+
+        # if we only have a single item, turn it into an array first
+        my $key = "${hash_name}List";
+        $cfg->{$key} = [ $cfg->{$key} ] unless ref $cfg->{$key} eq 'ARRAY';
+
+        # loop through all the items making up the hash
+        my $h = {};
+        $h->{$_} = 1
+            for @{ $cfg->{$key} };
         $cfg->{$hash_name} = $h;
-        undef $cfg->{"${hash_name}List"};
+        undef $cfg->{$key};
     }
 
     # set each config item

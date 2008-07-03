@@ -57,6 +57,7 @@ my @IN_OPTS = (
     'assigned-to>a',# for 'summary', 'list'
 
     # booleans
+    'bare',         # for 'init'
     'is-open',      # for 'summary', 'list'
     'is-closed',    # for 'summary', 'list'
     'is-mine',      # for 'summary', 'list'
@@ -67,6 +68,7 @@ my @IN_OPTS = (
 my %BOOLEAN_ARGS = (
     'help'      => 1,
     'version'   => 1,
+    'bare'      => 1,
     'is-open'   => 1,
     'is-closed' => 1,
     'is-mine'   => 1,
@@ -138,9 +140,29 @@ sub cmd_init {
     }
 
     # create a .cil file here also
-    unless ( touch $config ) {
-        rmdir $issues_dir;
-        fatal("couldn't create a '$config' file");
+    if ( $args->{bare} ) {
+        unless ( touch $config ) {
+            rmdir $issues_dir;
+            fatal("couldn't create a '$config' file");
+        }
+    }
+    else {
+        # write a default .cil file
+        write_file($config, <<'CONFIG');
+StatusStrict: 1
+StatusAllowedList: New
+StatusAllowedList: InProgress
+StatusAllowedList: Finished
+StatusOpenList: New
+StatusOpenList: InProgress
+StatusClosedList: Finished
+LabelStrict: 1
+LabelAllowedList: Type-Enhancement
+LabelAllowedList: Type-Defect
+LabelAllowedList: Priority-High
+LabelAllowedList: Priority-Medium
+LabelAllowedList: Priority-Low
+CONFIG
     }
 
     # add a README.txt so people know what this is about
@@ -1081,10 +1103,14 @@ and attachments as local files which you can check in to your repository.
 
 =over
 
-=item init [--path=PATH]
+=item init [--path=PATH] [--bare]
 
 Creates a local '.cil' file and an 'issues' directory. If PATH is specified,
 the config file and directory will be created in the destination directory.
+
+Usually, cil will write a small C<.cil> file such that you can use various
+filter commands immediately and can also serve as an example config file. Using
+C<--bare> just touches the C<.cil> config file ready for your own manipulation.
 
 =item summary [filters]
 

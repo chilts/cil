@@ -1,10 +1,11 @@
 Summary: Write a default .cil file so --commands work
-Status: New
+Status: Finished
 CreatedBy: Nigel McNie <nigel@mcnie.name>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Comment: a8edef8d
 Comment: d6ee2369
 Inserted: 2008-07-02T12:22:45
-Updated: 2008-07-02T12:42:18
+Updated: 2008-07-03T10:52:32
 
 When I tried to use cil for the first time, I did:
 
