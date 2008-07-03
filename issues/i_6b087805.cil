@@ -1,9 +1,12 @@
 Summary: Add a 'steal' command
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.5
+Label: Type-Enhancement
+Comment: 3da3fd2f
 Inserted: 2008-07-03T10:10:50
-Updated: 2008-07-03T10:12:29
+Updated: 2008-07-03T11:23:03
 
 A 'cil steal <issue>' command would be helpful to assign issues to yourself.
 This is just shorthabe for editing an issue and putting your "UserName

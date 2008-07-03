@@ -243,6 +243,19 @@ sub cmd_status {
     display_issue($cil, $issue);
 }
 
+sub cmd_steal {
+    my ($cil, undef, $issue_name) = @_;
+
+    # firstly, read the issue in
+    my $issue = load_issue_fuzzy( $cil, $issue_name );
+
+    # set the AssignedTo for this issue to you (because you're stealing it)
+    $issue->AssignedTo( user($cil) );
+    $issue->save($cil);
+
+    display_issue($cil, $issue);
+}
+
 sub cmd_add {
     my ($cil, undef, $issue_name) = @_;
 
@@ -1043,6 +1056,7 @@ Commands:
    list    [FILTERS...]
    show    ISSUE
    status  ISSUE NEW_STATUS
+   steal   ISSUE
    edit    ISSUE
    comment ISSUE
    attach  ISSUE FILENAME
@@ -1149,6 +1163,12 @@ completeness. ie. issue 1 has to be completed before issue 2.
 
 Shortcut so that you can set a new status on an issue without having to edit
 it.
+
+=item steal ISSUE
+
+Shortcut to assign this issue to yourself. It reads your C<~/.cilrc> file for
+your UserName and UserEmail and uses this to populate the C<AssignedTo> field
+in the issue.
 
 =item edit ISSUE
 
