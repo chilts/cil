@@ -1,0 +1,10 @@
+Summary: Add a 'steal' command
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-03T10:10:50
+Updated: 2008-07-03T10:12:29
+
+A 'cil steal <issue>' command would be helpful to assign issues to yourself.
+This is just shorthabe for editing an issue and putting your "UserName
+<UserEmail>" into the 'AssignedTo' field.
