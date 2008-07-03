@@ -1,0 +1,9 @@
+Summary: New issues shouldn't be assigned to anyone
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-03T09:59:59
+Updated: 2008-07-03T10:00:49
+
+This came about because a bug submitted by Nigel was AssignedTo him. I think it
+should be blank to start off with.
