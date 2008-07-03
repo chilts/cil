@@ -1,11 +1,12 @@
 Summary: New issues shouldn't be assigned to anyone
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
-Label: Milestone-v0.5
+Label: Release-v0.4.0
 Label: Type-Defect
+Comment: 6287dc43
 Inserted: 2008-07-03T09:59:59
-Updated: 2008-07-03T10:03:11
+Updated: 2008-07-03T10:18:36
 
 This came about because a bug submitted by Nigel was AssignedTo him. I think it
 should be blank to start off with.

@@ -231,7 +231,6 @@ sub cmd_add {
     my $issue = CIL::Issue->new('tmpname');
     $issue->Status('New');
     $issue->CreatedBy( $user );
-    $issue->AssignedTo( $user );
     $issue->Description("Description ...");
 
     add_issue_loop($cil, undef, $issue);

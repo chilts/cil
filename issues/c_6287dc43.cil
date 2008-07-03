@@ -1,0 +1,6 @@
+Issue: a7e3b882
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-03T10:17:39
+Updated: 2008-07-03T10:18:01
+
+Made sure that nothing is put into the 'AssignedTo' field on new issues.
