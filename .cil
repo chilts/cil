@@ -1,3 +1,4 @@
+VCS: Git
 StatusStrict: 1
 StatusAllowedList: New
 StatusAllowedList: InProgress

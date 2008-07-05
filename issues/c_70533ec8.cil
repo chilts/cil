@@ -1,0 +1,7 @@
+Issue: 768d9434
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-05T03:08:49
+Updated: 2008-07-05T03:09:11
+
+Done. For now it just loops through the comments and attachments, though there
+is no checking done.

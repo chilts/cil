@@ -30,6 +30,7 @@ __PACKAGE__->mk_accessors(qw(
     IssueDir
     StatusStrict StatusAllowed StatusOpen StatusClosed
     LabelStrict LabelAllowed
+    VCS
     UserName UserEmail
 ));
 
@@ -249,6 +250,8 @@ sub read_config_file {
 
     $self->LabelStrict( $cfg->{LabelStrict} );
     $self->LabelAllowed( $cfg->{LabelAllowed} );
+
+    $self->VCS( $cfg->{VCS} );
 }
 
 ## ----------------------------------------------------------------------------

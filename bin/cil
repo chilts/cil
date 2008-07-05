@@ -380,6 +380,26 @@ sub cmd_extract {
     write_file( $filename, $attachment->as_binary );
 }
 
+sub cmd_track {
+    my ($cil, $args, $issue_name) = @_;
+
+    fatal("the 'VCS' option in your .cil file is not set")
+        unless defined $cil->VCS;
+
+    fatal("the 'VCS' option currently only supports values of 'Git'")
+        unless $cil->VCS eq 'Git';
+
+    my $issue = load_issue_fuzzy($cil, $issue_name);
+
+    # add the issue to Git
+    my $issue_dir = $cil->IssueDir();
+    my @files;
+    push @files, "$issue_dir/i_" . $issue->name . '.cil';
+    push @files, map { "$issue_dir/c_${_}.cil" } @{ $issue->CommentList };
+    push @files, map { "$issue_dir/a_${_}.cil" } @{ $issue->AttachmentList };
+    msg("git add @files");
+}
+
 sub cmd_fsck {
     my ($cil, $args) = @_;
 
@@ -1061,6 +1081,8 @@ Commands:
    comment ISSUE
    attach  ISSUE FILENAME
    extract ATTACHMENT [--filename=FILENAME]
+   am      EMAIL.TXT
+   track   ISSUE
    fsck
 
 Filters:
@@ -1108,6 +1130,7 @@ cil - the command-line issue list
 
     $ cil am email.txt
 
+    $ cil track
     $ cil fsck
 
 =head1 DESCRIPTION
@@ -1187,11 +1210,6 @@ Adds that particular filename to an existing issue.
 Extracts the file from the attachment number. If filename if given uses that,
 otherwise it will use the original one saved along with the attachment.
 
-=item fsck
-
-Tries to help you organise your issues if any aren't valid or have broken
-relationships.
-
 =item am
 
 Applies an email message to the issue list. It tries to figure out the type of
@@ -1201,6 +1219,17 @@ the message, it adds it as a comment to that issue. If it can't find any valid
 issue names, it presumes it's a new issue and adds that.
 
 Note: this command will deal with Mailbox format files later on.
+
+=item track ISSUE
+
+This command outputs one or more command which you should run so that your VCS
+knows about your issue. It makes sure all the comments and attachments are done
+too.
+
+=item fsck
+
+Tries to help you organise your issues if any aren't valid or have broken
+relationships.
 
 =back
 
@@ -1250,6 +1279,7 @@ may be declared multiple times:
 
 The C<.cil> file is fairly simple and an example can be seen here:
 
+    VCS: Git
     StatusStrict: 1
     StatusAllowedList: New
     StatusAllowedList: InProgress
@@ -1265,6 +1295,13 @@ The C<.cil> file is fairly simple and an example can be seen here:
     LabelAllowedList: Priority-Low
 
 =over
+
+=item VCS
+
+Default: empty, Type: Enum(Git)
+
+Currently this option only supports Git. This enables you to use the 'track'
+command.
 
 =item StatusStrict
 

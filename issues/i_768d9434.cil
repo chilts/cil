@@ -1,11 +1,12 @@
 Summary: Add a command 'track'
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Milestone-v0.5
 Label: Type-Enhancement
+Comment: 70533ec8
 Inserted: 2008-07-05T02:58:20
-Updated: 2008-07-05T03:04:11
+Updated: 2008-07-05T03:09:11
 
 A new command called 'track' would be good so that you can tell 'cil' to tell
 your CVS which files to track. This means you don't have to keep adding all
