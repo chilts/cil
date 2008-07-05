@@ -1,4 +1,8 @@
-0.5.0 (Unreleased)
+0.5.1 (2008-07-05)
+
+  * New release minus all the cruft
+
+0.5.0 (2008-07-05)
 
   * 'steal' command added
   * 'track' command added

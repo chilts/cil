@@ -39,7 +39,7 @@ use CIL::Attachment;
 
 my $y = 'y';
 
-use constant VERSION => '0.5.0';
+use constant VERSION => '0.5.1';
 
 my @IN_OPTS = (
     # strings

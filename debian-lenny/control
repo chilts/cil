@@ -1,6 +1,6 @@
 Source: cil
 Section: perl
-Priority: optional
+Priority: extra
 Maintainer: Andrew Chilton <andychilton@gmail.com>
 Uploaders: Andrew Chilton <andychilton@gmail.com>
 Standards-Version: 3.6.1
@@ -9,7 +9,7 @@ Build-Depends-Indep: perl
 
 Package: cil
 Section: perl
-Priority: optional
+Priority: extra
 Architecture: all
 Depends: ${perl:Depends}, libgetopt-mixed-perl, libfile-touch-perl, libfile-slurp-perl, libclass-accessor-perl, libdatetime-perl, libemail-find-perl, libemail-filter-perl, libemail-date-perl
 Description: command line issue tracker
