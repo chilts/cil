@@ -1,0 +1,44 @@
+0.5.0 (Unreleased)
+
+  * 'steal' command added
+  * 'track' command added
+
+0.4.2 (2008-07-04)
+
+  * Fix bug where new issues are assigned to the reporter
+  * Fix bug where only one item in a config list breaks listings
+
+0.4.1 (2008-07-03)
+
+  * Fix dependency on libemail-date-perl
+
+0.4.0 (2008-07-02)
+
+  * Can now read a ~/.cilrc file for user defined options
+  * 'am' added - which applies a mailbox
+  * Can now use shortened hash names to the commands
+  * Allows dependencies between issues
+  * New filter called --is-mine
+
+0.3.0 (2008-06-29)
+
+  * Added filters for the listing commands
+  * Added ability to read .cil config file
+  * Can now set which Statuses are valid
+  * Can set which Labels are valid
+  * Added 'fsck' command
+  * Added bash completion for options, commands and entities
+
+0.2.1 (2008-06-24)
+
+  * Bug fix
+
+0.2.0 (2008-06-22)
+
+  * Change to newer format for saving all issue
+  * Addition of attachments
+  * 'status' command added
+
+0.1.0 (2008-05-05)
+
+  * Initial release
