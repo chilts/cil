@@ -1,0 +1,27 @@
+Summary: Add a command 'track'
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.5
+Label: Type-Enhancement
+Inserted: 2008-07-05T02:58:20
+Updated: 2008-07-05T03:04:11
+
+A new command called 'track' would be good so that you can tell 'cil' to tell
+your CVS which files to track. This means you don't have to keep adding all
+those issues and/or comments to your repo manually and all the dependecies are
+done.
+
+e.g.
+
+   $ cil track cafebabe
+   git add issues/i_cafebabe.cil
+   git add issues/c_decaf7ea.cil
+   git add issues/a_deadbeaf.cil
+
+Maybe for now it should just print those lines out, but in the future a command
+line option means to actually do it. In the this state, you could always do:
+
+   $ cil track cafebabe | sh
+
+which would then do it for you.
