@@ -23,7 +23,10 @@ package CIL;
 
 use strict;
 use warnings;
+use Carp;
 use File::Glob qw(:glob);
+
+use CIL::VCS::Factory;
 
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(
@@ -32,6 +35,7 @@ __PACKAGE__->mk_accessors(qw(
     LabelStrict LabelAllowed
     VCS
     UserName UserEmail
+    vcs hook
 ));
 
 my $defaults = {
@@ -45,6 +49,15 @@ my @config_hashes = qw(StatusAllowed StatusOpen StatusClosed LabelAllowed);
 my $defaults_user = {
     UserName  => 'Name',
     UserEmail => 'me@example.com',
+};
+
+my $allowed = {
+    vcs => {
+        'Git' => 1,
+    },
+    hook => {
+        'issue_post_save' => 1,
+    },
 };
 
 ## ----------------------------------------------------------------------------
@@ -251,7 +264,37 @@ sub read_config_file {
     $self->LabelStrict( $cfg->{LabelStrict} );
     $self->LabelAllowed( $cfg->{LabelAllowed} );
 
-    $self->VCS( $cfg->{VCS} );
+    # if we are allowed this VCS, create the hook instance
+    if ( exists $allowed->{vcs}{$cfg->{VCS}} ) {
+        $self->VCS( $cfg->{VCS} );
+        my $vcs = CIL::VCS::Factory->new( $cfg->{VCS} );
+        $self->vcs( $vcs );
+    }
+}
+
+sub register_hook {
+    my ($self, $hook_name, $code) = @_;
+
+    unless ( defined $allowed->{hook}{$hook_name} ) {
+        croak "hook '$hook_name' not allowed";
+    }
+
+    push @{$self->{hook}{$hook_name}}, $code;
+}
+
+sub run_hook {
+    my ($self, $hook_name, @rest) = @_;
+
+    print "s=$self, hn=$hook_name, r=@rest\n";
+
+    unless ( defined $allowed->{hook}{$hook_name} ) {
+        croak "hook '$hook_name' not allowed";
+    }
+
+    # call all the hooks with all the args
+    foreach my $code ( @{$self->hook->{$hook_name}} ) {
+        &$code( $self, @rest );
+    }
 }
 
 ## ----------------------------------------------------------------------------

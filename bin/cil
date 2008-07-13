@@ -106,6 +106,9 @@ my %BOOLEAN_ARGS = (
     $cil->read_config_user();
     $cil->read_config_file();
 
+    # add any hooks we want
+    # none yet
+
     &{"cmd_$command"}($cil, $args, @ARGV);
 }
 
@@ -759,6 +762,10 @@ sub add_issue_loop {
     my $unique_str = time . $issue->Inserted . $issue->Summary . $issue->Description;
     $issue->set_name( substr(md5_hex($unique_str), 0, 8) );
     $issue->save($cil);
+
+    # should probably be run from with $cil
+    $cil->run_hook('issue_post_save', $issue);
+
     display_issue($cil, $issue);
 
     return $issue;
@@ -878,6 +885,11 @@ sub print_fsck_errors {
         }
     }
 }
+
+## ----------------------------------------------------------------------------
+# hooks
+
+# none yet
 
 ## ----------------------------------------------------------------------------
 # input/output

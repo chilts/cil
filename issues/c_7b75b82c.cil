@@ -1,0 +1,7 @@
+Issue: 41b351fc
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-13T10:29:22
+Updated: 2008-07-13T10:30:58
+
+Added the initial go at the hook system. It seems to work but until we actually
+do some, it'll just be a framework for the time being.

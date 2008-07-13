@@ -1,3 +1,7 @@
+0.6.0 (Unreleased)
+
+  * New hook infrastructure, currently only 'issue_post_save' is allowed
+
 0.5.1 (2008-07-05)
 
   * New release minus all the cruft
