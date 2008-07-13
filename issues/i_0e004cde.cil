@@ -1,0 +1,26 @@
+Summary: cil idea: poor man's cilweb
+Status: New
+CreatedBy: Francois Marier <fmarier@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-06T20:08:52
+Updated: 2008-07-13T05:13:33
+
+Hey Andy,
+
+I was gonna refer to one of my issues using Gitorious' gitweb-like interface
+and then I thought: wait, cil could easily generate an index.html!
+
+So how about this: in addition to a README.txt file, the issues directory
+could also have an index.html file which you'd update:
+
+1- whenever you add/edit an issue using the cil command
+2- whenever you ask for it explicitely (kinda like git-update-server-info)
+   or a hook does it before pushing the underlying git repo
+
+The index file would contain the output of "cil summary", with relative
+links to the issues themselves.
+
+That way, you can link to that file in your gitweb install and call it your
+issue tracker!
+
+Francois
