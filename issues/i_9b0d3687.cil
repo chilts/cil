@@ -1,0 +1,10 @@
+Summary: Add ability to run some Git commands from some hooks
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2008-07-13T10:35:52
+Updated: 2008-07-13T10:39:37
+
+When we add/edit an issue, a comment or an attachment it would be good to be able to
+run some Git commands to make sure those files are tracked by Git (or the VCS
+of your choosing).
