@@ -27,6 +27,7 @@ use Carp;
 
 use base qw( Class::Factory );
 
+__PACKAGE__->register_factory_type( Null => 'CIL::VCS::Null' );
 __PACKAGE__->register_factory_type( Git => 'CIL::VCS::Git' );
 
 foreach my $method_name ( qw(post_add) ) {

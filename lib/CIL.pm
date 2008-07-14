@@ -42,6 +42,7 @@ my $defaults = {
     IssueDir     => 'issues', # the dir to save the issues in
     StatusStrict => 0,        # whether to complain if a status is invalid
     LabelStrict  => 0,        # whether to complain if a label is invalid
+    VCS          => 'Null',   # don't do anything for VCS hooks
 };
 
 my @config_hashes = qw(StatusAllowed StatusOpen StatusClosed LabelAllowed);
@@ -265,11 +266,9 @@ sub read_config_file {
     $self->LabelAllowed( $cfg->{LabelAllowed} );
 
     # if we are allowed this VCS, create the hook instance
-    if ( exists $allowed->{vcs}{$cfg->{VCS}} ) {
-        $self->VCS( $cfg->{VCS} );
-        my $vcs = CIL::VCS::Factory->new( $cfg->{VCS} );
-        $self->vcs( $vcs );
-    }
+    $self->VCS( $cfg->{VCS} || 'Null' );
+    my $vcs = CIL::VCS::Factory->new( $cfg->{VCS} );
+    $self->vcs( $vcs );
 }
 
 sub register_hook {

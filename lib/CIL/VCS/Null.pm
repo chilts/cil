@@ -25,9 +25,11 @@ use strict;
 use warnings;
 use Carp;
 
+use base qw(CIL::VCS::Factory);
+
 foreach my $method_name ( qw(post_add) ) {
     no strict 'refs';
-    *{"${class}::$method_name"} = sub {};
+    *{"CIL::VCS::Null::$method_name"} = sub {};
 }
 
 ## ----------------------------------------------------------------------------
