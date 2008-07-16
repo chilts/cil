@@ -23,7 +23,7 @@ package CIL;
 
 use strict;
 use warnings;
-use Carp;
+use Carp qw(croak confess);
 use File::Glob qw(:glob);
 
 use CIL::VCS::Factory;
@@ -36,6 +36,7 @@ __PACKAGE__->mk_accessors(qw(
     VCS
     UserName UserEmail
     vcs hook
+    vcs_revision
 ));
 
 my $defaults = {
@@ -85,7 +86,13 @@ sub list_entities {
     $base = '' unless defined $base;
 
     my $globpath = $self->IssueDir . "/${prefix}_${base}*.cil";
-    my @filenames = bsd_glob($globpath);
+    my @filenames;
+    if ( $self->vcs_revision ) {
+	@filenames = $self->vcs->glob_rev($self->vcs_revision, $globpath);
+    }
+    else {
+	@filenames = bsd_glob($globpath);
+    }
 
     my @entities;
     foreach my $filename ( sort @filenames ) {
@@ -293,6 +300,49 @@ sub run_hook {
     # call all the hooks with all the args
     foreach my $code ( @{$self->hook->{$hook_name}} ) {
         &$code( $self, @rest );
+    }
+}
+
+sub file_exists {
+    my ($self, $filename) = @_;
+    if ( $self->vcs_revision ) {
+	$self->vcs->file_exists($self->vcs_revision, $filename);
+    }
+    else {
+	-f $filename;
+    }
+}
+
+sub dir_exists {
+    my ($self, $filename) = @_;
+    if ( $self->vcs_revision ) {
+	$self->vcs->dir_exists($self->vcs_revision, $filename);
+    }
+    else {
+	-f $filename;
+    }
+}
+
+sub parse_cil_file {
+    my ($self, $filename, $last_field) = @_;
+
+    if ( $self->vcs_revision ) {
+	my $fh = $self->vcs->get_fh($self->vcs_revision, $filename);
+	CIL::Utils->parse_from_fh($fh, $last_field);
+    }
+    else {
+	CIL::Utils->parse_cil_file($filename, $last_field);
+    }
+}
+
+sub save {
+    my ($self, $filename, $data, @fields) = @_;	
+
+    if ( $self->vcs_revision ) {
+        confess "tried to ->save on alternate revision";
+    }
+    else {
+	CIL::Utils->write_cil_file( $filename, $data, @fields );
     }
 }
 

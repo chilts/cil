@@ -814,7 +814,7 @@ sub check_paths {
     my ($cil) = @_;
 
     # make sure an issue directory is available
-    unless ( -d $cil->IssueDir ) {
+    unless ( $cil->dir_exists($cil->IssueDir) ) {
         fatal("couldn't find '" . $cil->IssueDir . "' directory");
     }
 }
