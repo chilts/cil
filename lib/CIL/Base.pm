@@ -40,9 +40,9 @@ sub new_from_name {
 
     my $filename = $class->create_filename($cil, $name);
     croak "filename '$filename' does no exist"
-        unless -f $filename;
+        unless $cil->file_exists($filename);
 
-    my $data = CIL::Utils->parse_cil_file($filename, $class->last_field);
+    my $data = $cil->parse_cil_file($filename, $class->last_field);
     my $issue = $class->new_from_data( $name, $data );
     return $issue;
 }
@@ -118,7 +118,8 @@ sub save {
     my $filename = $self->create_filename($cil, $self->name);
 
     my $fields = $self->fields();
-    CIL::Utils->write_cil_file( $filename, $self->{data}, @$fields );
+
+    $cil->save( $filename, $self->{data}, @$fields );
 }
 
 sub as_output {

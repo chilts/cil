@@ -39,6 +39,52 @@ sub post_add {
     return [ "git add @files" ];
 }
 
+use Git;
+
+sub git {
+    my $self = shift;
+    $self->{git} ||= Git->repository;
+}
+
+sub glob_rev {
+    my ($self, $rev, $path) = @_;
+
+    # only support globbing the last element
+    my ($dir, $pattern) = $path =~ m{^([^\*]*/)([^/]*)$}
+	    or croak "unsupported pattern '$path'";
+    $pattern =~ s{([\\\.])}{\\$1}g;
+    $pattern =~ s{\*}{.*}g;
+    my @match;
+    $DB::single = 1;
+    for ( $self->git->command("ls-tree", $rev, $dir) ) {
+        chomp;
+        my ($blobid, $path) = m{([0-9a-f]{40})\s+(.*)} or die;
+	if ( $path =~ m{^\Q$dir\E$pattern$} ) {
+	    push @match, $path;
+	}
+    }
+    @match;
+}
+
+sub file_exists {
+    my ($self, $rev, $path) = @_;
+
+    my $output = eval { $self->git->command("cat-file", "-t", "$rev:$path") };
+    return ( $output && $output =~ /blob/ );
+}
+
+sub dir_exists {
+    my ($self, $rev, $path) = @_;
+
+    my $output = eval { $self->git->command("cat-file", "-t", "$rev:$path") };
+    return ( $output && $output =~ /tree/ );
+}
+
+sub get_fh {
+    my ($self, $rev, $path) = @_;
+    $self->git->command_output_pipe("cat-file", "blob", "$rev:$path");
+}
+
 ## ----------------------------------------------------------------------------
 1;
 ## ----------------------------------------------------------------------------

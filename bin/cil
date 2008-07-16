@@ -55,6 +55,8 @@ my @IN_OPTS = (
     'created-by>c', # for 'summary', 'list'
     'a=s',          # a = assigned_to
     'assigned-to>a',# for 'summary', 'list'
+    'r=s',          # r = revision
+    'revision>s',   # for all query commands
 
     # booleans
     'bare',         # for 'init'
@@ -105,6 +107,7 @@ my %BOOLEAN_ARGS = (
     my $cil = CIL->new();
     $cil->read_config_user();
     $cil->read_config_file();
+    $cil->check_args($args);
 
     # add any hooks we want
     # none yet
@@ -814,7 +817,7 @@ sub check_paths {
     my ($cil) = @_;
 
     # make sure an issue directory is available
-    unless ( -d $cil->IssueDir ) {
+    unless ( $cil->dir_exists($cil->IssueDir) ) {
         fatal("couldn't find '" . $cil->IssueDir . "' directory");
     }
 }
