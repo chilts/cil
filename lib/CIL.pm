@@ -278,6 +278,18 @@ sub read_config_file {
     $self->vcs( $vcs );
 }
 
+sub check_args {
+    my ($self, $args) = @_;
+
+    if ( $args->{r} ) {
+	$self->vcs_revision($args->{r});
+	if ( !$self->VCS or $self->VCS eq "Null" ) {
+	    warn "No VCS set in config file!\n";
+	}
+    }
+}
+
+
 sub register_hook {
     my ($self, $hook_name, $code) = @_;
 
