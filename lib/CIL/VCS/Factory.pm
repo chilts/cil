@@ -30,7 +30,7 @@ use base qw( Class::Factory );
 __PACKAGE__->register_factory_type( Null => 'CIL::VCS::Null' );
 __PACKAGE__->register_factory_type( Git => 'CIL::VCS::Git' );
 
-foreach my $method_name ( qw(post_add) ) {
+foreach my $method_name ( qw(post_add glob_rev file_exists dir_exists get_fh) ) {
     my $method = sub {
         my ($self) = @_;
         my $class = ref $self || $self;
