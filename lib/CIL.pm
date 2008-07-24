@@ -326,13 +326,12 @@ sub file_exists {
 }
 
 sub dir_exists {
-    my ($self, $filename) = @_;
-    if ( $self->vcs_revision ) {
-	$self->vcs->dir_exists($self->vcs_revision, $filename);
-    }
-    else {
-	-f $filename;
-    }
+    my ($self, $dir) = @_;
+
+    return $self->vcs_revision 
+            ? $self->vcs->dir_exists($self->vcs_revision, $dir)
+            : -d $dir
+            ;
 }
 
 sub parse_cil_file {
