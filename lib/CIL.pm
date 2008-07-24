@@ -310,8 +310,10 @@ sub run_hook {
     }
 
     # call all the hooks with all the args
-    foreach my $code ( @{$self->hook->{$hook_name}} ) {
-        &$code( $self, @rest );
+    if ( ref $self->hook eq 'HASH' ) {
+        foreach my $code ( @{$self->hook->{$hook_name}} ) {
+            &$code( $self, @rest );
+        }
     }
 }
 
