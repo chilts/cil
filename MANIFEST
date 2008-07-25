@@ -1,0 +1,19 @@
+bin/cil
+Build.PL
+Changes
+COPYING
+etc/bash_completion.d/cil
+INSTALLATION
+lib/CIL.pm
+lib/CIL/Attachment.pm
+lib/CIL/Base.pm
+lib/CIL/Comment.pm
+lib/CIL/Issue.pm
+lib/CIL/Utils.pm
+lib/CIL/VCS/Factory.pm
+lib/CIL/VCS/Git.pm
+lib/CIL/VCS/Null.pm
+MANIFEST			This list of files
+README
+t/00_files.t
+t/i_cafebabe.cil
