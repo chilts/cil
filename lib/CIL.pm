@@ -26,6 +26,9 @@ use warnings;
 use Carp qw(croak confess);
 use File::Glob qw(:glob);
 
+use vars qw( $VERSION );
+$VERSION = '0.5';
+
 use CIL::VCS::Factory;
 
 use base qw(Class::Accessor);
