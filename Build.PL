@@ -5,7 +5,7 @@ use Module::Build;
 my $builder = Module::Build->new(
     module_name         => 'CIL',
     license             => 'perl',
-    dist_author         => 'Pedro Melo <melo@cpan.org>',
+    dist_author         => 'Andrew Chilton <andychilton@gmail.com>',
     dist_version_from   => 'lib/CIL.pm',
     build_requires => {
         'Class::Factory'   => 0,
