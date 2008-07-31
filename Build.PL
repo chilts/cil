@@ -23,7 +23,6 @@ my $builder = Module::Build->new(
         'File::Touch'      => 0,
         'Getopt::Mixed'    => 0,
         'MIME::Base64'     => 0,
-        'Term::CallEditor' => 0,
         'Test::More'       => 0,
     },
     add_to_cleanup      => [ 'CIL-*' ],

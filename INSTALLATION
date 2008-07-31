@@ -5,7 +5,6 @@ Dependencies
 
 Perl Modules:
 
- * Term::CallEditor
  * File::Touch
  * File::Glob
  * File::Basename
