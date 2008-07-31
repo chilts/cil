@@ -39,8 +39,6 @@ use CIL::Attachment;
 
 my $y = 'y';
 
-use constant VERSION => '0.5.1';
-
 my @IN_OPTS = (
     # strings
     'p=s',          # p = path
@@ -84,7 +82,7 @@ my %BOOLEAN_ARGS = (
 
     # do the version and help
     if ( exists $args->{version} ) {
-        print "cil version ".VERSION."\n";
+        print "cil version " . $CIL::VERSION . "\n";
         exit;
     }
 
