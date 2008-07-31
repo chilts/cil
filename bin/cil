@@ -263,13 +263,14 @@ sub cmd_steal {
 }
 
 sub cmd_add {
-    my ($cil, undef, $issue_name) = @_;
+    my ($cil, undef, @argv ) = @_;
 
     CIL::Utils->ensure_interactive();
 
     my $user = user($cil);
 
     my $issue = CIL::Issue->new('tmpname');
+    $issue->Summary( join ' ', @argv );
     $issue->Status('New');
     $issue->CreatedBy( $user );
     $issue->Description("Description ...");
@@ -1174,9 +1175,10 @@ and Label fields.
 Shows each issue with more information. You may filter on both the Status and
 Label fields.
 
-=item add
+=item add [summary]
 
-Adds an issues after you have edited the input.
+Adds an issues after you have edited the input.  Text passed
+after 'add' will be used as the bug summary line.
 
 =item show ISSUE
 
