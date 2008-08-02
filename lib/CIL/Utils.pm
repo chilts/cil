@@ -149,7 +149,8 @@ sub solicit {
     flock $fh, LOCK_UN;
 
     # run the editor
-    my $status = system($editor, $filename);
+    my @editor_args = split(/\s+/, $editor);
+    my $status = system(@editor_args, $filename);
 
     # check its return value
     if ( $status != 0 ) {
