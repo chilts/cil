@@ -37,7 +37,6 @@ __PACKAGE__->mk_accessors(qw(
     StatusStrict StatusAllowed StatusOpen StatusClosed
     LabelStrict LabelAllowed
     VCS
-    UserName UserEmail
     vcs hook
     vcs_revision
 ));
@@ -221,7 +220,7 @@ sub read_config_user {
     }
 
     # set each config to be either the user defined one or the default
-    foreach ( qw(UserName UserEmail) ) {
+    foreach ( qw() ) { # nothing yet
         $self->$_( $cfg->{$_} || $defaults_user->{$_} );
     }
 }
@@ -360,6 +359,19 @@ sub save {
     else {
 	CIL::Utils->write_cil_file( $filename, $data, @fields );
     }
+}
+
+## ----------------------------------------------------------------------------
+# simple delegates to elsewhere
+
+sub UserName {
+    my ($self) = @_;
+    return $self->vcs->UserName
+}
+
+sub UserEmail {
+    my ($self) = @_;
+    return $self->vcs->UserEmail
 }
 
 ## ----------------------------------------------------------------------------

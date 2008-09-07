@@ -143,17 +143,12 @@ sub cmd_init {
         fatal("Couldn't create '$issues_dir' directory: $!");
     }
 
-    my $username = "unknown";
-    my $user_email;
-
     # are we in a Git repository?
     my $VCSconfig = '';
     if ( -d '.git' ) {
         msg( 'git repository detected, setting VCS accordingly' );
         $VCSconfig = 'VCS: git';
         my $vcs = CIL::VCS::Factory->new( 'Git' );
-        $username = $vcs->username     if $vcs->username;
-        $user_email = $vcs->user_email if $vcs->user_email;
     }
 
     # create a .cil file here also
@@ -167,8 +162,6 @@ sub cmd_init {
         # write a default .cil file
         write_file($config, <<"CONFIG");
 $VCSconfig
-UserName: $username
-UserEmail: $user_email
 StatusStrict: 1
 StatusAllowedList: New
 StatusAllowedList: InProgress

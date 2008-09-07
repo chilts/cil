@@ -85,11 +85,11 @@ sub get_fh {
     $self->git->command_output_pipe("cat-file", "blob", "$rev:$path");
 }
 
-sub username {
+sub UserName {
     return $_[0]->git->config( 'user.name' );
 }
 
-sub user_email {
+sub UserEmail {
     return $_[0]->git->config( 'user.email' );
 }
 
