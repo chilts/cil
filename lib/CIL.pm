@@ -29,6 +29,11 @@ use File::Glob qw(:glob);
 use vars qw( $VERSION );
 $VERSION = '0.5.1';
 
+use Module::Pluggable 
+        sub_name    => 'commands',
+        search_path => [ 'CIL::Command' ],
+        require     => 1;
+
 use CIL::VCS::Factory;
 
 use base qw(Class::Accessor);
@@ -81,6 +86,14 @@ sub new {
     }
     return $self;
 }
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub command_names {
+    return map { $_->name } $_[0]->commands;
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub list_entities {
     my ($self, $prefix, $base) = @_;
@@ -375,5 +388,132 @@ sub UserEmail {
 }
 
 ## ----------------------------------------------------------------------------
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub check_paths {
+    my ($cil) = @_;
+
+    # make sure an issue directory is available
+    unless ( $cil->dir_exists($cil->IssueDir) ) {
+        fatal("couldn't find '" . $cil->IssueDir . "' directory");
+    }
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub filter_issues {
+    my ($cil, $issues, $args) = @_;
+
+    # don't filter if we haven't been given anything
+    return $issues unless %$args;
+
+    # check that they aren't filtering on both --assigned-to and --is-mine
+    if ( defined $args->{a} and defined $args->{'is-mine'} ) {
+        fatal("the --assigned-to and --is-mine filters are mutually exclusive");
+    }
+
+    # take a copy of the whole lot first (so we don't destroy the input list)
+    my @new_issues = @$issues;
+
+    # firstly, get out the Statuses we want
+    if ( defined $args->{s} ) {
+        @new_issues = grep { $_->Status eq $args->{s} } @new_issues;
+    }
+
+    # then see if we want a particular label (could be a bit nicer)
+    if ( defined $args->{l} ) {
+        my @tmp;
+        foreach my $issue ( @new_issues ) {
+            push @tmp, $issue
+                if grep { $_ eq $args->{l} } @{$issue->LabelList};
+        }
+        @new_issues = @tmp;
+    }
+
+    # filter out dependent on open/closed
+    if ( defined $args->{'is-open'} ) {
+        # just get the open issues
+        @new_issues = grep { $_->is_open($cil) } @new_issues;
+    }
+    if ( defined $args->{'is-closed'} ) {
+        # just get the closed issues
+        @new_issues = grep { $_->is_closed($cil) } @new_issues;
+    }
+
+    # filter out 'created by'
+    if ( defined $args->{c} ) {
+        @new_issues = grep { $args->{c} eq $_->created_by_email } @new_issues;
+    }
+
+    # filter out 'assigned to'
+    $args->{a} = $cil->UserEmail
+        if defined $args->{'is-mine'};
+    if ( defined $args->{a} ) {
+        @new_issues = grep { $args->{a} eq $_->assigned_to_email } @new_issues;
+    }
+
+    return \@new_issues;
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub separator {
+    msg('=' x 79);
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub msg {
+    print ( defined $_[0] ? $_[0] : '' );
+    print "\n";
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub display_issue_summary {
+    my ($cil, $issue) = @_;
+
+    my $msg = $issue->name();
+    $msg .= "\t";
+    $msg .= $issue->Status();
+    $msg .= "\t";
+    $msg .= $issue->Summary();
+
+    msg($msg);
+}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub display_issue_headers {
+    my ($cil, $issue) = @_;
+
+    title( 'Issue ' . $issue->name() );
+    field( 'Summary', $issue->Summary() );
+    field( 'CreatedBy', $issue->CreatedBy() );
+    field( 'AssignedTo', $issue->AssignedTo() );
+    field( 'Inserted', $issue->Inserted() );
+    field( 'Status', $issue->Status() );
+    field( 'Labels', join(' ', @{$issue->LabelList()}) );
+    field( 'DependsOn', join(' ', @{$issue->DependsOnList()}) );
+    field( 'Precedes', join(' ', @{$issue->PrecedesList()}) );
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub title {
+    my ($title) = @_;
+    my $msg = "--- $title ";
+    $msg .= '-' x (74 - length($title));
+    msg($msg);
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sub field {
+    my ($field, $value) = @_;
+    my $msg = "$field";
+    $msg .= " " x (12 - length($field));
+    msg("$msg: " . (defined $value ? $value : '') );
+}
+
 1;
-## ----------------------------------------------------------------------------
