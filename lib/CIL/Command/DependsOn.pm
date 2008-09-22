@@ -19,7 +19,7 @@
 #
 ## ----------------------------------------------------------------------------
 
-package CIL::Command::List;
+package CIL::Command::DependsOn;
 
 use strict;
 use warnings;
@@ -28,28 +28,20 @@ use base qw(CIL::Command);
 
 ## ----------------------------------------------------------------------------
 
-sub name { 'list' }
+sub name { 'depends-on' }
 
 sub run {
-    my ($self, $cil, $args) = @_;
+    my ($self, $cil, $args, $issue_name, $depends_name) = @_;
 
-    CIL::Utils->check_paths($cil);
+    my $issue = CIL::Utils->load_issue_fuzzy($cil, $issue_name);
+    my $depends = CIL::Utils->load_issue_fuzzy($cil, $depends_name);
 
-    # find all the issues
-    my $issues = $cil->get_issues();
-    $issues = CIL::Utils->filter_issues( $cil, $issues, $args );
-    if ( @$issues ) {
-        foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
-            CIL::Utils->separator();
-            CIL::Utils->display_issue_headers($issue);
-        }
-        CIL::Utils->separator();
-    }
-    else {
-        CIL::Utils->msg('no issues found');
-    }
+    $issue->add_depends_on( $depends->name );
+    $depends->add_precedes( $issue->name );
+
+    $issue->save($cil);
+    $depends->save($cil);
 }
 
 1;
-
 ## ----------------------------------------------------------------------------

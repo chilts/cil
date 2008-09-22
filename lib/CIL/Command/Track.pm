@@ -19,7 +19,7 @@
 #
 ## ----------------------------------------------------------------------------
 
-package CIL::Command::List;
+package CIL::Command::Track;
 
 use strict;
 use warnings;
@@ -28,28 +28,27 @@ use base qw(CIL::Command);
 
 ## ----------------------------------------------------------------------------
 
-sub name { 'list' }
+sub name { 'track' }
 
 sub run {
-    my ($self, $cil, $args) = @_;
+    my ($self, $cil, undef, $issue_name) = @_;
 
-    CIL::Utils->check_paths($cil);
+    CIL::Utils->fatal("the 'VCS' option in your .cil file is not set")
+        unless defined $cil->VCS;
 
-    # find all the issues
-    my $issues = $cil->get_issues();
-    $issues = CIL::Utils->filter_issues( $cil, $issues, $args );
-    if ( @$issues ) {
-        foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
-            CIL::Utils->separator();
-            CIL::Utils->display_issue_headers($issue);
-        }
-        CIL::Utils->separator();
-    }
-    else {
-        CIL::Utils->msg('no issues found');
-    }
+    CIL::Utils->fatal("the 'VCS' option currently only supports values of 'Git'")
+        unless $cil->VCS eq 'Git';
+
+    my $issue = CIL::Utils->load_issue_fuzzy($cil, $issue_name);
+
+    # add the issue to Git
+    my $issue_dir = $cil->IssueDir();
+    my @files;
+    push @files, "$issue_dir/i_" . $issue->name . '.cil';
+    push @files, map { "$issue_dir/c_${_}.cil" } @{ $issue->CommentList };
+    push @files, map { "$issue_dir/a_${_}.cil" } @{ $issue->AttachmentList };
+    CIL::Utils->msg("git add @files");
 }
 
 1;
-
 ## ----------------------------------------------------------------------------

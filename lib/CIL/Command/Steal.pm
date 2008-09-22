@@ -19,7 +19,7 @@
 #
 ## ----------------------------------------------------------------------------
 
-package CIL::Command::List;
+package CIL::Command::Steal;
 
 use strict;
 use warnings;
@@ -28,28 +28,20 @@ use base qw(CIL::Command);
 
 ## ----------------------------------------------------------------------------
 
-sub name { 'list' }
+sub name { 'steal' }
 
 sub run {
-    my ($self, $cil, $args) = @_;
+    my ($self, $cil, $args, $issue_name) = @_;
 
-    CIL::Utils->check_paths($cil);
+    # firstly, read the issue in
+    my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
 
-    # find all the issues
-    my $issues = $cil->get_issues();
-    $issues = CIL::Utils->filter_issues( $cil, $issues, $args );
-    if ( @$issues ) {
-        foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
-            CIL::Utils->separator();
-            CIL::Utils->display_issue_headers($issue);
-        }
-        CIL::Utils->separator();
-    }
-    else {
-        CIL::Utils->msg('no issues found');
-    }
+    # set the AssignedTo for this issue to you (because you're stealing it)
+    $issue->AssignedTo( user($cil) );
+    $issue->save($cil);
+
+    CIL::Utils->display_issue($cil, $issue);
 }
 
 1;
-
 ## ----------------------------------------------------------------------------

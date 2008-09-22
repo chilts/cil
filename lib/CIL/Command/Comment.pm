@@ -19,7 +19,7 @@
 #
 ## ----------------------------------------------------------------------------
 
-package CIL::Command::List;
+package CIL::Command::Comment;
 
 use strict;
 use warnings;
@@ -28,28 +28,23 @@ use base qw(CIL::Command);
 
 ## ----------------------------------------------------------------------------
 
-sub name { 'list' }
+sub name { 'comment' }
 
 sub run {
-    my ($self, $cil, $args) = @_;
+    my ($self, $cil, undef, $issue_name) = @_;
 
-    CIL::Utils->check_paths($cil);
+    my $issue = load_issue_fuzzy( $cil, $issue_name );
 
-    # find all the issues
-    my $issues = $cil->get_issues();
-    $issues = CIL::Utils->filter_issues( $cil, $issues, $args );
-    if ( @$issues ) {
-        foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
-            CIL::Utils->separator();
-            CIL::Utils->display_issue_headers($issue);
-        }
-        CIL::Utils->separator();
-    }
-    else {
-        CIL::Utils->msg('no issues found');
-    }
+    CIL::Utils->ensure_interactive();
+
+    # create the new comment
+    my $comment = CIL::Comment->new('tmpname');
+    $comment->Issue( $issue->name );
+    $comment->CreatedBy( user($cil) );
+    $comment->Description("Description ...");
+
+    CIL::Utils->add_comment_loop($cil, undef, $issue, $comment);
 }
 
 1;
-
 ## ----------------------------------------------------------------------------

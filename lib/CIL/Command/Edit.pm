@@ -19,7 +19,7 @@
 #
 ## ----------------------------------------------------------------------------
 
-package CIL::Command::List;
+package CIL::Command::Edit;
 
 use strict;
 use warnings;
@@ -28,28 +28,44 @@ use base qw(CIL::Command);
 
 ## ----------------------------------------------------------------------------
 
-sub name { 'list' }
+my $y = 'y';
+
+## ----------------------------------------------------------------------------
+
+sub name { 'edit' }
 
 sub run {
-    my ($self, $cil, $args) = @_;
+    my ($self, $cil, undef, $issue_name) = @_;
 
-    CIL::Utils->check_paths($cil);
+    my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
 
-    # find all the issues
-    my $issues = $cil->get_issues();
-    $issues = CIL::Utils->filter_issues( $cil, $issues, $args );
-    if ( @$issues ) {
-        foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
-            CIL::Utils->separator();
-            CIL::Utils->display_issue_headers($issue);
+    CIL::Utils->ensure_interactive();
+
+    my $edit = $y;
+
+    # keep going until we get a valid issue or we want to quit
+    while ( $edit eq $y ) {
+        # read in the new issue text
+        my $fh = CIL::Utils->solicit( $issue->as_output );
+        $issue = CIL::Issue->new_from_fh( $issue->name, $fh );
+
+        # check if the issue is valid
+        if ( $issue->is_valid($cil) ) {
+            $edit = 'n';
         }
-        CIL::Utils->separator();
+        else {
+            msg($_) foreach @{ $issue->errors };
+            $edit = ans('Would you like to re-edit (y/n): ');
+        }
     }
-    else {
-        CIL::Utils->msg('no issues found');
-    }
+
+    # if the issue is still invalid, they quit without correcting it
+    return unless $issue->is_valid( $cil );
+
+    # save it
+    $issue->save($cil);
+    CIL::Utils->display_issue($cil, $issue);
 }
 
 1;
-
 ## ----------------------------------------------------------------------------

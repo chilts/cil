@@ -19,7 +19,7 @@
 #
 ## ----------------------------------------------------------------------------
 
-package CIL::Command::List;
+package CIL::Command::Summary;
 
 use strict;
 use warnings;
@@ -28,7 +28,7 @@ use base qw(CIL::Command);
 
 ## ----------------------------------------------------------------------------
 
-sub name { 'list' }
+sub name { 'summary' }
 
 sub run {
     my ($self, $cil, $args) = @_;
@@ -39,9 +39,9 @@ sub run {
     my $issues = $cil->get_issues();
     $issues = CIL::Utils->filter_issues( $cil, $issues, $args );
     if ( @$issues ) {
-        foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
-            CIL::Utils->separator();
-            CIL::Utils->display_issue_headers($issue);
+        CIL::Utils->separator();
+        foreach my $issue ( @$issues ) {
+            CIL::Utils->display_issue_summary($issue);
         }
         CIL::Utils->separator();
     }

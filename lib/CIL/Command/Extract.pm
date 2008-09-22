@@ -19,7 +19,7 @@
 #
 ## ----------------------------------------------------------------------------
 
-package CIL::Command::List;
+package CIL::Command::Extract;
 
 use strict;
 use warnings;
@@ -28,26 +28,15 @@ use base qw(CIL::Command);
 
 ## ----------------------------------------------------------------------------
 
-sub name { 'list' }
+sub name { 'extract' }
 
 sub run {
-    my ($self, $cil, $args) = @_;
+    my ($self, $cil, $args, $attachment_name) = @_;
 
-    CIL::Utils->check_paths($cil);
+    my $attachment = CIL::Utils->load_attachment_fuzzy($cil, $attachment_name);
 
-    # find all the issues
-    my $issues = $cil->get_issues();
-    $issues = CIL::Utils->filter_issues( $cil, $issues, $args );
-    if ( @$issues ) {
-        foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
-            CIL::Utils->separator();
-            CIL::Utils->display_issue_headers($issue);
-        }
-        CIL::Utils->separator();
-    }
-    else {
-        CIL::Utils->msg('no issues found');
-    }
+    my $filename = $args->{f} || $attachment->Filename();
+    write_file( $filename, $attachment->as_binary );
 }
 
 1;
