@@ -32,6 +32,11 @@ foreach my $method_name ( qw(post_add) ) {
     *{"CIL::VCS::Null::$method_name"} = sub {};
 }
 
+foreach my $method_name ( qw(UserName UserEmail) ) {
+    no strict 'refs';
+    *{"CIL::VCS::Null::$method_name"} = sub { return ''; };
+}
+
 ## ----------------------------------------------------------------------------
 1;
 ## ----------------------------------------------------------------------------
