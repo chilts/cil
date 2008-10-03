@@ -33,7 +33,7 @@ sub name { 'attach' }
 sub run {
     my ($self, $cil, undef, $issue_name, $filename) = @_;
 
-    my $issue = load_issue_fuzzy( $cil, $issue_name );
+    my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
 
     # check to see if the file exists
     unless ( -r $filename ) {
@@ -41,7 +41,7 @@ sub run {
     }
 
     my $basename = basename( $filename );
-    my $user = user($cil);
+    my $user = CIL::Utils->user($cil);
 
     my $add_attachment_text = <<"EOF";
 Filename    : $basename

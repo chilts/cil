@@ -110,7 +110,7 @@ sub run {
         $issue->Summary( $subject );
         $issue->Status( 'New' );
         $issue->CreatedBy( $from );
-        $issue->AssignedTo( user($cil) );
+        $issue->AssignedTo( CIL::Utils->user($cil) );
         $issue->Inserted( $date );
         $issue->Updated( $date );
         $issue->Description( $body );

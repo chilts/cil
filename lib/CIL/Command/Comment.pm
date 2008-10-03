@@ -33,14 +33,14 @@ sub name { 'comment' }
 sub run {
     my ($self, $cil, undef, $issue_name) = @_;
 
-    my $issue = load_issue_fuzzy( $cil, $issue_name );
+    my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
 
     CIL::Utils->ensure_interactive();
 
     # create the new comment
     my $comment = CIL::Comment->new('tmpname');
     $comment->Issue( $issue->name );
-    $comment->CreatedBy( user($cil) );
+    $comment->CreatedBy( CIL::Utils->user($cil) );
     $comment->Description("Description ...");
 
     CIL::Utils->add_comment_loop($cil, undef, $issue, $comment);

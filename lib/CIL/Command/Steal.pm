@@ -37,7 +37,7 @@ sub run {
     my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
 
     # set the AssignedTo for this issue to you (because you're stealing it)
-    $issue->AssignedTo( user($cil) );
+    $issue->AssignedTo( CIL::Utils->user($cil) );
     $issue->save($cil);
 
     CIL::Utils->display_issue($cil, $issue);
