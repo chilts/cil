@@ -493,7 +493,7 @@ sub display_issue_summary {
 sub display_issue_headers {
     my ($class, $issue) = @_;
 
-    # $class->title( 'Issue ' . $issue->name() );
+    $class->title( 'Issue ' . $issue->name() );
     $class->field( 'Summary', $issue->Summary() );
     $class->field( 'CreatedBy', $issue->CreatedBy() );
     $class->field( 'AssignedTo', $issue->AssignedTo() );
