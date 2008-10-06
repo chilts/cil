@@ -242,10 +242,13 @@ and Label fields.
 Shows each issue with more information. You may filter on both the Status and
 Label fields.
 
-=item add [summary]
+=item add [--mine] [summary]
 
 Adds an issues after you have edited the input.  Text passed
 after 'add' will be used as the bug summary line.
+
+If you use the --mine flag, the AssignedTo field is automatically set to you
+(saves having to copy and paste the CreatedBy field).
 
 =item show ISSUE
 
