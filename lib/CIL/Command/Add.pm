@@ -31,7 +31,7 @@ use base qw(CIL::Command);
 sub name { 'add' }
 
 sub run {
-    my ($self, $cil, undef, @argv) = @_;
+    my ($self, $cil, $args, @argv) = @_;
 
     CIL::Utils->ensure_interactive();
 
@@ -41,6 +41,8 @@ sub run {
     $issue->Summary( join ' ', @argv );
     $issue->Status('New');
     $issue->CreatedBy( $user );
+    $issue->AssignedTo( $user )
+        if $args->{mine};
     $issue->Description("Description ...");
 
     CIL::Utils->add_issue_loop($cil, undef, $issue);

@@ -58,6 +58,7 @@ my @IN_OPTS = (
     'is-open',      # for 'summary', 'list'
     'is-closed',    # for 'summary', 'list'
     'is-mine',      # for 'summary', 'list'
+    'mine',         # for 'add'
     'help',
     'version',
 );
@@ -69,6 +70,7 @@ my %BOOLEAN_ARGS = (
     'is-open'   => 1,
     'is-closed' => 1,
     'is-mine'   => 1,
+    'mine'      => 1,
 );
 
 ## ----------------------------------------------------------------------------
