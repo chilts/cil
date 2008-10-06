@@ -62,7 +62,7 @@ sub run {
     my $VCSconfig = '';
     if ( -d '.git' ) {
         CIL::Utils->msg( 'git repository detected, setting VCS accordingly' );
-        $VCSconfig = 'VCS: git';
+        $VCSconfig = 'VCS: Git';
         my $vcs = CIL::VCS::Factory->new( 'Git' );
     }
 

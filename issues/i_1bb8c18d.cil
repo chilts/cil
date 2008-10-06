@@ -1,0 +1,10 @@
+Summary: 'cil init' uses 'git' instead of 'Git'
+Status: Fixed
+CreatedBy: Yanick Champoux <yanick@babyl.dyndns.org>
+AssignedTo: Yanick Champoux <yanick@babyl.dyndns.org>
+Inserted: 2008-10-06T23:27:34
+Updated: 2008-10-06T23:32:32
+
+When 'cil init' detects that Git is present, it
+set the VCS to 'git' in the .cil file, while it
+should be set to 'Git' instead.
