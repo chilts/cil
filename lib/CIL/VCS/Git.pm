@@ -93,6 +93,21 @@ sub UserEmail {
     return $_[0]->git->config( 'user.email' );
 }
 
+sub branches {
+    my ($self) = @_;
+    return $self->git->command('branch');
+}
+
+sub switch_to_branch {
+    my ($self, $branch_name) = @_;
+    $self->git->command('checkout', $branch_name);
+}
+
+sub create_branch {
+    my ($self, $branch_name) = @_;
+    $self->git->command('checkout', '-b', $branch_name);
+}
+
 ## ----------------------------------------------------------------------------
 1;
 ## ----------------------------------------------------------------------------
