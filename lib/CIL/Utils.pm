@@ -166,11 +166,12 @@ sub solicit {
             : "could not launch ($editor) program: $!";
     }
 
-    unless ( seek $fh, 0, 0 ) {
+    my $new_fh;
+    if (!open($new_fh, '<', $filename)) {
         croak "could not seek on temp file: errno=$!";
     }
 
-    return $fh;
+    return $new_fh;
 }
 
 # this method based on Recipe 15.2
