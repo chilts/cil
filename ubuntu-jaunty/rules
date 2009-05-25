@@ -1,0 +1,53 @@
+#!/usr/bin/make -f
+## ----------------------------------------------------------------------------
+
+## ----------------------------------------------------------------------------
+## uncomment this to turn on verbose mode
+
+# export DH_VERBOSE=1
+
+## ----------------------------------------------------------------------------
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp install-stamp
+	[ ! -f Makefile ] || $(MAKE) clean
+	rm -f $(CURDIR)/cil.1
+	dh_clean
+
+build:	build-stamp
+build-stamp:
+	dh_testdir
+	[ ! -f Makefile ] || $(MAKE)
+	echo Doing MAN...
+	pod2man $(CURDIR)/bin/cil > $(CURDIR)/cil.1
+	touch build-stamp
+
+binary:
+	dh_testdir
+	dh_testroot
+
+	dh_install
+	dh_installdirs
+	dh_installdocs
+	dh_installdebconf
+	dh_installman
+	dh_installchangelogs Changes
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+
+	dh_perl
+
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary-arch:
+
+binary:	binary-indep binary-arch
+
+.PHONY:	clean install binary-indep binary-arch binary
+
+## ----------------------------------------------------------------------------

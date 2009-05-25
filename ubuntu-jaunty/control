@@ -1,0 +1,18 @@
+Source: cil
+Section: perl
+Priority: extra
+Maintainer: Andrew Chilton <andychilton@gmail.com>
+Uploaders: Andrew Chilton <andychilton@gmail.com>
+Standards-Version: 3.6.1
+Build-Depends: debhelper (>= 5)
+Build-Depends-Indep: perl
+
+Package: cil
+Section: perl
+Priority: extra
+Architecture: all
+Depends: ${perl:Depends}, libgetopt-mixed-perl, libfile-touch-perl, libfile-slurp-perl, libclass-accessor-perl, libdatetime-perl, libemail-find-perl, libemail-filter-perl, libemail-date-perl, libclass-factory-perl
+Description: command line issue tracker
+ 'cil' allows easy command-line creation of an issue tracker. It saves each
+ issue locally and in plain text. Commands are given such that these issues can
+ be added, edited and listed easily.

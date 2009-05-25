@@ -1,0 +1,69 @@
+cil (0.5.1) unstable; urgency=low
+
+  * New release minus all the cruft
+
+ -- Andrew Chilton <andychilton@gmail.com>  Sat, 05 Jul 2008 18:28:22 +1200
+
+cil (0.5.0) unstable; urgency=low
+
+  * Fix bug when running certain commands (inc. init)
+  * Added command 'steal'
+  * Added command 'track'
+
+ -- Andrew Chilton <andychilton@gmail.com>  Sat, 05 Jul 2008 15:36:22 +1200
+
+cil (0.4.2) unstable; urgency=low
+
+  * Fix bug where new issues are assigned to the reporter
+  * Fix bug where only one item in a config list breaks listings
+  * Ready for 0.4.2 release
+
+ -- Andrew Chilton <andychilton@gmail.com>  Thu, 03 Jul 2008 22:22:22 +1200
+
+cil (0.4.1) unstable; urgency=low
+
+  * Fix dependency on libemail-date-perl
+  * Ready for 0.4.1 release
+
+ -- Andrew Chilton <andychilton@gmail.com>  Thu, 03 Jul 2008 00:09:21 +1200
+
+cil (0.4.0) unstable; urgency=low
+
+  * Can now read a ~/.cilrc file for user defined options
+  * Added command 'am' which applies a mailbox
+  * Can now use shortened hash names to the commands
+  * Allows dependencies between issues
+  * New filter called --is-mine
+  * Ready for 0.4.0 release
+
+ -- Andrew Chilton <andychilton@gmail.com>  Wed, 02 Jul 2008 23:12:20 +1200
+
+cil (0.3.0) unstable; urgency=low
+
+  * Added filters for the listing commands
+  * Added ability to read .cil config file
+  * Can now set which Statuses are valid
+  * Can set which Labels are valid
+  * Added 'fsck' command
+  * Added bash completion for options, commands and entities
+  * Ready for 0.3.0 release
+
+ -- Andrew Chilton <andychilton@gmail.com>  Sat, 28 Jun 2008 12:06:19 +1200
+
+cil (0.2.1) unstable; urgency=low
+
+  * Ready for 0.2.1 release
+
+ -- Andrew Chilton <andychilton@gmail.com>  Mon, 23 Jun 2008 22:32:18 +1200
+
+cil (0.2.0) unstable; urgency=low
+
+  * Ready for 0.2 release
+
+ -- Andrew Chilton <andychilton@gmail.com>  Sun, 22 Jun 2008 16:17:18 +1200
+
+cil (0.1.0) unstable; urgency=low
+
+  * Ready for 0.1 release
+
+ -- Andrew Chilton <andychilton@gmail.com>  Sun, 04 May 2008 16:17:17 +1200

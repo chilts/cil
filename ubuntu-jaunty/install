@@ -1,0 +1,3 @@
+lib/*               usr/share/perl5
+bin/cil             usr/bin
+etc/bash_completion.d/cil etc/bash_completion.d
