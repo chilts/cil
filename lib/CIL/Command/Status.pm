@@ -34,7 +34,7 @@ sub run {
     my ($self, $cil, undef, $issue_name, $status) = @_;
 
     unless ( defined $status ) {
-        $cil->fatal("provide a status to set this issue to");
+        CIL::Utils->fatal("provide a status to set this issue to");
     }
 
     # firstly, read the issue in
