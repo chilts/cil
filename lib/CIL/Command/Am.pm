@@ -33,8 +33,9 @@ use base qw(CIL::Command);
 sub name { 'am' }
 
 sub run {
-    my ($self, $cil, undef, $email_filename) = @_;
+    my ($self, $cil, undef, $email_filename, $noquestions) = @_;
 
+    $noquestions = 0 unless $noquestions eq 'yes';
 
     unless ( -r $email_filename ) {
         CIL::Utils::fatal("couldn't load email '$email_filename'");
@@ -90,6 +91,9 @@ sub run {
             $issue = (values %issue)[0];
         }
         else {
+            if ($noquestions) {
+                CIL::Utils->fatal('Cannot add to an existing message when there are multiple options, in noninteractive mode!');
+            }
             my $ans = CIL::Utils::ans('To which issue would you like to add this comment: ');
 
             # ToDo: decide whether we let them choose an arbitrary issue, for
@@ -123,8 +127,12 @@ sub run {
 
         # then ask if the user would like to add it
         CIL::Utils->msg("Couldn't find any likely issues, so this might be a new one.");
-        my $ans = CIL::Utils::ans('Would you like to add this message as an issue shown above (y/n): ');
-        return unless $ans eq 'y';
+        if ($noquestions) {
+            CIL::Utils->msg('Running in non interactive mode, so just adding it as a new one without asking"!');
+        } else {
+            my $ans = CIL::Utils::ans('Would you like to add this message as an issue shown above (y/n): ');
+            return unless $ans eq 'y';
+        }
 
         CIL::Utils->add_issue_loop($cil, undef, $issue);
     }
