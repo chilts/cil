@@ -24,6 +24,8 @@ package CIL::Command::Am;
 use strict;
 use warnings;
 
+use File::Slurp qw(read_file write_file);
+use Email::Date qw(find_date);
 use base qw(CIL::Command);
 
 ## ----------------------------------------------------------------------------
@@ -33,15 +35,16 @@ sub name { 'am' }
 sub run {
     my ($self, $cil, undef, $email_filename) = @_;
 
-    unless ( -f $email_filename ) {
-        $cil->fatal("couldn't load email '$email_filename'");
+
+    unless ( -r $email_filename ) {
+        CIL::Utils::fatal("couldn't load email '$email_filename'");
     }
 
     my $msg_text = read_file($email_filename);
 
     my $email = Email::Simple->new($msg_text);
     unless ( defined $email ) {
-        $cil->fatal("email file '$email_filename' didn't look like an email");
+        CIL::Utils::fatal("email file '$email_filename' didn't look like an email");
     }
 
     # extract some fields
@@ -57,7 +60,7 @@ sub run {
         push @issue_names, @new;
     }
 
-    $cil->msg("Found possible issue names in email: ", ( join(' ', @issue_names) || '[none]' ));
+    CIL::Utils->msg("Found possible issue names in email: ", ( join(' ', @issue_names) || '[none]' ));
 
     my %issue;
     foreach ( @issue_names ) {
@@ -68,7 +71,7 @@ sub run {
     }
 
     if ( keys %issue ) {
-        $cil->msg( "Found actual issues: " . (join(' ', keys %issue)) );
+        CIL::Utils->msg( "Found actual issues: " . (join(' ', keys %issue)) );
 
         # create the new comment
         my $comment = CIL::Comment->new('tmpname');
@@ -87,7 +90,7 @@ sub run {
             $issue = (values %issue)[0];
         }
         else {
-            my $ans = ans('To which issue would you like to add this comment: ');
+            my $ans = CIL::Utils::ans('To which issue would you like to add this comment: ');
 
             # ToDo: decide whether we let them choose an arbitrary issue, for
             # now quit unless they choose one from the list
@@ -100,10 +103,10 @@ sub run {
         # set the parent issue
         $comment->Issue( $issue->name );
 
-        add_comment_loop($cil, undef, $issue, $comment);
+        CIL::Utils->add_comment_loop($cil, undef, $issue, $comment);
     }
     else {
-        $cil->msg("Couldn't find reference to any issues in the email.");
+        CIL::Utils->msg("Couldn't find reference to any issues in the email.");
 
         # no issue found so make up the issue first
         my $issue = CIL::Issue->new('tmpname');
@@ -119,8 +122,8 @@ sub run {
         CIL::Utils->display_issue_full($cil, $issue);
 
         # then ask if the user would like to add it
-        $cil->msg("Couldn't find any likely issues, so this might be a new one.");
-        my $ans = ans('Would you like to add this message as an issue shown above (y/n): ');
+        CIL::Utils->msg("Couldn't find any likely issues, so this might be a new one.");
+        my $ans = CIL::Utils::ans('Would you like to add this message as an issue shown above (y/n): ');
         return unless $ans eq 'y';
 
         CIL::Utils->add_issue_loop($cil, undef, $issue);

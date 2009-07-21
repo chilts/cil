@@ -25,6 +25,9 @@ use strict;
 use warnings;
 
 use base qw(CIL::Command);
+use File::Basename;
+use File::Slurp;
+use Digest::MD5 qw(md5_hex);
 
 ## ----------------------------------------------------------------------------
 

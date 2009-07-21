@@ -54,8 +54,8 @@ sub run {
             $edit = 'n';
         }
         else {
-            msg($_) foreach @{ $issue->errors };
-            $edit = ans('Would you like to re-edit (y/n): ');
+            CIL::Utils->msg($_) foreach @{ $issue->errors };
+            $edit = CIL::Utils::ans('Would you like to re-edit (y/n): ');
         }
     }
 
