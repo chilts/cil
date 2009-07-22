@@ -25,6 +25,7 @@ use strict;
 use warnings;
 
 use base qw(CIL::Command);
+use File::Slurp qw(write_file);
 
 ## ----------------------------------------------------------------------------
 
