@@ -84,6 +84,7 @@ StatusAllowedList: Finished
 StatusOpenList: New
 StatusOpenList: InProgress
 StatusClosedList: Finished
+DefaultNewStatus: New
 LabelStrict: 1
 LabelAllowedList: Type-Enhancement
 LabelAllowedList: Type-Defect

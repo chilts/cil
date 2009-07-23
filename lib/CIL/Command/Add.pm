@@ -39,7 +39,7 @@ sub run {
 
     my $issue = CIL::Issue->new('tmpname');
     $issue->Summary( join ' ', @argv );
-    $issue->Status('New');
+    $issue->Status($cil->DefaultNewStatus);
     $issue->CreatedBy( $user );
     $issue->AssignedTo( $user )
         if $args->{mine};

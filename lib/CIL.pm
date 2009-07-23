@@ -41,16 +41,18 @@ __PACKAGE__->mk_accessors(qw(
     IssueDir
     StatusStrict StatusAllowed StatusOpen StatusClosed
     LabelStrict LabelAllowed
+    DefaultNewStatus
     VCS
     vcs hook
     vcs_revision
 ));
 
 my $defaults = {
-    IssueDir     => 'issues', # the dir to save the issues in
-    StatusStrict => 0,        # whether to complain if a status is invalid
-    LabelStrict  => 0,        # whether to complain if a label is invalid
-    VCS          => 'Null',   # don't do anything for VCS hooks
+    IssueDir         => 'issues', # the dir to save the issues in
+    StatusStrict     => 0,        # whether to complain if a status is invalid
+    LabelStrict      => 0,        # whether to complain if a label is invalid
+    DefaultNewStatus => 'New',    # What Status to use for new issues by default
+    VCS              => 'Null',   # don't do anything for VCS hooks
 };
 
 my @config_hashes = qw(StatusAllowed StatusOpen StatusClosed LabelAllowed);
@@ -286,6 +288,8 @@ sub read_config_file {
 
     $self->LabelStrict( $cfg->{LabelStrict} );
     $self->LabelAllowed( $cfg->{LabelAllowed} );
+
+    $self->DefaultNewStatus( $cfg->{DefaultNewStatus} );
 
     # if we are allowed this VCS, create the hook instance
     $self->VCS( $cfg->{VCS} || 'Null' );

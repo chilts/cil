@@ -115,7 +115,7 @@ sub run {
         # no issue found so make up the issue first
         my $issue = CIL::Issue->new('tmpname');
         $issue->Summary( $subject );
-        $issue->Status( 'New' );
+        $issue->Status($cil->DefaultNewStatus);
         $issue->CreatedBy( $from );
         $issue->AssignedTo( CIL::Utils->user($cil) );
         $issue->Inserted( $date );
