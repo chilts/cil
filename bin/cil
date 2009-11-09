@@ -59,6 +59,7 @@ my @IN_OPTS = (
     'is-closed',    # for 'summary', 'list'
     'is-mine',      # for 'summary', 'list'
     'mine',         # for 'add'
+    'batch',        # for 'am'
     'help',
     'version',
 );
@@ -71,6 +72,7 @@ my %BOOLEAN_ARGS = (
     'is-closed' => 1,
     'is-mine'   => 1,
     'mine'      => 1,
+    'batch'     => 1,
 );
 
 ## ----------------------------------------------------------------------------
@@ -164,7 +166,7 @@ Commands:
    comment ISSUE
    attach  ISSUE FILENAME
    extract ATTACHMENT [--filename=FILENAME]
-   am      EMAIL.TXT
+   am      EMAIL.TXT [--batch]
    track   ISSUE
    fsck
 
