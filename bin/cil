@@ -178,7 +178,7 @@ Filters:
    --assigned-to=?
    --is-mine
 
-See <http://kapiti.geek.nz/software/cil.html> for further information.
+See <http://www.chilts.org/projects/cil/> for further information.
 Report bugs to <andychilton\@gmail.com>.
 END_USAGE
 }

@@ -99,7 +99,7 @@ CONFIG
         write_file("$issues_dir/README.txt", <<'README');
 This directory is used by CIL to track issues and feature requests.
 
-The home page for CIL is at http://kapiti.geek.nz/software/cil.html
+The home page for CIL is at http://www.chilts.org/projects/cil/
 README
     }
 
