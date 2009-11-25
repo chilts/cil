@@ -375,7 +375,7 @@ sub display_issue_full {
     $class->field( 'Precedes', $_ )
         foreach sort @{$issue->PrecedesList()};
     $class->field( 'Inserted', $issue->Inserted() );
-    $class->field( 'Updated', $issue->Inserted() );
+    $class->field( 'Updated', $issue->Updated() );
     $class->text('Description', $issue->Description());
 
     my $comments = $cil->get_comments_for( $issue );
