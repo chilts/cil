@@ -50,6 +50,11 @@ sub run {
     else {
         $cil->vcs->create_branch( $issue->name );
     }
+
+    # now that we've switched branches, load the issue in again (just in case)
+    $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
+    $issue->Status( 'InProgress' );
+    $issue->save($cil);
 }
 
 1;

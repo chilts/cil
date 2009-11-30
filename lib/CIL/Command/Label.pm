@@ -31,20 +31,21 @@ use base qw(CIL::Command);
 sub name { 'label' }
 
 sub run {
-    my ($self, $cil, undef, $issue_name, $label) = @_;
+    my ($self, $cil, undef, $label, @issue_names) = @_;
 
     unless ( defined $label ) {
-        $cil->fatal("provide a label to add to this issue");
+        CIL::Utils->fatal("provide a valid label to add to this issue");
     }
 
-    # firstly, read the issue in
-    my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
+    # for every issue, read it it and add the label
+    foreach my $issue_name ( @issue_names ) {
+        # firstly, read the issue in
+        my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
 
-    # set the status for this issue
-    $issue->add_label( $label );
-    $issue->save($cil);
-
-    CIL::Utils->display_issue($cil, $issue);
+        # set the status for this issue
+        $issue->add_label( $label );
+        $issue->save($cil);
+    }
 }
 
 1;

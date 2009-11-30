@@ -31,20 +31,21 @@ use base qw(CIL::Command);
 sub name { 'status' }
 
 sub run {
-    my ($self, $cil, undef, $issue_name, $status) = @_;
+    my ($self, $cil, undef, $status, @issue_names) = @_;
 
     unless ( defined $status ) {
-        CIL::Utils->fatal("provide a status to set this issue to");
+        CIL::Utils->fatal("provide a valid status to set this issue to");
     }
 
-    # firstly, read the issue in
-    my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
+    # for every issue, read it it and set the Status
+    foreach my $issue_name ( @issue_names ) {
+        # firstly, read the issue in
+        my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
 
-    # set the status for this issue
-    $issue->Status( $status );
-    $issue->save($cil);
-
-    CIL::Utils->display_issue($cil, $issue);
+        # set the label for this issue
+        $issue->Status( $status );
+        $issue->save($cil);
+    }
 }
 
 1;

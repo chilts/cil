@@ -160,7 +160,8 @@ Commands:
    summary [FILTERS...]
    list    [FILTERS...]
    show    ISSUE
-   status  ISSUE NEW_STATUS
+   status  NEW_STATUS [ISSUES...]
+   label   NEW_LABEL [ISSUES...]
    steal   ISSUE
    edit    ISSUE
    comment ISSUE
