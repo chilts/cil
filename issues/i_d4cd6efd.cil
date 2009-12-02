@@ -1,0 +1,18 @@
+Summary: Add some personal config options
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2009-12-02T04:11:04
+Updated: 2009-12-02T04:13:11
+
+Add the following options:
+
+* DefaultAssignedTo
+* AssignToMe
+
+In the first case, if set, this shows who this bug should be assigned to. If
+this isn't set, it isn't set to anything.
+
+If the second is set, AssignedTo is set to the current user.
+
+Each of these options may be added to ./.cil or to ~/.cilrc.
