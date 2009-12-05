@@ -1,0 +1,14 @@
+Summary: Adding a label twice actually does it
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2009-12-05T00:38:49
+Updated: 2009-12-05T00:39:50
+
+Take an issue with no labels:
+
+ $ cil label cafebabe Milestone-v0.1
+ $ cil label cafebabe Milestone-v0.1
+ $ cil show cafebabe
+
+The label appears twice. This shouldn't happen.
