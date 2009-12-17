@@ -482,9 +482,9 @@ sub display_issue_summary {
     my ($class, $issue) = @_;
 
     my $msg = $issue->name();
-    $msg .= "\t";
+    $msg .= "   ";
     $msg .= $issue->Status();
-    $msg .= "\t";
+    $msg .= (' ' x ( 13 - length $issue->Status() ));
     $msg .= $issue->Summary();
 
     $class->msg($msg);
