@@ -1,0 +1,35 @@
+Summary: Add a '--commit' to 'cil add' (plus some others)
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2009-12-23T06:27:27
+Updated: 2009-12-23T06:45:14
+
+When adding a new issue, I usually do:
+
+ $ cil add
+ ...
+ $ git add issues/i_cafebabe.cil
+ $ git commit -m 'cil-cafebabe: New Issue' issues/i_cafebabe.cil
+
+To shortcut this, having the following would be nice:
+
+ $ cil add --commit
+
+Also, having the following would also be nice:
+
+ $ cil comment --add cafebabe
+
+to do:
+
+ $ cil comment cafebabe
+ ...
+ $ cil add issues/i_cafebabe.cil issues/c_deadbeef.cil
+
+Maybe review some other commands. e.g:
+
+ $ cil status --commit InProgress cafebabe
+ $ cil status --add InProgress cafebabe
+ $ cil label --add/commit Milestone-v0.3 cafebabe baadf00d effic0de
+
+Should be nice :)
