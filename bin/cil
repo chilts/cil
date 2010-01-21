@@ -32,6 +32,7 @@ use CIL;
 use CIL::Issue;
 use CIL::Comment;
 use CIL::Attachment;
+use CIL::Utils;
 
 ## ----------------------------------------------------------------------------
 # constants
@@ -102,7 +103,14 @@ my %BOOLEAN_ARGS = (
     my( $command ) =  grep { $command_name eq $_->name } CIL->commands
         or Getopt::Mixed::abortMsg("'$command_name' is not a valid cil command.");
 
+    # make a new $cil object
     my $cil = CIL->new();
+
+    # for all commands (except init), we need to know we can see the proper paths
+    # (ie. issues/)
+    CIL::Utils->check_paths( $cil )
+        unless $command_name eq 'init';
+
     $cil->read_config_user();
     $cil->read_config_file();
     $cil->check_args($args);

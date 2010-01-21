@@ -78,7 +78,7 @@ sub parse_from_lines {
             $data->{$key} = $value;
         }
     }
-    
+
     # now read everything that's left into the $last_field field (if there is one)
     $data->{$last_field} = join("\n", @lines)
         if defined $last_field;
