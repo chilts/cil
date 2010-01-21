@@ -2,8 +2,9 @@ Summary: The CreatedBy field should be autopopulated
 Status: New
 CreatedBy: Andrew Ruthven <andrew@etc.gen.nz>
 AssignedTo: 
+Label: Milestone-v0.06
 Inserted: 2008-09-22T03:28:32
-Updated: 2008-09-22T03:31:24
+Updated: 2010-01-21T22:59:19
 
 The users fullname and username@hostname is probably a reasonable first
 guess.  (DEBNAME and DEBEMAIL environment variables are also good.)

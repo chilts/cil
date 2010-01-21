@@ -2,8 +2,9 @@ Summary: cil add should detect early on if cil init hasn't been run
 Status: New
 CreatedBy: Andrew Ruthven <andrew@etc.gen.nz>
 AssignedTo: 
+Label: Milestone-v0.06
 Inserted: 2008-09-22T03:26:21
-Updated: 2008-09-22T03:28:13
+Updated: 2010-01-21T22:59:19
 
 Currently if you run cil add you can start to create a bug report, hit save
 and then cil bombs out not being able to create a file inside issues.

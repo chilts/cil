@@ -2,8 +2,9 @@ Summary: Adding a label twice actually does it
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.06
 Inserted: 2009-12-05T00:38:49
-Updated: 2009-12-05T00:39:50
+Updated: 2010-01-21T22:59:19
 
 Take an issue with no labels:
 

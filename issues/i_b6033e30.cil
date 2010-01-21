@@ -2,8 +2,9 @@ Summary: can't find issues folder
 Status: New
 CreatedBy: Name <me@example.com>
 AssignedTo: 
+Label: Milestone-v0.06
 Inserted: 2009-06-06T09:39:09
-Updated: 2009-06-06T09:40:33
+Updated: 2010-01-21T22:59:19
 
 Description ...
 I created an issue, while in the issues folder.. it doesn't write it

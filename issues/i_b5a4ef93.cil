@@ -2,8 +2,9 @@ Summary: Add a '--commit' to 'cil add' (plus some others)
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.06
 Inserted: 2009-12-23T06:27:27
-Updated: 2009-12-23T06:45:14
+Updated: 2010-01-21T22:59:19
 
 When adding a new issue, I usually do:
 

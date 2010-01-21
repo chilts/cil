@@ -33,6 +33,7 @@ LabelAllowedList: Milestone-v0.2
 LabelAllowedList: Milestone-v0.3
 LabelAllowedList: Milestone-v0.4
 LabelAllowedList: Milestone-v0.5
+LabelAllowedList: Milestone-v0.06
 LabelAllowedList: Milestone-Future
 LabelAllowedList: Priority-Critical
 LabelAllowedList: Priority-High
