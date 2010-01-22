@@ -1,10 +1,10 @@
 Summary: Adding a label twice actually does it
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Milestone-v0.06
 Inserted: 2009-12-05T00:38:49
-Updated: 2010-01-21T22:59:19
+Updated: 2010-01-22T01:39:51
 
 Take an issue with no labels:
 

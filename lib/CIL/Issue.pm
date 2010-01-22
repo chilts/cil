@@ -131,6 +131,9 @@ sub add_label {
     croak 'provide a label when adding one'
         unless defined $label;
 
+    # return if we already have this label
+    return if grep { $_ eq $label } @{$self->{data}{Label}};
+
     push @{$self->{data}{Label}}, $label;
     $self->flag_as_updated();
 }
