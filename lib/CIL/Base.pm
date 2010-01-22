@@ -38,7 +38,7 @@ sub new_from_name {
     croak 'provide a name'
         unless defined $name;
 
-    my $filename = $class->create_filename($cil, $name);
+    my $filename = $class->filename($cil, $name);
     croak "filename '$filename' does no exist"
         unless $cil->file_exists($filename);
 
@@ -115,7 +115,7 @@ sub set_data {
 sub save {
     my ($self, $cil) = @_;
 
-    my $filename = $self->create_filename($cil, $self->name);
+    my $filename = $self->filename($cil, $self->name);
 
     my $fields = $self->fields();
 
@@ -128,7 +128,7 @@ sub as_output {
     return CIL::Utils->format_data_as_output( $self->{data}, @$fields );
 }
 
-sub create_filename {
+sub filename {
     my ($class, $cil, $name) = @_;
 
     # create the filename from it's parts

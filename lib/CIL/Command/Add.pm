@@ -45,7 +45,17 @@ sub run {
         if $args->{mine};
     $issue->Description("Description ...");
 
-    CIL::Utils->add_issue_loop($cil, undef, $issue);
+    $issue = CIL::Utils->add_issue_loop($cil, undef, $issue);
+
+    # if we want to add or commit this issue
+    if ( $args->{add} or $args->{commit} ) {
+        $cil->vcs->add( $cil, $issue );
+    }
+
+    # if we want to commit this issue
+    if ( $args->{commit} ) {
+        $cil->vcs->commit( $cil, $issue );
+    }
 }
 
 1;

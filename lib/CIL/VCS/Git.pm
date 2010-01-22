@@ -108,6 +108,21 @@ sub create_branch {
     $self->git->command('checkout', '-b', $branch_name);
 }
 
+sub add {
+    my ($self, $cil, $entity) = @_;
+
+    my $filename = $entity->filename($cil, $entity->name());
+    return $self->git->command('add', $filename);
+}
+
+sub commit {
+    my ($self, $cil, $entity) = @_;
+
+    my $filename = $entity->filename($cil, $entity->name());
+    my $message = 'cil-' . $entity->name . ': New Issue';
+    return $self->git->command('commit', '-m', $message, $filename);
+}
+
 ## ----------------------------------------------------------------------------
 1;
 ## ----------------------------------------------------------------------------
