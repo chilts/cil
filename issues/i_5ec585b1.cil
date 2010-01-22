@@ -1,0 +1,12 @@
+Summary: Add a cil label --remove command
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.06
+Inserted: 2010-01-22T01:41:59
+Updated: 2010-01-22T01:43:31
+
+Currently you can 'cil label MyLabel cafebabe' but you can't remove it. Add the
+following option:
+
+ $ cil label --remote MyLabel cafebabe
