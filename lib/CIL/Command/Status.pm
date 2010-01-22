@@ -31,7 +31,7 @@ use base qw(CIL::Command);
 sub name { 'status' }
 
 sub run {
-    my ($self, $cil, undef, $status, @issue_names) = @_;
+    my ($self, $cil, $args, $status, @issue_names) = @_;
 
     unless ( defined $status ) {
         CIL::Utils->fatal("provide a valid status to set this issue to");
@@ -45,6 +45,16 @@ sub run {
         # set the label for this issue
         $issue->Status( $status );
         $issue->save($cil);
+
+        # if we want to add or commit this issue
+        if ( $args->{add} or $args->{commit} ) {
+            $cil->vcs->add( $cil, $issue );
+        }
+
+        # if we want to commit this issue
+        if ( $args->{commit} ) {
+            $cil->vcs->commit( $cil, $issue );
+        }
     }
 }
 

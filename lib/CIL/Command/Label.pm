@@ -31,7 +31,7 @@ use base qw(CIL::Command);
 sub name { 'label' }
 
 sub run {
-    my ($self, $cil, undef, $label, @issue_names) = @_;
+    my ($self, $cil, $args, $label, @issue_names) = @_;
 
     unless ( defined $label ) {
         CIL::Utils->fatal("provide a valid label to add to this issue");
@@ -45,6 +45,16 @@ sub run {
         # set the status for this issue
         $issue->add_label( $label );
         $issue->save($cil);
+
+        # if we want to add or commit this issue
+        if ( $args->{add} or $args->{commit} ) {
+            $cil->vcs->add( $cil, $issue );
+        }
+
+        # if we want to commit this issue
+        if ( $args->{commit} ) {
+            $cil->vcs->commit( $cil, $issue );
+        }
     }
 }
 
