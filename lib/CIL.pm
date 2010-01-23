@@ -234,12 +234,20 @@ sub read_config_user {
 
     my $filename = File::HomeDir->my_home() . '/.cilrc';
 
+    # firstly, set the default config
     my $cfg;
+    %$cfg = %$defaults_user;
+
+    # then read the ~/.cilrc file
     if ( -f $filename ) {
         $cfg = CIL::Utils->parse_cil_file( $filename );
     }
 
-    # set each config to be either the user defined one or the default
+    # for some settings, see if we can get it from Git
+    $cfg->{UserName} = eval { Git->repository->config( 'user.name' ) }  || $cfg->{UserName};
+    $cfg->{UserEmail} = eval { Git->repository->config( 'user.email' ) } || $cfg->{UserEmail};
+
+    # save them all internally
     foreach ( qw(UserName UserEmail AutoAssignSelf) ) {
         $self->$_( $cfg->{$_} || $defaults_user->{$_} );
     }
