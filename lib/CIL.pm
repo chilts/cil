@@ -89,7 +89,7 @@ sub new {
     # save the settings for various bits of info
     foreach my $key ( keys %$defaults ) {
         # if we have been passed it in, use it, else use the default
-        $self->$key( $cfg->{$key} || $defaults->{$key} ); 
+        $self->$key( $cfg->{$key} || $defaults->{$key} );
     }
     return $self;
 }
@@ -360,7 +360,7 @@ sub file_exists {
 sub dir_exists {
     my ($self, $dir) = @_;
 
-    return $self->vcs_revision 
+    return $self->vcs_revision
             ? $self->vcs->dir_exists($self->vcs_revision, $dir)
             : -d $dir
             ;
@@ -370,22 +370,22 @@ sub parse_cil_file {
     my ($self, $filename, $last_field) = @_;
 
     if ( $self->vcs_revision ) {
-	my $fh = $self->vcs->get_fh($self->vcs_revision, $filename);
-	CIL::Utils->parse_from_fh($fh, $last_field);
+        my $fh = $self->vcs->get_fh($self->vcs_revision, $filename);
+        CIL::Utils->parse_from_fh($fh, $last_field);
     }
     else {
-	CIL::Utils->parse_cil_file($filename, $last_field);
+        CIL::Utils->parse_cil_file($filename, $last_field);
     }
 }
 
 sub save {
-    my ($self, $filename, $data, @fields) = @_;	
+    my ($self, $filename, $data, @fields) = @_;
 
     if ( $self->vcs_revision ) {
         confess "tried to ->save on alternate revision";
     }
     else {
-	CIL::Utils->write_cil_file( $filename, $data, @fields );
+        CIL::Utils->write_cil_file( $filename, $data, @fields );
     }
 }
 

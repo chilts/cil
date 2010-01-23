@@ -51,7 +51,7 @@ sub glob_rev {
 
     # only support globbing the last element
     my ($dir, $pattern) = $path =~ m{^([^\*]*/)([^/]*)$}
-	    or croak "unsupported pattern '$path'";
+        or croak "unsupported pattern '$path'";
     $pattern =~ s{([\\\.])}{\\$1}g;
     $pattern =~ s{\*}{.*}g;
     my @match;
@@ -59,9 +59,9 @@ sub glob_rev {
     for ( $self->git->command("ls-tree", $rev, $dir) ) {
         chomp;
         my ($blobid, $path) = m{([0-9a-f]{40})\s+(.*)} or die;
-	if ( $path =~ m{^\Q$dir\E$pattern$} ) {
-	    push @match, $path;
-	}
+        if ( $path =~ m{^\Q$dir\E$pattern$} ) {
+            push @match, $path;
+        }
     }
     @match;
 }

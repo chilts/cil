@@ -1,9 +1,11 @@
 Summary: Tidy up CIL.pm (and others) of formatting
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.06
+Comment: 5fe9eaea
 Inserted: 2010-01-23T11:40:50
-Updated: 2010-01-23T11:41:50
+Updated: 2010-01-23T12:42:28
 
 This includes:
 
