@@ -1,0 +1,13 @@
+Summary: Make cil read from a ~/.cilrc file for local settings
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.06
+Inserted: 2010-01-23T11:22:40
+Updated: 2010-01-23T11:24:57
+
+To do things like auto-assigning to yourself, and to override CreatedBy fields,
+cil should read from a ~/.cilrc file, rather than trying to figure it out from
+all kinds of places.
+
+Doing this would make a lot of other things easier.
