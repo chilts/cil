@@ -1,0 +1,8 @@
+Summary: Make sure libfile-homedir-perl is in Debian packaging
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2010-01-23T13:17:50
+Updated: 2010-01-23T13:18:24
+
+This also needs to be added to the INSTALLATION file.
