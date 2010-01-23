@@ -3,8 +3,9 @@ Status: New
 CreatedBy: Andrew Ruthven <andrew@etc.gen.nz>
 AssignedTo: 
 Label: Milestone-v0.06
+Comment: 961f2658
 Inserted: 2008-09-22T03:28:32
-Updated: 2010-01-21T22:59:19
+Updated: 2010-01-23T06:44:49
 
 The users fullname and username@hostname is probably a reasonable first
 guess.  (DEBNAME and DEBEMAIL environment variables are also good.)
