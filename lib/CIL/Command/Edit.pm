@@ -35,7 +35,7 @@ my $y = 'y';
 sub name { 'edit' }
 
 sub run {
-    my ($self, $cil, undef, $issue_name) = @_;
+    my ($self, $cil, $args, $issue_name) = @_;
 
     my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
 
@@ -64,6 +64,17 @@ sub run {
 
     # save it
     $issue->save($cil);
+
+    # if we want to add or commit this issue
+    if ( $args->{add} or $args->{commit} ) {
+        $cil->vcs->add( $cil, $issue );
+    }
+
+    # if we want to commit this issue
+    if ( $args->{commit} ) {
+        $cil->vcs->commit( $cil, $issue );
+    }
+
     CIL::Utils->display_issue($cil, $issue);
 }
 

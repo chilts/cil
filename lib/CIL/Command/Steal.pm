@@ -40,7 +40,17 @@ sub run {
     $issue->AssignedTo( CIL::Utils->user($cil) );
     $issue->save($cil);
 
-    CIL::Utils->display_issue($cil, $issue);
+    # if we want to add or commit this issue
+    if ( $args->{add} or $args->{commit} ) {
+        $cil->vcs->add( $cil, $issue );
+    }
+
+    # if we want to commit this issue
+    if ( $args->{commit} ) {
+        $cil->vcs->commit( $cil, $issue );
+    }
+
+    CIL::Utils->display_issue_full($cil, $issue);
 }
 
 1;
