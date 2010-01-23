@@ -1,11 +1,11 @@
 Summary: The CreatedBy field should be autopopulated
-Status: New
+Status: Finished
 CreatedBy: Andrew Ruthven <andrew@etc.gen.nz>
-AssignedTo: 
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Milestone-v0.06
 Comment: 961f2658
 Inserted: 2008-09-22T03:28:32
-Updated: 2010-01-23T06:44:49
+Updated: 2010-01-23T12:29:50
 
 The users fullname and username@hostname is probably a reasonable first
 guess.  (DEBNAME and DEBEMAIL environment variables are also good.)
