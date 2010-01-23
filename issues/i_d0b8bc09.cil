@@ -1,0 +1,13 @@
+Summary: Tidy up CIL.pm (and others) of formatting
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2010-01-23T11:40:50
+Updated: 2010-01-23T11:41:50
+
+This includes:
+
+* whitespace at end of lines
+* comment separator lines
+* stupid tabs -> spaces
+* and other questionable practices
