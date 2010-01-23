@@ -1,9 +1,10 @@
 Summary: When doing 'cil add', should read ~/.cilrc for AutoAssignSelf option
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.06
 Inserted: 2010-01-23T11:48:21
-Updated: 2010-01-23T11:49:20
+Updated: 2010-01-23T12:11:43
 
 Now that cil reads ~/.cilrc, you can now add 'AutoAssignSelf' to the config and
 it'll automatically assign any new issues to yourself.

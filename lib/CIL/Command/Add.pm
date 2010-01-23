@@ -42,7 +42,7 @@ sub run {
     $issue->Status($cil->DefaultNewStatus);
     $issue->CreatedBy( $user );
     $issue->AssignedTo( $user )
-        if $args->{mine};
+        if ( $args->{mine} or $cil->AutoAssignSelf );
     $issue->Description("Description ...");
 
     $issue = CIL::Utils->add_issue_loop($cil, undef, $issue);
