@@ -1,8 +1,11 @@
-issue-summary:
+open:
+	cil summary --is-open
+
+next-milestone:
 	cil summary --is-open --label=Milestone-v0.06
 
-issue-list:
-	cil list --is-open --label=Milestone-v0.06
+closed:
+	cil summary --is-closed
 
 clean:
 	find . -name '*~' -exec rm {} ';'
