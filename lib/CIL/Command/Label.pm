@@ -37,13 +37,20 @@ sub run {
         CIL::Utils->fatal("provide a valid label to add to this issue");
     }
 
-    # for every issue, read it it and add the label
+    # for every issue
     foreach my $issue_name ( @issue_names ) {
         # firstly, read the issue in
         my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
 
-        # set the status for this issue
-        $issue->add_label( $label );
+        # decide whether we are adding or removing this label
+        if ( $args->{remove} ) {
+            $issue->remove_label( $label );
+        }
+        else {
+            $issue->add_label( $label );
+        }
+
+        # save
         $issue->save($cil);
 
         # if we want to add or commit this issue

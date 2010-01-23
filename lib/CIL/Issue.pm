@@ -138,6 +138,17 @@ sub add_label {
     $self->flag_as_updated();
 }
 
+sub remove_label {
+    my ($self, $label) = @_;
+
+    croak 'provide a label when removing one'
+        unless defined $label;
+
+    # remove this label
+    @{$self->{data}{Label}} = grep { $_ ne $label } @{$self->{data}{Label}};
+    $self->flag_as_updated();
+}
+
 sub add_comment {
     my ($self, $comment) = @_;
 

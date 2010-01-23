@@ -63,6 +63,7 @@ my @IN_OPTS = (
     'add',          # for 'add', 'comment'
     'commit',       # for 'add', 'comment'
     'batch',        # for 'am'
+    'remove',       # for 'label'
     'help',
     'version',
 );
@@ -78,6 +79,7 @@ my %BOOLEAN_ARGS = (
     'add'       => 1,
     'commit'    => 1,
     'batch'     => 1,
+    'remove'    => 1,
 );
 
 ## ----------------------------------------------------------------------------
