@@ -7,6 +7,7 @@ StatusAllowedList: Fixed
 StatusAllowedList: OnHold
 StatusAllowedList: Duplicate
 StatusAllowedList: Finished
+StatusAllowedList: Cancelled
 StatusOpenList: New
 StatusOpenList: InProgress
 StatusOpenList: Ongoing
@@ -14,6 +15,7 @@ StatusClosedList: Fixed
 StatusClosedList: OnHold
 StatusClosedList: Duplicate
 StatusClosedList: Finished
+StatusClosedList: Cancelled
 LabelStrict: 1
 LabelAllowedList: Release-v0.1.0
 LabelAllowedList: Release-v0.2.0
