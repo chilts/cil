@@ -81,6 +81,10 @@ sub prefix {
     return 'a';
 }
 
+sub type {
+    return 'Attachment';
+}
+
 sub fields {
     return \@FIELDS;
 }

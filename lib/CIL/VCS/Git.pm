@@ -128,7 +128,7 @@ sub commit {
         push @filenames, $filename;
     }
 
-    my $message = 'cil-' . $entities[0]->name . ': New Comment';
+    my $message = 'cil-' . $entities[0]->name . ': New ' . $entities[0]->type;
     return $self->git->command('commit', '-m', $message, @filenames);
 }
 

@@ -82,6 +82,10 @@ sub prefix {
     return 'i';
 }
 
+sub type {
+    return 'Issue';
+}
+
 sub fields {
     return \@FIELDS;
 }

@@ -63,6 +63,10 @@ sub prefix {
     return 'c';
 }
 
+sub type {
+    return 'Comment';
+}
+
 sub fields {
     return \@FIELDS;
 }

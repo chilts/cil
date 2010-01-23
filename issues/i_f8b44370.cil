@@ -1,0 +1,12 @@
+Summary: When adding new issues, the Git comment is 'New Comment'
+Status: Finished
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.06
+Inserted: 2010-01-23T11:52:10
+Updated: 2010-01-23T11:56:58
+
+Instead, the message should say 'New <whatever the first entity is>'.
+
+For this, we'll need the entities to return a user readable string of what it
+is.
