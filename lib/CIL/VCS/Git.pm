@@ -120,7 +120,7 @@ sub add {
 }
 
 sub commit {
-    my ($self, $cil, @entities) = @_;
+    my ($self, $cil, $message, @entities) = @_;
 
     my @filenames;
     foreach my $entity ( @entities ) {
@@ -128,7 +128,19 @@ sub commit {
         push @filenames, $filename;
     }
 
-    my $message = 'cil-' . $entities[0]->name . ': New ' . $entities[0]->type;
+    $message = 'cil-' . $entities[0]->name . ": $message";
+    return $self->git->command('commit', '-m', $message, @filenames);
+}
+
+sub commit_multiple {
+    my ($self, $cil, $message, @entities) = @_;
+
+    my @filenames;
+    foreach my $entity ( @entities ) {
+        my $filename = $entity->filename($cil, $entity->name());
+        push @filenames, $filename;
+    }
+
     return $self->git->command('commit', '-m', $message, @filenames);
 }
 

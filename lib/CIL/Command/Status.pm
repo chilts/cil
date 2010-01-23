@@ -37,6 +37,8 @@ sub run {
         CIL::Utils->fatal("provide a valid status to set this issue to");
     }
 
+    my @issues;
+
     # for every issue, read it it and set the Status
     foreach my $issue_name ( @issue_names ) {
         # firstly, read the issue in
@@ -51,10 +53,12 @@ sub run {
             $cil->vcs->add( $cil, $issue );
         }
 
-        # if we want to commit this issue
-        if ( $args->{commit} ) {
-            $cil->vcs->commit( $cil, $issue );
-        }
+        push @issues, $issue;
+    }
+
+    # if we want to commit these issues
+    if ( $args->{commit} ) {
+        $cil->vcs->commit_multiple( $cil, "Status changed to '$status'", @issues );
     }
 }
 

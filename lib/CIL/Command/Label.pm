@@ -37,6 +37,8 @@ sub run {
         CIL::Utils->fatal("provide a valid label to add to this issue");
     }
 
+    my @issues;
+
     # for every issue
     foreach my $issue_name ( @issue_names ) {
         # firstly, read the issue in
@@ -58,9 +60,16 @@ sub run {
             $cil->vcs->add( $cil, $issue );
         }
 
-        # if we want to commit this issue
-        if ( $args->{commit} ) {
-            $cil->vcs->commit( $cil, $issue );
+        push @issues, $issue;
+    }
+
+    # if we want to commit these issues
+    if ( $args->{commit} ) {
+        if ( $args->{remove} ) {
+            $cil->vcs->commit_multiple( $cil, "Removed label '$label'", @issues );
+        }
+        else {
+            $cil->vcs->commit_multiple( $cil, "Added label '$label'", @issues );
         }
     }
 }

@@ -54,7 +54,7 @@ sub run {
 
     # if we want to commit this issue
     if ( $args->{commit} ) {
-        $cil->vcs->commit( $cil, $issue );
+        $cil->vcs->commit( $cil, 'New Issue', $issue );
     }
 }
 

@@ -72,7 +72,7 @@ sub run {
 
     # if we want to commit this issue
     if ( $args->{commit} ) {
-        $cil->vcs->commit( $cil, $issue );
+        $cil->vcs->commit( $cil, 'Issue Edited', $issue );
     }
 
     CIL::Utils->display_issue($cil, $issue);

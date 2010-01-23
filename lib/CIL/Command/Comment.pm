@@ -53,7 +53,7 @@ sub run {
 
     # if we want to commit this comment
     if ( $args->{commit} ) {
-        $cil->vcs->commit( $cil, $comment, $issue );
+        $cil->vcs->commit( $cil, 'New Comment', $issue, $comment );
     }
 }
 
