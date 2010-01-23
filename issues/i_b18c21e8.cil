@@ -1,10 +1,11 @@
 Summary: Ongoing maintenance and refactorings
-Status: Ongoing
+Status: Cancelled
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Type-Refactoring
+Comment: f8206d17
 Inserted: 2008-06-29T10:16:39
-Updated: 2008-06-29T10:23:51
+Updated: 2010-01-23T12:36:49
 
 This issue is so that refactorings can be checked in against a particular
 issue. This makes it easier to track and see a high level change of what was

@@ -10,7 +10,7 @@ StatusAllowedList: Finished
 StatusOpenList: New
 StatusOpenList: InProgress
 StatusOpenList: Ongoing
-StatusOpenList: Fixed
+StatusClosedList: Fixed
 StatusClosedList: OnHold
 StatusClosedList: Duplicate
 StatusClosedList: Finished
