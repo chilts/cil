@@ -42,8 +42,6 @@ sub run {
     # * ToDo: validity
     # * it's parent exists
 
-    check_paths($cil);
-
     # find all the issues, comments and attachments
     my $issues = $cil->get_issues();
     my $issue = {};
@@ -167,18 +165,18 @@ sub run {
 
     # ------------
     # nothing left
-    separator();
+    CIL::Utils->separator();
 }
 
 sub print_fsck_errors {
     my ($entity, $errors) = @_;
     return unless keys %$errors;
 
-    separator();
+    CIL::Utils->separator();
     foreach my $issue_name ( keys %$errors ) {
-        title( "$entity $issue_name ");
+        CIL::Utils->title( "$entity $issue_name ");
         foreach my $error ( @{$errors->{$issue_name}} ) {
-            msg("* $error");
+            CIL::Utils->msg("* $error");
         }
     }
 }
