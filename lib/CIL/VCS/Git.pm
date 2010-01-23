@@ -109,18 +109,27 @@ sub create_branch {
 }
 
 sub add {
-    my ($self, $cil, $entity) = @_;
+    my ($self, $cil, @entities) = @_;
 
-    my $filename = $entity->filename($cil, $entity->name());
-    return $self->git->command('add', $filename);
+    my @filenames;
+    foreach my $entity ( @entities ) {
+        my $filename = $entity->filename($cil, $entity->name());
+        push @filenames, $filename;
+    }
+    return $self->git->command('add', @filenames);
 }
 
 sub commit {
-    my ($self, $cil, $entity) = @_;
+    my ($self, $cil, @entities) = @_;
 
-    my $filename = $entity->filename($cil, $entity->name());
-    my $message = 'cil-' . $entity->name . ': New Issue';
-    return $self->git->command('commit', '-m', $message, $filename);
+    my @filenames;
+    foreach my $entity ( @entities ) {
+        my $filename = $entity->filename($cil, $entity->name());
+        push @filenames, $filename;
+    }
+
+    my $message = 'cil-' . $entities[0]->name . ': New Comment';
+    return $self->git->command('commit', '-m', $message, @filenames);
 }
 
 ## ----------------------------------------------------------------------------
