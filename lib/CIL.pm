@@ -25,11 +25,13 @@ use strict;
 use warnings;
 use Carp qw(croak confess);
 use File::Glob qw(:glob);
+use File::HomeDir;
+use Git;
 
 use vars qw( $VERSION );
 $VERSION = '0.5.1';
 
-use Module::Pluggable 
+use Module::Pluggable
         sub_name    => 'commands',
         search_path => [ 'CIL::Command' ],
         require     => 1;
@@ -43,6 +45,8 @@ __PACKAGE__->mk_accessors(qw(
     LabelStrict LabelAllowed
     DefaultNewStatus
     VCS
+    UserName UserEmail
+    AutoAssignSelf
     vcs hook
     vcs_revision
 ));
@@ -58,8 +62,9 @@ my $defaults = {
 my @config_hashes = qw(StatusAllowed StatusOpen StatusClosed LabelAllowed);
 
 my $defaults_user = {
-    UserName  => 'Name',
-    UserEmail => 'me@example.com',
+    UserName       => eval { Git->repository->config( 'user.name' ) } || 'UserName',
+    UserEmail      => eval { Git->repository->config( 'user.email' ) } || 'username@example.org',
+    AutoAssignSelf => 0,
 };
 
 my $allowed = {
@@ -227,7 +232,7 @@ sub get_attachments_for {
 sub read_config_user {
     my ($self) = @_;
 
-    my $filename = "$ENV{HOME}/.cilrc";
+    my $filename = File::HomeDir->my_home() . '/.cilrc';
 
     my $cfg;
     if ( -f $filename ) {
@@ -235,7 +240,7 @@ sub read_config_user {
     }
 
     # set each config to be either the user defined one or the default
-    foreach ( qw() ) { # nothing yet
+    foreach ( qw(UserName UserEmail AutoAssignSelf) ) {
         $self->$_( $cfg->{$_} || $defaults_user->{$_} );
     }
 }
@@ -374,19 +379,6 @@ sub save {
     else {
 	CIL::Utils->write_cil_file( $filename, $data, @fields );
     }
-}
-
-## ----------------------------------------------------------------------------
-# simple delegates to elsewhere
-
-sub UserName {
-    my ($self) = @_;
-    return $self->vcs->UserName
-}
-
-sub UserEmail {
-    my ($self) = @_;
-    return $self->vcs->UserEmail
 }
 
 ## ----------------------------------------------------------------------------
