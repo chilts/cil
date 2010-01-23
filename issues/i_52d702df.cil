@@ -1,0 +1,9 @@
+Summary: The StatusOpenList and StatusClosedList should fully describe what is allowed
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2010-01-23T13:14:45
+Updated: 2010-01-23T13:15:47
+
+If we make those two lists fully describe what status can be had, then we can
+remove the StatusAllowedList from the .cil config file.
