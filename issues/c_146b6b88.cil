@@ -1,0 +1,7 @@
+Issue: 1a5fb257
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2010-01-24T11:14:08
+Updated: 2010-01-24T11:14:40
+
+Before even doing this issue, the 'depends-on' was being mapped to
+'depends_on', so that has also been fixed.

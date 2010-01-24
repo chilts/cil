@@ -41,6 +41,18 @@ sub run {
 
     $issue->save($cil);
     $depends->save($cil);
+
+    # if we want to add or commit this change
+    if ( $args->{add} or $args->{commit} ) {
+        $cil->vcs->add( $cil, $issue );
+        $cil->vcs->add( $cil, $depends );
+    }
+
+    # if we want to commit this change
+    if ( $args->{commit} ) {
+        my $message = 'Issue ' . $issue->name . ' has a new dependent ' . $depends->name;
+        $cil->vcs->commit_multiple( $cil, $message, $issue, $depends );
+    }
 }
 
 1;

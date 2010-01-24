@@ -1,10 +1,11 @@
 Summary: Make sure depends-on and precedes can --add and --commit
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Milestone-v0.07
+Comment: 146b6b88
 Inserted: 2010-01-24T10:36:07
-Updated: 2010-01-24T10:39:29
+Updated: 2010-01-24T11:14:40
 
 We need to support the following:
 

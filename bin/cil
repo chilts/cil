@@ -104,8 +104,6 @@ my %BOOLEAN_ARGS = (
        if @ARGV == 0;
 
     my $command_name = shift @ARGV;
-    $command_name =~ s{-}{_}gxms;
-
     my( $command ) =  grep { $command_name eq $_->name } CIL->commands
         or Getopt::Mixed::abortMsg("'$command_name' is not a valid cil command.");
 
