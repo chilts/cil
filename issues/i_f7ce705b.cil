@@ -1,0 +1,11 @@
+Summary: Check for duplicate DependsOn and Precedes
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2010-01-24T11:08:48
+Updated: 2010-01-24T11:09:54
+
+Cil allows the addition of duplicate precedes. This shouldn't be allowed.
+
+It should automatically just not do anything if this combination already
+exists.
