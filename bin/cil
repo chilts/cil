@@ -385,9 +385,6 @@ The C<.cil> file is fairly simple and an example can be seen here:
 
     VCS: Git
     StatusStrict: 1
-    StatusAllowedList: New
-    StatusAllowedList: InProgress
-    StatusAllowedList: Finished
     StatusOpenList: New
     StatusOpenList: InProgress
     StatusClosedList: Finished
@@ -415,13 +412,6 @@ If this is set to a true value then cil checks that the status you enter into
 an issue (after adding or editing) is also in the allowed list (see
 StatusAllowedList).
 
-=item StatusAllowedList
-
-Default: empty, Type: List
-
-This list is checked against when adding or editing issues but only if you have
-StatusStrict on.
-
 =item StatusOpenList
 
 Default: empty, Type: List
@@ -433,6 +423,11 @@ This list is checked against when filtering with --is-open.
 Default: empty, Type: List
 
 This list is checked against when filtering with --is-closed.
+
+=item StatusAllowedList
+
+This list is automatically generated from the StatusOpenList and the
+StatusClosedList. It does not have to appear in the config file.
 
 =item LabelStrict
 

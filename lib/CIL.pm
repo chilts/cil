@@ -59,7 +59,7 @@ my $defaults = {
     VCS              => 'Null',   # don't do anything for VCS hooks
 };
 
-my @config_hashes = qw(StatusAllowed StatusOpen StatusClosed LabelAllowed);
+my @config_hashes = qw(StatusOpen StatusClosed LabelAllowed);
 
 my $defaults_user = {
     UserName       => eval { Git->repository->config( 'user.name' ) } || 'UserName',
@@ -294,11 +294,15 @@ sub read_config_file {
     # set each config item
     $self->IssueDir( $cfg->{IssueDir} );
 
+    # Status info
     $self->StatusStrict( $cfg->{StatusStrict} );
-    $self->StatusAllowed( $cfg->{StatusAllowed} );
     $self->StatusOpen( $cfg->{StatusOpen} );
     $self->StatusClosed( $cfg->{StatusClosed} );
 
+    # make the StatusAllowed list the sum of StatusOpen and StatusClosed
+    $self->StatusAllowed( { %{$cfg->{StatusOpen}}, %{$cfg->{StatusClosed}} } );
+
+    # Label Info
     $self->LabelStrict( $cfg->{LabelStrict} );
     $self->LabelAllowed( $cfg->{LabelAllowed} );
 

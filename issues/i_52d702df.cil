@@ -1,10 +1,11 @@
 Summary: The StatusOpenList and StatusClosedList should fully describe what is allowed
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Milestone-v0.07
+Comment: d49a551f
 Inserted: 2010-01-23T13:14:45
-Updated: 2010-01-24T10:39:29
+Updated: 2010-01-24T10:56:40
 
 If we make those two lists fully describe what status can be had, then we can
 remove the StatusAllowedList from the .cil config file.

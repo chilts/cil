@@ -78,9 +78,6 @@ sub run {
         write_file($config, <<"CONFIG");
 $VCSconfig
 StatusStrict: 1
-StatusAllowedList: New
-StatusAllowedList: InProgress
-StatusAllowedList: Finished
 StatusOpenList: New
 StatusOpenList: InProgress
 StatusClosedList: Finished
