@@ -2,8 +2,9 @@ Summary: Make sure depends-on and precedes can --add and --commit
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.07
 Inserted: 2010-01-24T10:36:07
-Updated: 2010-01-24T10:37:53
+Updated: 2010-01-24T10:39:29
 
 We need to support the following:
 

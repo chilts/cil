@@ -2,8 +2,9 @@ Summary: Remove the whole VCS.pm stuff, just have a Git.pm at the top level
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.07
 Inserted: 2010-01-24T10:17:18
-Updated: 2010-01-24T10:18:12
+Updated: 2010-01-24T10:39:29
 
 No-one is going to use cil with anything other than Git (well, maybe not using
 Git at all) so remove all the abstract stuff that isn't needed.
