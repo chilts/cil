@@ -1,0 +1,13 @@
+Summary: Make sure depends-on and precedes can --add and --commit
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2010-01-24T10:36:07
+Updated: 2010-01-24T10:37:53
+
+We need to support the following:
+
+ $ cil depends-on --add cafebab1 cafebab2
+ $ cil depends-on --commit cafebab1 cafebab2
+ $ cil precedes --add cafebab1 cafebab2
+ $ cil precedes --commit cafebab1 cafebab2
