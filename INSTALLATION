@@ -29,6 +29,7 @@ For Debian Etch, the following packages will need to be installed:
 * libfile-slurp-perl
 * libclass-accessor-perl
 * libdatetime-perl
+* libfile-homedir-perl
 
 Out of the box, cil provides two debian directories depending on which version
 of Debian you wish to use. Currently, there isn't much difference but choose
