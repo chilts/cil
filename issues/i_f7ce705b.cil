@@ -2,8 +2,9 @@ Summary: Check for duplicate DependsOn and Precedes
 Status: New
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.07
 Inserted: 2010-01-24T11:08:48
-Updated: 2010-01-24T11:09:54
+Updated: 2010-01-24T11:15:59
 
 Cil allows the addition of duplicate precedes. This shouldn't be allowed.
 
