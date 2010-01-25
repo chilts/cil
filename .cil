@@ -1,4 +1,5 @@
 VCS: Git
+UseGit: 1
 StatusStrict: 1
 StatusOpenList: New
 StatusOpenList: InProgress

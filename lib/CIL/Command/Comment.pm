@@ -45,15 +45,17 @@ sub run {
 
     $comment = CIL::Utils->add_comment_loop($cil, undef, $issue, $comment);
 
-    # if we want to add or commit this comment
-    if ( $args->{add} or $args->{commit} ) {
-        $cil->vcs->add( $cil, $issue );
-        $cil->vcs->add( $cil, $comment );
-    }
+    if ( $cil->UseGit ) {
+        # if we want to add or commit this comment
+        if ( $args->{add} or $args->{commit} ) {
+            $cil->git->add( $cil, $issue );
+            $cil->git->add( $cil, $comment );
+        }
 
-    # if we want to commit this comment
-    if ( $args->{commit} ) {
-        $cil->vcs->commit( $cil, 'New Comment', $issue, $comment );
+        # if we want to commit this comment
+        if ( $args->{commit} ) {
+            $cil->git->commit( $cil, 'New Comment', $issue, $comment );
+        }
     }
 }
 

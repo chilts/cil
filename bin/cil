@@ -117,7 +117,6 @@ my %BOOLEAN_ARGS = (
 
     $cil->read_config_user();
     $cil->read_config_file();
-    $cil->check_args($args);
 
     # add any hooks we want
     # none yet
@@ -381,7 +380,7 @@ may be declared multiple times:
 
 The C<.cil> file is fairly simple and an example can be seen here:
 
-    VCS: Git
+    UseGit: 1
     StatusStrict: 1
     StatusOpenList: New
     StatusOpenList: InProgress
@@ -395,12 +394,12 @@ The C<.cil> file is fairly simple and an example can be seen here:
 
 =over
 
-=item VCS
+=item UseGit
 
-Default: empty, Type: Enum(Git)
+Default: 0, Type: Boolean (0/1)
 
-Currently this option only supports Git. This enables you to use the 'track'
-command.
+Determines whether to use Git or not. Some features require Git though Cil is
+perfectly usable without.
 
 =item StatusStrict
 

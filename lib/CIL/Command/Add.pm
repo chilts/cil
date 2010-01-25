@@ -47,14 +47,16 @@ sub run {
 
     $issue = CIL::Utils->add_issue_loop($cil, undef, $issue);
 
-    # if we want to add or commit this issue
-    if ( $args->{add} or $args->{commit} ) {
-        $cil->vcs->add( $cil, $issue );
-    }
+    if ( $cil->UseGit ) {
+        # if we want to add or commit this issue
+        if ( $args->{add} or $args->{commit} ) {
+            $cil->git->add( $cil, $issue );
+        }
 
-    # if we want to commit this issue
-    if ( $args->{commit} ) {
-        $cil->vcs->commit( $cil, 'New Issue', $issue );
+        # if we want to commit this issue
+        if ( $args->{commit} ) {
+            $cil->git->commit( $cil, 'New Issue', $issue );
+        }
     }
 }
 

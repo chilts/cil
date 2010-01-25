@@ -49,16 +49,20 @@ sub run {
         $issue->save($cil);
 
         # if we want to add or commit this issue
-        if ( $args->{add} or $args->{commit} ) {
-            $cil->vcs->add( $cil, $issue );
+        if ( $cil->UseGit ) {
+            if ( $args->{add} or $args->{commit} ) {
+                $cil->git->add( $cil, $issue );
+            }
         }
 
         push @issues, $issue;
     }
 
-    # if we want to commit these issues
-    if ( $args->{commit} ) {
-        $cil->vcs->commit_multiple( $cil, "Status changed to '$status'", @issues );
+    if ( $cil->UseGit ) {
+        # if we want to commit these issues
+        if ( $args->{commit} ) {
+            $cil->git->commit_multiple( $cil, "Status changed to '$status'", @issues );
+        }
     }
 }
 

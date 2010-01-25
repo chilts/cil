@@ -33,11 +33,8 @@ sub name { 'track' }
 sub run {
     my ($self, $cil, undef, $issue_name) = @_;
 
-    CIL::Utils->fatal("the 'VCS' option in your .cil file is not set")
-        unless defined $cil->VCS;
-
-    CIL::Utils->fatal("the 'VCS' option currently only supports values of 'Git'")
-        unless $cil->VCS eq 'Git';
+    CIL::Utils->fatal("to use this feature the 'UseGit' option in your .cil file should be set")
+        unless $cil->UseGit;
 
     my $issue = CIL::Utils->load_issue_fuzzy($cil, $issue_name);
 

@@ -40,14 +40,16 @@ sub run {
     $issue->AssignedTo( CIL::Utils->user($cil) );
     $issue->save($cil);
 
-    # if we want to add or commit this issue
-    if ( $args->{add} or $args->{commit} ) {
-        $cil->vcs->add( $cil, $issue );
-    }
+    if ( $cil->UseGit ) {
+        # if we want to add or commit this issue
+        if ( $args->{add} or $args->{commit} ) {
+            $cil->git->add( $cil, $issue );
+        }
 
-    # if we want to commit this issue
-    if ( $args->{commit} ) {
-        $cil->vcs->commit( $cil, 'Issue Stolen', $issue );
+        # if we want to commit this issue
+        if ( $args->{commit} ) {
+            $cil->git->commit( $cil, 'Issue Stolen', $issue );
+        }
     }
 
     CIL::Utils->display_issue_full($cil, $issue);

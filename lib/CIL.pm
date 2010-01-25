@@ -26,7 +26,7 @@ use warnings;
 use Carp qw(croak confess);
 use File::Glob qw(:glob);
 use File::HomeDir;
-use Git;
+use CIL::Git;
 
 use vars qw( $VERSION );
 $VERSION = '0.5.1';
@@ -36,19 +36,16 @@ use Module::Pluggable
         search_path => [ 'CIL::Command' ],
         require     => 1;
 
-use CIL::VCS::Factory;
-
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(
     IssueDir
     StatusStrict StatusAllowed StatusOpen StatusClosed
     LabelStrict LabelAllowed
     DefaultNewStatus
-    VCS
+    UseGit
     UserName UserEmail
     AutoAssignSelf
-    vcs hook
-    vcs_revision
+    git hook
 ));
 
 my $defaults = {
@@ -56,7 +53,7 @@ my $defaults = {
     StatusStrict     => 0,        # whether to complain if a status is invalid
     LabelStrict      => 0,        # whether to complain if a label is invalid
     DefaultNewStatus => 'New',    # What Status to use for new issues by default
-    VCS              => 'Null',   # don't do anything for VCS hooks
+    UseGit           => 0,        # don't do anything with Git
 };
 
 my @config_hashes = qw(StatusOpen StatusClosed LabelAllowed);
@@ -68,9 +65,6 @@ my $defaults_user = {
 };
 
 my $allowed = {
-    vcs => {
-        'Git' => 1,
-    },
     hook => {
         'issue_post_save' => 1,
     },
@@ -94,13 +88,9 @@ sub new {
     return $self;
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 sub command_names {
     return map { $_->name } $_[0]->commands;
 }
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sub list_entities {
     my ($self, $prefix, $base) = @_;
@@ -108,13 +98,7 @@ sub list_entities {
     $base = '' unless defined $base;
 
     my $globpath = $self->IssueDir . "/${prefix}_${base}*.cil";
-    my @filenames;
-    if ( $self->vcs_revision ) {
-        @filenames = $self->vcs->glob_rev($self->vcs_revision, $globpath);
-    }
-    else {
-        @filenames = bsd_glob($globpath);
-    }
+    my @filenames = bsd_glob($globpath);
 
     my @entities;
     foreach my $filename ( sort @filenames ) {
@@ -263,13 +247,12 @@ sub read_config_file {
     my $cfg;
     if ( -f $filename ) {
         $cfg = CIL::Utils->parse_cil_file( $filename );
+        %$cfg = (%$defaults, %$cfg);
     }
     else {
+        # set some defaults if we don't have a .cil file
         $cfg = $defaults;
     }
-
-    # set some defaults if we don't have any of these
-    %$cfg = (%$defaults, %$cfg);
 
     # for some things, make a hash out of them
     foreach my $hash_name ( @config_hashes ) {
@@ -293,6 +276,7 @@ sub read_config_file {
 
     # set each config item
     $self->IssueDir( $cfg->{IssueDir} );
+    $self->UseGit( $cfg->{UseGit} );
 
     # Status info
     $self->StatusStrict( $cfg->{StatusStrict} );
@@ -308,23 +292,12 @@ sub read_config_file {
 
     $self->DefaultNewStatus( $cfg->{DefaultNewStatus} );
 
-    # if we are allowed this VCS, create the hook instance
-    $self->VCS( $cfg->{VCS} || 'Null' );
-    my $vcs = CIL::VCS::Factory->new( $cfg->{VCS} );
-    $self->vcs( $vcs );
-}
-
-sub check_args {
-    my ($self, $args) = @_;
-
-    if ( $args->{r} ) {
-        $self->vcs_revision($args->{r});
-        if ( !$self->VCS or $self->VCS eq "Null" ) {
-            warn "No VCS set in config file!\n";
-        }
+    # create the git instance if we want it
+    $self->UseGit( $cfg->{UseGit} || 0 );
+    if ( $self->UseGit ) {
+        $self->git( CIL::Git->new() );
     }
 }
-
 
 sub register_hook {
     my ($self, $hook_name, $code) = @_;
@@ -353,44 +326,22 @@ sub run_hook {
 
 sub file_exists {
     my ($self, $filename) = @_;
-    if ( $self->vcs_revision ) {
-        $self->vcs->file_exists($self->vcs_revision, $filename);
-    }
-    else {
-        -f $filename;
-    }
+    return -f $filename;
 }
 
 sub dir_exists {
     my ($self, $dir) = @_;
-
-    return $self->vcs_revision
-            ? $self->vcs->dir_exists($self->vcs_revision, $dir)
-            : -d $dir
-            ;
+    return -d $dir;
 }
 
 sub parse_cil_file {
     my ($self, $filename, $last_field) = @_;
-
-    if ( $self->vcs_revision ) {
-        my $fh = $self->vcs->get_fh($self->vcs_revision, $filename);
-        CIL::Utils->parse_from_fh($fh, $last_field);
-    }
-    else {
-        CIL::Utils->parse_cil_file($filename, $last_field);
-    }
+    return CIL::Utils->parse_cil_file($filename, $last_field);
 }
 
 sub save {
     my ($self, $filename, $data, @fields) = @_;
-
-    if ( $self->vcs_revision ) {
-        confess "tried to ->save on alternate revision";
-    }
-    else {
-        CIL::Utils->write_cil_file( $filename, $data, @fields );
-    }
+    return CIL::Utils->write_cil_file( $filename, $data, @fields );
 }
 
 ## ----------------------------------------------------------------------------

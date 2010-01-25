@@ -19,27 +19,14 @@
 #
 ## ----------------------------------------------------------------------------
 
-package CIL::VCS::Git;
+package CIL::Git;
 
 use strict;
 use warnings;
 use Carp;
-
-use base qw(CIL::VCS::Factory);
-
-sub post_add {
-    my ($self, $issue) = @_;
-
-    my $issue_dir = $issue->cil->IssueDir();
-    my @files;
-    push @files, "$issue_dir/i_" . $issue->name . '.cil';
-    push @files, map { "$issue_dir/c_${_}.cil" } @{ $issue->CommentList };
-    push @files, map { "$issue_dir/a_${_}.cil" } @{ $issue->AttachmentList };
-
-    return [ "git add @files" ];
-}
-
 use Git;
+
+use base qw(Class::Accessor);
 
 sub git {
     my $self = shift;

@@ -34,21 +34,23 @@ sub name { 'work' }
 sub run {
     my ($self, $cil, $args, $issue_name) = @_;
 
+    CIL::Utils->fatal("to use this feature the 'UseGit' option in your .cil file should be set")
+        unless $cil->UseGit;
+
     # firstly, read the issue in
     my $issue = CIL::Utils->load_issue_fuzzy( $cil, $issue_name );
 
     # right, got it's name, let's see if there is a branch for it
-    use Data::Dumper;
-    my @branches = $cil->vcs->branches();
+    my @branches = $cil->git->branches();
     my $branch = {};
     foreach ( @branches ) {
         $branch->{substr $_, 2} = 1;
     }
     if ( exists $branch->{$issue->name} ) {
-        $cil->vcs->switch_to_branch( $issue->name );
+        $cil->git->switch_to_branch( $issue->name );
     }
     else {
-        $cil->vcs->create_branch( $issue->name );
+        $cil->git->create_branch( $issue->name );
     }
 
     # now that we've switched branches, load the issue in again (just in case)

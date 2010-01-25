@@ -59,11 +59,10 @@ sub run {
     }
 
     # are we in a Git repository?
-    my $VCSconfig = '';
+    my $use_git = 0;
     if ( -d '.git' ) {
-        CIL::Utils->msg( 'git repository detected, setting VCS accordingly' );
-        $VCSconfig = 'VCS: Git';
-        my $vcs = CIL::VCS::Factory->new( 'Git' );
+        CIL::Utils->msg( 'git repository detected, setting to use it' );
+        $use_git = 1;
     }
 
     # create a .cil file here also
@@ -76,7 +75,7 @@ sub run {
     else {
         # write a default .cil file
         write_file($config, <<"CONFIG");
-$VCSconfig
+UseGit: $use_git
 StatusStrict: 1
 StatusOpenList: New
 StatusOpenList: InProgress

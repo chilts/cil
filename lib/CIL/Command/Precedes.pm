@@ -42,16 +42,18 @@ sub run {
     $issue->save($cil);
     $precedes->save($cil);
 
-    # if we want to add or commit this change
-    if ( $args->{add} or $args->{commit} ) {
-        $cil->vcs->add( $cil, $issue );
-        $cil->vcs->add( $cil, $precedes );
-    }
+    if ( $cil->UseGit ) {
+        # if we want to add or commit this change
+        if ( $args->{add} or $args->{commit} ) {
+            $cil->git->add( $cil, $issue );
+            $cil->git->add( $cil, $precedes );
+        }
 
-    # if we want to commit this change
-    if ( $args->{commit} ) {
-        my $message = 'Issue ' . $issue->name . ' precedes ' . $precedes->name;
-        $cil->vcs->commit_multiple( $cil, $message, $issue, $precedes );
+        # if we want to commit this change
+        if ( $args->{commit} ) {
+            my $message = 'Issue ' . $issue->name . ' precedes ' . $precedes->name;
+            $cil->git->commit_multiple( $cil, $message, $issue, $precedes );
+        }
     }
 }
 
