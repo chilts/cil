@@ -74,6 +74,7 @@ sub new_from_data {
         $self->set_no_update($field, $data->{$field});
     }
     $self->set_no_update('Changed', 0);
+    $self->set_no_update('Updated', $data->{Updated});
 
     return $self;
 }
@@ -171,10 +172,7 @@ sub set {
 # so that we can update fields without 'Updated' being changed
 sub set_no_update {
     my ($self, $field, $value) = @_;
-
-    my $saved_update_time = $self->Updated;
-    $self->set( $field, $value );
-    $self->Updated( $saved_update_time );
+    $self->{data}{$field} = $value;
 }
 
 sub set_inserted_now {

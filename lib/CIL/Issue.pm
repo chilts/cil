@@ -139,7 +139,7 @@ sub add_label {
     return if grep { $_ eq $label } @{$self->{data}{Label}};
 
     push @{$self->{data}{Label}}, $label;
-    $self->flag_as_updated();
+    $self->set_updated_now();
 }
 
 sub remove_label {
@@ -150,7 +150,7 @@ sub remove_label {
 
     # remove this label
     @{$self->{data}{Label}} = grep { $_ ne $label } @{$self->{data}{Label}};
-    $self->flag_as_updated();
+    $self->set_updated_now();
 }
 
 sub add_comment {
@@ -183,8 +183,11 @@ sub add_depends_on {
     croak 'provide an issue name when adding a depends'
         unless defined $depends;
 
+    # return if we already have this depends
+    return if grep { $_ eq $depends } @{$self->{data}{DependsOn}};
+
     push @{$self->{data}{DependsOn}}, $depends;
-    $self->flag_as_updated();
+    $self->set_updated_now();
 }
 
 sub add_precedes {
@@ -193,8 +196,11 @@ sub add_precedes {
     croak 'provide an issue name when adding a precedes'
         unless defined $precedes;
 
+    # return if we already have this precedes
+    return if grep { $_ eq $precedes } @{$self->{data}{Precedes}};
+
     push @{$self->{data}{Precedes}}, $precedes;
-    $self->flag_as_updated();
+    $self->set_updated_now();
 }
 
 sub LabelList {

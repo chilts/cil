@@ -1,0 +1,12 @@
+Issue: f7ce705b
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2010-01-25T01:31:35
+Updated: 2010-01-25T01:31:35
+
+Checks the DependsOn and Precedes so it checks first before adding the other
+issue.
+
+Also, since flag_as_updated() wasn't doing the Updated time, now calls
+set_updated_now().
+
+Finally, set_no_update() changed to be more sane.
