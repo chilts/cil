@@ -1,0 +1,22 @@
+Summary: Make commit messages nicer when multiple issues are updated
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Label: Milestone-v0.07
+Inserted: 2010-01-27T23:59:52
+Updated: 2010-01-27T23:59:52
+
+When updating the status, label, depends on or precedes (and other things which
+can happen to multiple issues at any one time), the commit message doesn't say
+which issues were affected.
+
+Since we don't want them all on the same line, we could have a commit message
+much like the following:
+
+Added label 'Milestone-v0.07'
+
+* cafebabe
+* blahblah
+* issue102
+
+etc
