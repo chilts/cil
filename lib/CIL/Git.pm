@@ -24,6 +24,7 @@ package CIL::Git;
 use strict;
 use warnings;
 use Carp;
+use List::Util qw(reduce);
 use Git;
 
 use base qw(Class::Accessor);
@@ -128,7 +129,9 @@ sub commit_multiple {
         push @filenames, $filename;
     }
 
-    return $self->git->command('commit', '-m', $message, @filenames);
+    my $commit_list_string = reduce { $a . $b } map { "* cil-" . $_->name . "\n" } @entities;
+
+    return $self->git->command('commit', '-m', "$message\n\n$commit_list_string", @filenames);
 }
 
 ## ----------------------------------------------------------------------------

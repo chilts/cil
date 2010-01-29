@@ -1,10 +1,10 @@
 Summary: Make commit messages nicer when multiple issues are updated
-Status: New
+Status: Finished
 CreatedBy: Andrew Chilton <andychilton@gmail.com>
 AssignedTo: Andrew Chilton <andychilton@gmail.com>
 Label: Milestone-v0.07
 Inserted: 2010-01-27T23:59:52
-Updated: 2010-01-27T23:59:52
+Updated: 2010-01-29T05:40:37
 
 When updating the status, label, depends on or precedes (and other things which
 can happen to multiple issues at any one time), the commit message doesn't say

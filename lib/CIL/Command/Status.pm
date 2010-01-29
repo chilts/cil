@@ -61,7 +61,8 @@ sub run {
     if ( $cil->UseGit ) {
         # if we want to commit these issues
         if ( $args->{commit} ) {
-            $cil->git->commit_multiple( $cil, "Status changed to '$status'", @issues );
+            my $message = "Status changed to '$status'";
+            $cil->git->commit_multiple( $cil, $message, @issues );
         }
     }
 }
