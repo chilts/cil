@@ -1,0 +1,15 @@
+Summary: Obfuscating (a little bit) email in issues
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2010-02-08T19:07:02
+Updated: 2010-02-08T19:07:02
+
+Issue #1 on GitHub ...
+
+Hi,
+First of all, thanks for this nice piece of code :)
+My idea, is to mess with email addreses a bit. Presenting them in a form like "user at domain dot com" or just "user at domain.com" isn't really less readable than the standard form, yet it might save our spamfilters some work.
+
+Kind regards,
+Ted
