@@ -29,7 +29,7 @@ use File::HomeDir;
 use CIL::Git;
 
 use vars qw( $VERSION );
-$VERSION = '0.5.1';
+$VERSION = '0.07.00';
 
 use Module::Pluggable
         sub_name    => 'commands',
