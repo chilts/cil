@@ -1,0 +1,20 @@
+Summary: Add a field for 'Interested' other users
+Status: New
+CreatedBy: Andrew Chilton <andychilton@gmail.com>
+AssignedTo: Andrew Chilton <andychilton@gmail.com>
+Inserted: 2010-02-11T02:50:13
+Updated: 2010-02-11T02:50:13
+
+We'll keep it so that there is only ever one assignee (AssignedTo) but other
+people can become interested in a bug by adding themselfes to that list.
+
+Some useful commands would be:
+
+ $ cil interested cafebabe...
+ $ cil interested --remove cafebabe...
+
+Also some filters such as:
+
+ $ cil summary --is-interested
+
+... and so on.
