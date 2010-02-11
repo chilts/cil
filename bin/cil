@@ -357,7 +357,7 @@ C<LabelStrict> turned on.
 
 These check both C<StatusOpenList> and C<StatusClosedList> from your C<.cil>
 file. If both are specified, you're likely to get no issues unless you
-explicitely defined a status as being in both lists (for whatever reason you
+explicitly defined a status as being in both lists (for whatever reason you
 have).
 
 =item --assigned-to=EMAIL_ADDRESS, --is-mine
