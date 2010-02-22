@@ -190,7 +190,7 @@ Filters:
    --assigned-to=?
    --is-mine
 
-See <http://www.chilts.org/projects/cil/> for further information.
+See <http://www.chilts.org/project/cil/> for further information.
 Report bugs to <andychilton\@gmail.com>.
 END_USAGE
 }
