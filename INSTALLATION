@@ -5,11 +5,14 @@ Dependencies
 
 Perl Modules:
 
+ * Getopt::Mixed
  * File::Touch
- * File::Glob
- * File::Basename
- * MIME::Base64
+ * File::Glob (potentially core)
+ * File::Basename (potentially core)
+ * MIME::Base64 (potentially core)
  * Email::Find
+ * Email::Date
+ * Git.pm (from the git distribution)
 
 Some of these are distributed with perl itself but is left as an excercise to
 the reader to figure out what you need in your distribution (for Debian Etch,
