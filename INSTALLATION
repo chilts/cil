@@ -13,6 +13,7 @@ Perl Modules:
  * Email::Find
  * Email::Date
  * Git.pm (from the git distribution)
+ * DateTime
 
 Some of these are distributed with perl itself but is left as an excercise to
 the reader to figure out what you need in your distribution (for Debian Etch,
