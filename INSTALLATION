@@ -57,6 +57,44 @@ Then, you can just run 'cil' from the command line.
 
 ===============================================================================
 
+For those of us who are required to use Windows for real work
+-------------------------------------------------------------
+
+The recommended (and tested) distribution of Perl to use is the one provided by
+the kind folks at ActiveState.  Use at least version 5.10 build 1006.
+
+For Git integration, install msysgit.  It shouldn't really matter how you
+install it, but we'll assume the recommended "Git Bash" method for the purposes
+of these instructions.
+
+Assume that Git is installed at %GitRoot%.  Assume that the cil distribution is
+at %CilRoot%.  Assume that perl.exe is somewhere in your PATH.  Run the
+following at a command prompt:
+
+ C:\>set PATH=%PATH%;%GitRoot%\bin
+ C:\>set PERL5LIB=%PERL5LIB%;%CilRoot%\lib;%GitRoot%\lib\perl5\site_perl
+
+Do not set these environment variables globally by way of xset or similar;
+we're looking to keep git in the path for this prompt and this prompt only.
+
+After you've done this, `cd` to a project that you're managing with git:
+
+ C:\>cd C:\SomeProject
+ C:\SomeProject>
+
+Now, run `cil init`:
+
+ C:\SomeProject>perl %CilRoot%\bin\cil init
+
+If all is well, you should see the following message:
+
+ git repository detected, setting to use it
+ initialised empty issue list inside './'
+
+Enjoy!
+
+===============================================================================
+
 Running 'cil' without installing
 --------------------------------
 
