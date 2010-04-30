@@ -95,7 +95,7 @@ CONFIG
         write_file("$issues_dir/README.txt", <<'README');
 This directory is used by CIL to track issues and feature requests.
 
-The home page for CIL is at http://www.chilts.org/projects/cil/
+The home page for CIL is at http://www.chilts.org/project/cil/
 README
     }
 
