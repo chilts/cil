@@ -16,7 +16,7 @@ Perl Modules:
  * File::Slurp
  * File::Touch
  * Getopt::Mixed
- * Git.pm (from the git distribution)
+ * Git (from the git distribution)
  * MIME::Base64 (Perl core module)
 
 Install these with your system's respective package manager.
@@ -59,8 +59,8 @@ Then, you can just run 'cil' from the command line.
 
 ===============================================================================
 
-For those of us who are required to use Windows for real work
--------------------------------------------------------------
+Windows
+-------
 
 The recommended (and tested) distribution of Perl to use is the one provided by
 the kind folks at ActiveState.  Use at least version 5.10 build 1006.
