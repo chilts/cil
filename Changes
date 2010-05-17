@@ -1,3 +1,12 @@
+0.07.01 (2010-05-17)
+
+  * 03c93e82 Remove the whole VCS.pm stuff, just have a Git.pm at the top level
+  * 1111d724 Make sure libfile-homedir-perl is in Debian packaging
+  * 1a5fb257 Make sure depends-on and precedes can --add and --commit
+  * 52d702df The StatusOpenList and StatusClosedList should fully describe what is allowed
+  * c77fae7c Make commit messages nicer when multiple issues are updated
+  * f7ce705b Check for duplicate DependsOn and Precedes
+
 0.6.0 (Unreleased)
 
   * New hook infrastructure, currently only 'issue_post_save' is allowed
