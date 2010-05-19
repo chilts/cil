@@ -100,7 +100,7 @@ run this to do checks regarding the whole issue list:
 That's it for now. As you can see, if you've played with any kind of bug/issue
 tracker before, 'cil' is straightforward.
 
-Sometimes, you might add someone else repository from which you want to fetch
+Sometimes, you might add someone else's repository from which you want to fetch
 both code and issues. If you merge a new issue and you want to assign it to
 yourself, instead of editing the issue and having to type in your name and
 email, just use 'cil steal'. This will assign the issue to yourself and save it
