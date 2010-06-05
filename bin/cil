@@ -95,7 +95,8 @@ my %BOOLEAN_ARGS = (
     }
 
     if ( exists $args->{help} ) {
-        usage();
+        use CIL::Command::Help;
+        CIL::Command::Help->run();
         exit;
     }
 
@@ -156,43 +157,6 @@ sub get_options {
     }
     Getopt::Mixed::cleanup();
     return $args;
-}
-
-## ----------------------------------------------------------------------------
-# program info
-
-sub usage {
-   print <<"END_USAGE";
-Usage: $0 COMMAND [options]
-
-Commands:
-   init    [--path=PATH]
-   add
-   summary [FILTERS...]
-   list    [FILTERS...]
-   show    ISSUE
-   status  NEW_STATUS [ISSUES...]
-   label   NEW_LABEL [ISSUES...]
-   steal   ISSUE
-   edit    ISSUE
-   comment ISSUE
-   attach  ISSUE FILENAME
-   extract ATTACHMENT [--filename=FILENAME]
-   am      EMAIL.TXT [--batch]
-   track   ISSUE
-   fsck
-
-Filters:
-   --status=?
-   --is-open
-   --is-closed
-   --label=?
-   --assigned-to=?
-   --is-mine
-
-See <http://www.chilts.org/project/cil/> for further information.
-Report bugs to <andychilton\@gmail.com>.
-END_USAGE
 }
 
 ## ----------------------------------------------------------------------------
