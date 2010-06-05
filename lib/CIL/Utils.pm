@@ -343,6 +343,8 @@ sub display_issue {
     $class->field( 'Status', $issue->Status() );
     $class->field( 'CreatedBy', $issue->CreatedBy() );
     $class->field( 'AssignedTo', $issue->AssignedTo() );
+    $class->field( 'DueDate', $issue->DueDate() )
+        if $issue->DueDate();
     $class->field( 'Label', $_ )
         foreach sort @{$issue->LabelList()};
     $class->field( 'Comment', $_ )
@@ -368,6 +370,8 @@ sub display_issue_full {
     $class->field( 'Status', $issue->Status() );
     $class->field( 'CreatedBy', $issue->CreatedBy() );
     $class->field( 'AssignedTo', $issue->AssignedTo() );
+    $class->field( 'DueDate', $issue->DueDate() )
+        if $issue->DueDate();
     $class->field( 'Label', $_ )
         foreach sort @{$issue->Label()};
     $class->field( 'DependsOn', $_ )

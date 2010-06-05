@@ -27,13 +27,14 @@ use Carp;
 
 use CIL;
 use CIL::Utils;
+use Date::Simple;
 
 use base qw(CIL::Base);
 
 # fields specific to Issue
-__PACKAGE__->mk_accessors(qw(Summary Status AssignedTo DependsOn Precedes Label Comment Attachment Description));
+__PACKAGE__->mk_accessors(qw(Summary Status AssignedTo DueDate DependsOn Precedes Label Comment Attachment Description));
 
-my @FIELDS = ( qw(Summary Status CreatedBy AssignedTo DependsOn Precedes Label Comment Attachment Inserted Updated Description) );
+my @FIELDS = ( qw(Summary Status CreatedBy AssignedTo DueDate DependsOn Precedes Label Comment Attachment Inserted Updated Description) );
 my $cfg = {
     array => {
         Label      => 1,
@@ -62,6 +63,7 @@ sub new {
         Status      => '',
         CreatedBy   => '',
         AssignedTo  => '',
+        DueDate     => '',
         Inserted    => '',
         Updated     => '',
         Label       => [],
@@ -104,7 +106,7 @@ sub is_valid {
     my @errors;
 
     # issues should have a Summary
-    unless ( defined defined $self->Summary and length $self->Summary ) {
+    unless ( defined $self->Summary and length $self->Summary ) {
         push @errors, 'Issue does not have a summary';
     }
 
@@ -122,6 +124,13 @@ sub is_valid {
             unless ( exists $cil->LabelAllowed()->{$label} ) {
                 push @errors, "LabelStrict is turned on but this issue has an invalid label '$label'";
             }
+        }
+    }
+
+    # check that the DueDate is valid
+    if ( $self->DueDate ) {
+        unless ( Date::Simple->new($self->DueDate) ) {
+            push @errors, "DueDate is not a valid date";
         }
     }
 
