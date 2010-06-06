@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Class::Accessor'  => 0,
         'DateTime'         => 0,
+        'Date::Simple'     => 0,
         'Digest::MD5'      => 0,
         'Email::Date'      => 0,
         'Email::Find'      => 0,

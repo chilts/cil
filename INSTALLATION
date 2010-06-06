@@ -6,6 +6,7 @@ Dependencies
 Perl Modules:
 
  * Class::Accessor
+ * Date::Simple
  * DateTime
  * Digest (Perl core module)
  * Email::Date
@@ -34,6 +35,7 @@ For Debian Etch, the following packages will need to be installed:
 * libfile-touch-perl
 * libfile-slurp-perl
 * libclass-accessor-perl
+* libdate-simple-perl
 * libdatetime-perl
 * libfile-homedir-perl
 
