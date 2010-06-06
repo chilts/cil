@@ -501,6 +501,7 @@ sub display_issue_headers {
     $class->field( 'Summary', $issue->Summary() );
     $class->field( 'CreatedBy', $issue->CreatedBy() );
     $class->field( 'AssignedTo', $issue->AssignedTo() );
+    $class->field( 'DueDate', $issue->DueDate() );
     $class->field( 'Inserted', $issue->Inserted() );
     $class->field( 'Status', $issue->Status() );
     $class->field( 'Labels', join(' ', @{$issue->LabelList()}) );
