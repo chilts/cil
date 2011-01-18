@@ -440,7 +440,7 @@ Probably. Let me know :-)
 
 To get a ToDo list for cil, clone the repo, find the issues/ dir and type:
 
-    $ cil --is-open
+    $ cil list --is-open
 
 This gives the current outstanding issues in cil.
 
