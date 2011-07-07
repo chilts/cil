@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 ## ----------------------------------------------------------------------------
 # cil is a Command line Issue List
 # Copyright (C) 2008 Andrew Chilton
