@@ -25,6 +25,7 @@ my $builder = Module::Build->new(
         'Getopt::Mixed'    => 0,
         'MIME::Base64'     => 0,
         'Test::More'       => 0,
+        'File::HomeDir'    => 0,
     },
     add_to_cleanup      => [ 'CIL-*' ],
     create_makefile_pl => 'traditional',
