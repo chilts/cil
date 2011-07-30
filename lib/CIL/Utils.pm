@@ -26,6 +26,8 @@ use warnings;
 use Carp;
 use File::Slurp;
 use File::Temp qw(tempfile);
+use Cwd;
+use File::Basename;
 use Email::Find;
 use POSIX qw(getpgrp tcgetpgrp);
 use Fcntl qw(:DEFAULT :flock);
@@ -533,13 +535,20 @@ sub text {
 ## ----------------------------------------------------------------------------
 # system
 
-sub check_paths {
+sub get_basedir {
     my ($class, $cil) = @_;
 
-    # make sure an issue directory is available
-    unless ( $cil->dir_exists($cil->IssueDir) ) {
-        $class->fatal("couldn't find '" . $cil->IssueDir . "' directory");
+    # ok, we just need to check that we can find a '.cil' file somewhere
+    my $dir = cwd();
+    while ( ! -f qq{$dir/.cil} ) {
+        $dir = dirname($dir);
+        if ( $dir eq q{/} ) {
+            $class->fatal("couldn't find '.cil' file");
+        }
     }
+
+    # ok, we've found our .cil file, return this directory
+    return $dir;
 }
 
 sub ans {

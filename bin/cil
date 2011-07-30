@@ -111,11 +111,21 @@ my %BOOLEAN_ARGS = (
     # make a new $cil object
     my $cil = CIL->new();
 
-    # for all commands (except init), we need to know we can see the proper paths
-    # (ie. issues/)
-    CIL::Utils->check_paths( $cil )
-        unless $command_name eq 'init';
+    # do only the init command locally, do it first and exit - much easier
+    if ( $command_name eq 'init' ) {
+        $command->run($cil, $args, @ARGV);
+        exit 0;
+    }
 
+    # for all other commands, we need to know we can see the proper paths (ie. '.cil')
+    my $base_dir = CIL::Utils->get_basedir( $cil );
+    unless ( $base_dir ) {
+        Getopt::Mixed::abortMsg("Couldn't find '.cil' file - is this a 'cil' project?");
+        exit 2;
+    }
+
+    # set the BaseDir and read in the other configs
+    $cil->BaseDir( $base_dir );
     $cil->read_config_user();
     $cil->read_config_file();
 
@@ -124,11 +134,6 @@ my %BOOLEAN_ARGS = (
 
     $command->run($cil, $args, @ARGV);
 }
-
-## ----------------------------------------------------------------------------
-# hooks
-
-# none yet
 
 ## ----------------------------------------------------------------------------
 # helper functions for this command line tool

@@ -33,8 +33,6 @@ sub name { 'list-labels' }
 sub run {
     my ($self, $cil, $args) = @_;
 
-    CIL::Utils->check_paths($cil);
-
     # find all the issues
     my $issues = $cil->get_issues();
     $issues = CIL::Utils->filter_issues( $cil, $issues, $args );

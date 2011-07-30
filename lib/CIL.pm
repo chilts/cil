@@ -38,7 +38,7 @@ use Module::Pluggable
 
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(
-    IssueDir
+    BaseDir IssueDir
     StatusStrict StatusAllowed StatusOpen StatusClosed
     LabelStrict LabelAllowed
     DefaultNewStatus
@@ -49,6 +49,7 @@ __PACKAGE__->mk_accessors(qw(
 ));
 
 my $defaults = {
+    BaseDir          => q{.},     # the dir where the .cil file is
     IssueDir         => 'issues', # the dir to save the issues in
     StatusStrict     => 0,        # whether to complain if a status is invalid
     LabelStrict      => 0,        # whether to complain if a label is invalid
@@ -85,6 +86,7 @@ sub new {
         # if we have been passed it in, use it, else use the default
         $self->$key( $cfg->{$key} || $defaults->{$key} );
     }
+
     return $self;
 }
 
@@ -240,7 +242,7 @@ sub read_config_user {
 sub read_config_file {
     my ( $self ) = @_;
 
-    my $filename = '.cil';
+    my $filename = $self->BaseDir() . q{/.cil};
 
     # since we might not have a '.cil' file yet (in the case where we're calling 'init',
     # then we should just return whatever the defaults are
@@ -275,7 +277,7 @@ sub read_config_file {
     }
 
     # set each config item
-    $self->IssueDir( $cfg->{IssueDir} );
+    $self->IssueDir( $self->BaseDir() . q{/} . $cfg->{IssueDir} );
     $self->UseGit( $cfg->{UseGit} );
 
     # Status info
