@@ -37,7 +37,8 @@ sub run {
 
     my $user = CIL::Utils->user($cil);
 
-    my $issue = CIL::Issue->new('tmpname');
+    # set up a default issue for now
+    my $issue = CIL::Issue->new( $cil, 'tmpname' );
     $issue->Summary( join ' ', @argv );
     $issue->Status($cil->DefaultNewStatus);
     $issue->CreatedBy( $user );
@@ -45,6 +46,7 @@ sub run {
         if ( $args->{mine} or $cil->AutoAssignSelf );
     $issue->Description("Description ...");
 
+    # now read in the file until the issue is valid
     $issue = CIL::Utils->add_issue_loop($cil, undef, $issue);
 
     if ( $cil->UseGit ) {

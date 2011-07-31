@@ -47,7 +47,7 @@ sub run {
     while ( $edit eq $y ) {
         # read in the new issue text
         my $fh = CIL::Utils->solicit( $issue->as_output );
-        $issue = CIL::Issue->new_from_fh( $issue->name, $fh );
+        $issue = CIL::Issue->new_from_fh( $cil, $issue->name, $fh );
 
         # check if the issue is valid
         if ( $issue->is_valid($cil) ) {

@@ -38,12 +38,12 @@ sub run {
     CIL::Utils->ensure_interactive();
 
     # create the new comment
-    my $comment = CIL::Comment->new('tmpname');
+    my $comment = CIL::Comment->new( $cil, 'tmpname' );
     $comment->Issue( $issue->name );
     $comment->CreatedBy( CIL::Utils->user($cil) );
     $comment->Description("Description ...");
 
-    $comment = CIL::Utils->add_comment_loop($cil, undef, $issue, $comment);
+    $comment = CIL::Utils->add_comment_loop( $cil, undef, $issue, $comment );
 
     if ( $cil->UseGit ) {
         # if we want to add or commit this comment

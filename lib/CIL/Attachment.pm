@@ -38,7 +38,7 @@ my @FIELDS = ( qw(Issue Filename Size CreatedBy Inserted Updated File) );
 ## ----------------------------------------------------------------------------
 
 sub new {
-    my ($proto, $name) = @_;
+    my ($proto, $cil, $name) = @_;
 
     croak 'please provide an attachment name'
         unless defined $name;
@@ -60,6 +60,9 @@ sub new {
     $self->{Changed} = 0;
 
     $self->set_inserted_now;
+
+    # save the reference to cil itself
+    $self->cil( $cil );
 
     return $self;
 }

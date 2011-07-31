@@ -43,6 +43,7 @@ __PACKAGE__->mk_accessors(qw(
     LabelStrict LabelAllowed
     DefaultNewStatus
     UseGit
+    MungeEmail
     UserName UserEmail
     AutoAssignSelf
     git hook
@@ -55,6 +56,7 @@ my $defaults = {
     LabelStrict      => 0,        # whether to complain if a label is invalid
     DefaultNewStatus => 'New',    # What Status to use for new issues by default
     UseGit           => 0,        # don't do anything with Git
+    MungeEmail       => 0,        # don't munge email by default
 };
 
 my @config_hashes = qw(StatusOpen StatusClosed LabelAllowed);
@@ -279,6 +281,7 @@ sub read_config_file {
     # set each config item
     $self->IssueDir( $self->BaseDir() . q{/} . $cfg->{IssueDir} );
     $self->UseGit( $cfg->{UseGit} );
+    $self->MungeEmail( $cfg->{MungeEmail} );
 
     # Status info
     $self->StatusStrict( $cfg->{StatusStrict} );

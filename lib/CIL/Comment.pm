@@ -35,7 +35,7 @@ my @FIELDS = ( qw(Issue CreatedBy Inserted Updated Description) );
 ## ----------------------------------------------------------------------------
 
 sub new {
-    my ($proto, $name) = @_;
+    my ($proto, $cil, $name) = @_;
 
     croak 'please provide a comment name'
         unless defined $name;
@@ -55,6 +55,9 @@ sub new {
     $self->{Changed} = 0;
 
     $self->set_inserted_now;
+
+    # save the reference to cil itself
+    $self->cil( $cil );
 
     return $self;
 }

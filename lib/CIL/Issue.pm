@@ -32,7 +32,7 @@ use Date::Simple;
 use base qw(CIL::Base);
 
 # fields specific to Issue
-__PACKAGE__->mk_accessors(qw(Summary Status AssignedTo DueDate DependsOn Precedes Label Comment Attachment Description));
+__PACKAGE__->mk_accessors(qw(Summary Status DueDate DependsOn Precedes Label Comment Attachment Description));
 
 my @FIELDS = ( qw(Summary Status CreatedBy AssignedTo DueDate DependsOn Precedes Label Comment Attachment Inserted Updated Description) );
 my $cfg = {
@@ -45,10 +45,20 @@ my $cfg = {
     },
 };
 
+sub AssignedTo {
+    my ($self, $value) = @_;
+
+    if ( defined $value ) {
+        $self->{data}{AssignedTo} = $self->cil->MungeEmail ? CIL::Utils->munge_email($value) : $value;
+    }
+
+    return $self->{data}{AssignedTo};
+}
+
 ## ----------------------------------------------------------------------------
 
 sub new {
-    my ($proto, $name) = @_;
+    my ($proto, $cil, $name) = @_;
 
     croak 'please provide an issue name'
         unless defined $name;
@@ -76,6 +86,9 @@ sub new {
     $self->{Changed} = 0;
 
     $self->set_inserted_now;
+
+    # save the reference to cil itself
+    $self->cil( $cil );
 
     return $self;
 }

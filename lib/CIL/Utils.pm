@@ -200,7 +200,7 @@ sub add_issue_loop {
     while ( $edit eq $y ) {
         # read in the new issue text
         my $fh = $class->solicit( $issue->as_output );
-        $issue = CIL::Issue->new_from_fh( 'tmp', $fh );
+        $issue = CIL::Issue->new_from_fh( $cil, 'tmp', $fh );
 
         # check if the issue is valid
         if ( $issue->is_valid($cil) ) {
@@ -218,6 +218,12 @@ sub add_issue_loop {
     # we've got the issue, so let's name it
     my $unique_str = time . $issue->Inserted . $issue->Summary . $issue->Description;
     $issue->set_name( substr(md5_hex($unique_str), 0, 8) );
+
+    # set these so that munging takes place
+    $issue->CreatedBy( $issue->CreatedBy() );
+    $issue->AssignedTo( $issue->AssignedTo() );
+
+    # save out to disk
     $issue->save($cil);
 
     # should probably be run from with $cil
@@ -237,7 +243,7 @@ sub add_comment_loop {
     while ( $edit eq $y ) {
         # read in the new comment text
         my $fh = CIL::Utils->solicit( $comment->as_output );
-        $comment = CIL::Comment->new_from_fh( 'tmp', $fh );
+        $comment = CIL::Comment->new_from_fh( $cil, 'tmp', $fh );
 
         # check if the comment is valid
         if ( $comment->is_valid($cil) ) {
@@ -255,6 +261,9 @@ sub add_comment_loop {
     # we've got the comment, so let's name it
     my $unique_str = time . $comment->Inserted . $issue->Description;
     $comment->set_name( substr(md5_hex($unique_str), 0, 8) );
+
+    # set these so that munging takes place
+    $comment->CreatedBy( $issue->CreatedBy() );
 
     # finally, save it
     $comment->save($cil);
@@ -283,7 +292,7 @@ sub load_issue_fuzzy {
     }
 
     my $issue_name = $issues->[0]->{name};
-    my $issue = CIL::Issue->new_from_name($cil, $issue_name);
+    my $issue = CIL::Issue->new_from_name( $cil, $issue_name );
     unless ( defined $issue ) {
         $class->fatal("Couldn't load issue '$issue_name'");
     }
@@ -304,7 +313,7 @@ sub load_comment_fuzzy {
     }
 
     my $comment_name = $comments->[0]->{name};
-    my $comment = CIL::comment->new_from_name($cil, $comment_name);
+    my $comment = CIL::comment->new_from_name( $cil, $comment_name );
     unless ( defined $comment ) {
         $class->fatal("Couldn't load comment '$comment_name'");
     }
@@ -325,7 +334,7 @@ sub load_attachment_fuzzy {
     }
 
     my $attachment_name = $attachments->[0]->{name};
-    my $attachment = CIL::Attachment->new_from_name($cil, $attachment_name);
+    my $attachment = CIL::Attachment->new_from_name( $cil, $attachment_name );
     unless ( defined $attachment ) {
         $class->fatal("Couldn't load attachment '$partial_name'");
     }
@@ -513,6 +522,15 @@ sub order_issues {
     push @$issues, @undefined;
 
     return $issues;
+}
+
+sub munge_email {
+    my ($class, $email) = @_;
+
+    $email =~ s{@}{ at }gxms;
+    $email =~ s{\.}{ dot }gxms;
+
+    return $email;
 }
 
 sub separator {

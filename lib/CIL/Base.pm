@@ -28,7 +28,16 @@ use DateTime;
 use CIL::Utils;
 
 use base qw(Class::Accessor);
-__PACKAGE__->mk_accessors(qw(CreatedBy Inserted Updated));
+__PACKAGE__->mk_accessors(qw(cil Inserted Updated));
+
+sub CreatedBy {
+    my ($self, $value) = @_;
+
+    if ( defined $value ) {
+        $self->{data}{CreatedBy} = $self->cil->MungeEmail ? CIL::Utils->munge_email($value) : $value;
+    }
+    return $self->{data}{CreatedBy};
+}
 
 ## ----------------------------------------------------------------------------
 
@@ -43,12 +52,12 @@ sub new_from_name {
         unless $cil->file_exists($filename);
 
     my $data = $cil->parse_cil_file($filename, $class->last_field);
-    my $issue = $class->new_from_data( $name, $data );
+    my $issue = $class->new_from_data( $cil, $name, $data );
     return $issue;
 }
 
 sub new_from_data {
-    my ($class, $name, $data) = @_;
+    my ($class, $cil, $name, $data) = @_;
 
     croak 'please provide an issue name'
         unless defined $name;
@@ -56,7 +65,7 @@ sub new_from_data {
     # ToDo: check we have all the other correct fields
 
     # create the issue
-    my $self = $class->new( $name );
+    my $self = $class->new( $cil, $name );
 
     my $fields = $class->fields();
     my $array_fields = $class->array_fields();
@@ -80,13 +89,13 @@ sub new_from_data {
 }
 
 sub new_from_fh {
-    my ($class, $name, $fh) = @_;
+    my ($class, $cil, $name, $fh) = @_;
 
     croak 'please provide name'
         unless defined $name;
 
     my $data = CIL::Utils->parse_from_fh( $fh, $class->last_field );
-    return $class->new_from_data( $name, $data );
+    return $class->new_from_data( $cil, $name, $data );
 }
 
 sub set_data {

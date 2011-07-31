@@ -57,7 +57,7 @@ EOF
     CIL::Utils->ensure_interactive();
     my $fh = CIL::Utils->solicit( $add_attachment_text );
 
-    my $attachment = CIL::Attachment->new_from_fh( 'tmp', $fh );
+    my $attachment = CIL::Attachment->new_from_fh( $cil, 'tmp', $fh );
     unless ( defined $attachment ) {
         $cil->fatal("could not create new attachment");
     }
