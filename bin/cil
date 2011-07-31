@@ -51,14 +51,17 @@ my @IN_OPTS = (
     'created-by>c', # for 'summary', 'list'
     'a=s',          # a = assigned_to
     'assigned-to>a',# for 'summary', 'list'
+    'o=s',          # o = order
+    'order>o',      # for 'summary', 'list'
     'r=s',          # r = revision
-    'revision>s',   # for all query commands
+    'revision>r',   # for all query commands
 
     # booleans
     'bare',         # for 'init'
     'is-open',      # for 'summary', 'list'
     'is-closed',    # for 'summary', 'list'
     'is-mine',      # for 'summary', 'list'
+    'reverse',      # for 'summary', 'list'
     'mine',         # for 'add'
     'add',          # for 'add', 'comment'
     'commit',       # for 'add', 'comment'
@@ -75,6 +78,7 @@ my %BOOLEAN_ARGS = (
     'is-open'   => 1,
     'is-closed' => 1,
     'is-mine'   => 1,
+    'reverse'   => 1,
     'mine'      => 1,
     'add'       => 1,
     'commit'    => 1,
@@ -177,7 +181,9 @@ cil - the command-line issue list
     $ cil list
     $ cil list --status=New
     $ cil list --label=Release-v0.1
-    $ cil list --is-open
+    $ cil list --is-open --order=Updated
+    $ cil list --order=Updated --reverse
+    $ cil list --order=Inserted
 
     $ cil add
     ... added issue 'cafebabe' ...
@@ -341,6 +347,34 @@ C<UserEmail>.
 
 =back
 
+=head1 ORDER
+
+When doing a 'summary' or a 'list', as well as filtering the issues to only
+show what you want, you can also order them to show them in whichever order you
+like too. The fields you can order by are:
+
+    --order=Summary
+    --order=Inserted
+    --order=Updated
+    --order=AssignedTo
+    --order=CreatedBy
+    --order=DueDate
+    --order=Status
+
+In the case of Summary, Inserted, Updated, CreatedBy and Status the field is
+always defined and hence the ordering will take every issue into
+account. However, some issues may not have been assigned or have a due date, so
+AssignedTo and DueDate may be blank. In this case, any issues with these fields
+defined are ordered and any issues which do not have this field are placed
+towards the bottom of the listing.
+
+=head2 REVERSE
+
+Every single one of these orderings can also be reversed using the C<--reverse>
+flag. If an ordering is reversed it works as expected but again for issues
+where that field is undefined they are placed at the bottom (rather than having
+the undefined values float to the top).
+
 =head1 .cil
 
 The C<.cil> file is used to configure bits and pieces within cil for this
@@ -455,7 +489,7 @@ Andrew Chilton <andychilton@gmail.com>
 
 =head1 COPYRIGHT
 
-Copyright (C) 2008 by Andrew Chilton
+Copyright (C) 2008-2011 by Andrew Chilton
 
 Cil is free software: you can redistribute it and/or modify it under the terms
 of the GNU General Public License as published by the Free Software Foundation,

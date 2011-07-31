@@ -473,6 +473,48 @@ sub filter_issues {
     return \@new_issues;
 }
 
+my $valid_order = {
+    Summary    => 1,
+    Inserted   => 1,
+    Updated    => 1,
+    AssignedTo => 1,
+    CreatedBy  => 1,
+    DueDate    => 1,
+    Status     => 1,
+};
+
+sub order_issues {
+    my ($class, $cil, $issues, $args) = @_;
+
+    # don't order if we haven't been given anything
+    return $issues unless defined $args;
+    return $issues unless %$args;
+    return $issues unless defined $args->{o};
+
+    my $order_by = $args->{o};
+
+    # make sure that the order is allowed
+    unless ( exists $valid_order->{$order_by} ) {
+        $class->fatal("the --order must be one of: " . join(', ', sort keys %$valid_order));
+    }
+
+    # Split off the ones with this field defined/not defined.
+    my @defined   = grep {   $_->{data}{$order_by} } @$issues;
+    my @undefined = grep { ! $_->{data}{$order_by} } @$issues;
+
+    @$issues = sort { $a->{data}{$order_by} cmp $b->{data}{$order_by} } @defined;
+
+    # reverse the order if specified
+    if ( $args->{reverse} ) {
+        @$issues = reverse @$issues;
+    }
+
+    # now put the undefined ones back (so they're at the bottom independent of --order and --reverse)
+    push @$issues, @undefined;
+
+    return $issues;
+}
+
 sub separator {
     my ($class) = @_;
     $class->msg('=' x 79);

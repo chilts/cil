@@ -37,7 +37,8 @@ sub run {
     my $issues = $cil->get_issues();
     $issues = CIL::Utils->filter_issues( $cil, $issues, $args );
     if ( @$issues ) {
-        foreach my $issue ( sort { $a->Inserted cmp $b->Inserted } @$issues ) {
+        $issues = CIL::Utils->order_issues( $cil, $issues, $args );
+        foreach my $issue ( @$issues ) {
             CIL::Utils->separator();
             CIL::Utils->display_issue_headers($issue);
         }

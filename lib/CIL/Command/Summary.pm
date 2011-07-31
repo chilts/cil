@@ -38,6 +38,7 @@ sub run {
     $issues = CIL::Utils->filter_issues( $cil, $issues, $args );
     if ( @$issues ) {
         CIL::Utils->separator();
+        $issues = CIL::Utils->order_issues( $cil, $issues, $args );
         foreach my $issue ( @$issues ) {
             CIL::Utils->display_issue_summary($issue);
         }
