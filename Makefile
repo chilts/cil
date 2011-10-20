@@ -1,3 +1,5 @@
+build:
+
 open:
 	cil summary --is-open
 
